@@ -28,7 +28,7 @@ var that = Object.create(Review.prototype);
 	that.getUserReviews = function(){
 
 	}
-
+  
 })()
-
+   
 module.exports = Review;
