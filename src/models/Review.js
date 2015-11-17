@@ -21,7 +21,13 @@ var Review = (function Review() {
           "reviewee": revieweeID,
           "rating": rating,
           "comment": comment
-        })
+        }, {}, function(e, doc) {
+          userSchema.find({"_id": revieweeID}, {}, function(e, subdoc) {
+            userSchema.update({"_id": revieweeID}, {$push: {"reviews": doc._id}}, 
+              function(e, subsubdoc) {
+            })
+          })
+        });
     };
 
     that.setReviewRating = function(reviewID, rating, callback) {
