@@ -12,8 +12,9 @@ var userSchema = Schema({
 var rideSchema = Schema({
   origin: String,
   destination: String,
-  departure_time: Date, 
-  capacity: Number,
+  departure_time: Date,
+  total_capacity: Number,
+  remaining_capacity: Number,
   creator: { type: ObjectId, ref: 'userSchema' },
   riders: [{ type: ObjectId, ref: 'userSchema' }],
   transport: String,
