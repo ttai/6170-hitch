@@ -100,11 +100,11 @@ var Ride = (function Ride() {
     });
   };
 
-  that.addRider = function(rideID, rider, callback) {
+  that.addRider = function(rideID, riderId, callback) {
     // checks if rider exists
       rideSchema.findByIdAndUpdate(rideID,
                                     { $inc: { 'remaining_capacity' : -1 } },
-                                    { $push: { riders: rider } },
+                                    { $push: { riders: riderId } },
                                     function(err) {
                                       if (err){
                                         console.log(err);
@@ -112,14 +112,32 @@ var Ride = (function Ride() {
                                         callback(null);
                                       }
       });
+      userSchema.findByIdAndUpdate(riderId,
+                                    { $push: {rides: rideId} },
+                                    function (err) {
+                                      if (err) {
+                                        console.log(err);
+                                      } else {
+                                        callback(null);
+                                      }
+      });
   };
 
-  that.removeRider = function(rideID, rider, callback) {
+  that.removeRider = function(rideID, riderId, callback) {
     // checks if rider exists
     rideSchema.findByIdAndUpdate(rideID,
                                   { $inc: { 'remaining_capacity' : 1 } },
-                                  { $pull: { riders: rider } },
+                                  { $pull: { riders: riderId } },
                                   function(err) {
+                                    if (err) {
+                                      console.log(err);
+                                    } else {
+                                      callback(null);
+                                    }
+    });
+    userSchema.findByIdAndUpdate(riderId,
+                                  { $pull: {rides: rideId} },
+                                  function (err) {
                                     if (err) {
                                       console.log(err);
                                     } else {
