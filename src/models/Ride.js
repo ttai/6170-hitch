@@ -85,7 +85,7 @@ var Ride = (function Ride() {
   };
 
   that.addRide = function(origin, destination, departure_time,
-                          total_capacity, creator, riders, passphrase,
+                          total_capacity, riders, transport, passphrase,
                           callback) {
     // check if valid ride
     rideSchema.create({
@@ -94,8 +94,8 @@ var Ride = (function Ride() {
       departure_time: departure_time,
       total_capacity: total_capacity,
       remaining_capacity: total_capacity - 1,
-      creator: creator,
       riders: riders,
+      transport: transport,
       passphrase: passphrase
     });
   };
@@ -157,6 +157,7 @@ var Ride = (function Ride() {
     });
   };
 
+  Object.freeze(that);
   return that;
 })();
  
