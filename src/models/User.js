@@ -6,6 +6,7 @@ var userSchema = schemas.userSchema;
 var User = (function User() {
 
   var that = Object.create(User.prototype);
+  //returns the user object if it exists
 
   that.userExists = function(currentKerberos,callback){
   	userSchema.find({kerberos: currentKerberos}, function(err, user){
@@ -21,6 +22,7 @@ var User = (function User() {
 		callback(doesExist,user);
 	});
   }
+
   //password or certificate authentication 
   that.createUser = function(currentKerberos, callback){
   	userExists(currentKerberos,function(doesExist, user){
@@ -40,6 +42,7 @@ var User = (function User() {
   	})
   }
 
+  // Adds a user to a specific ride
   that.joinRide= function(currentKerberos, ride1, callback){
   	userExists(currentKerberos,function(doesExist, user){
 		if (doesExist){
@@ -48,6 +51,7 @@ var User = (function User() {
 	}); 
   }
 
+  // Deletes a user from a specific ride
   that.leaveRide=function(currentKerberos, ride, callback){
   	userExists(currentKerberos,function(doesExist, user){
 		if (doesExist){
@@ -56,6 +60,7 @@ var User = (function User() {
 	}); 
   }
 
+  // Give a list of all reviews given to a user
   that.getReviews=function(currentKerberos, callback){
   	userExists(currentKerberos,function(doesExist, user){
 		if (doesExist) {
@@ -65,6 +70,26 @@ var User = (function User() {
 		}
 	}); 
   }
+
+  // Gives the user's average rating.
+  that.getUserRating=function(currentKerberos, callback){
+  	userExists(currentKerberos,function(doesExist,user){
+  		if (doesExist){
+  			callback(user.rating);
+  		}
+  	})
+  }
+
+
+  // do add review!
+  that.addReview=function(currentKerberos,review,callback){
+  	userExists(currentKerberos, function(doesExist,user){
+  		if (doesExist){
+  			//TODO: implement this
+  		}
+  	})
+  }
+
 
   Object.freeze(that);
   return that;
