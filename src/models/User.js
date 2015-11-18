@@ -47,30 +47,30 @@ var User = (function User() {
   // Adds a user to a specific ride
   that.joinRide= function(currentKerberos, ride1, callback){
     userExists(currentKerberos,function(doesExist, user){
-    if (doesExist){
-      Ride.update({"ride": ride1}, {$push: {"riders": user}}, function(e){});
-    }
-  }); 
+      if (doesExist){
+        Ride.update({"ride": ride1}, {$push: {"riders": user}}, function(e){});
+      }
+    }); 
   }
 
   // Deletes a user from a specific ride
   that.leaveRide=function(currentKerberos, ride, callback){
     userExists(currentKerberos,function(doesExist, user){
-    if (doesExist){
-      Ride.update({"ride": ride1}, {$pull: {"riders": user}}, function(e){});
-    }
-  }); 
+      if (doesExist){
+        Ride.update({"ride": ride1}, {$pull: {"riders": user}}, function(e){});
+      }
+    }); 
   }
 
   // Give a list of all reviews given to a user
   that.getReviews=function(currentKerberos, callback){
     userExists(currentKerberos,function(doesExist, user){
-    if (doesExist) {
-      Review.find({ '_id': user.reviews }, function(err, reviews)) {
-        callback(reviews);
+      if (doesExist) {
+        Review.find({ '_id': user.reviews }, function(err, reviews){
+          callback(reviews);
+        })
       }
-    }
-  }); 
+    }); 
   }
 
   // Gives the user's average rating.
