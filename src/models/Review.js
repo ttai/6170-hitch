@@ -12,7 +12,7 @@ var Review = (function Review() {
   that.getReview = function(reviewID, callback){
     reviewSchema.findOne({ "_id": reviewID }, function(err, review) {
       if (err) {
-        // TODO: implement error handling
+        callback(err);
       }
       callback(null, review);
     });
@@ -26,32 +26,32 @@ var Review = (function Review() {
       "reviewee": revieweeID,
       "rating": rating,
       "comment": comment
-    }, {}, function(e, doc) {
-      userSchema.update({"_id": revieweeID}, {$push: {"reviews": doc._id}}, 
+    }, {}, function(err, review) {
+      userSchema.update({ "_id": revieweeID }, { $push: { "reviews": review._id } }, 
                         function(err) {
-        // TODO: implement error handling
+        callback(err);
       });
     });
   };
 
   that.setReviewRating = function(reviewID, rating, callback) {
-    reviewSchema.update({"_id": reviewID}, {$set: {"rating": rating}},
+    reviewSchema.update({ "_id": reviewID }, { $set: { "rating": rating } },
                         function(err) {
-      // TODO: implement error handling
+      callback(err);
     });
   };
 
   that.setReviewComment = function(reviewID, comment, callback) {
-    reviewSchema.update({"_id": reviewID}, {$set: {"comment": comment}}, 
+    reviewSchema.update({ "_id": reviewID }, { $set: { "comment": comment } }, 
                         function(err) {
-      // TODO: implement error handling
+      callback(err);
     });
   };
   
   that.deleteReview = function(reviewID, callback) {
-    reviewSchema.find({"_id": reviewID}).remove(function(err) {
-      // TODO: implement error handling
-    });      
+    reviewSchema.find({ "_id": reviewID }).remove(function(err) {
+      callback(err);
+    });
   };
 
   Object.freeze(that);
