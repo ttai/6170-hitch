@@ -5,46 +5,108 @@ var rideSchema = schemas.rideSchema;
 var reviewSchema = schemas.reviewSchema;
 var User = require('./User');
 
-
+// update current ride methods to include both capacities and transport means
 // doesn't include error handling
+// all the get ride methods (except getRide) finds rides that have not yet passed.
 
 var Ride = (function Ride() {
 
   var that = Object.create(Ride.prototype);
 
-  that.getAllRides = function() { 
-    rideSchema.find({}, function(e, doc) {
-      callback(doc);
+  that.getAllRides = function(callback) {
+    rideSchema.find({}, function(err, rides) {
+      if (err) {
+        console.log(err);
+      } else {
+        callback(null, rides);
+      }
     });
   };
 
+  that.getAllOpenRides = function(callback) {
+    var now = new Date();
+    rideSchema.where('remaining_capacity').gte(1).where('departure_time').gte(now).exec(function(err, rides) {
+      if (err) {
+        console.log(err);
+      } else {
+        callback(null, rides);
+      }
+    });
+  };
+
+  that.findRidesByPickup = function(location, callback) {
+    var now = new Date();
+    rideSchema.find({ origin: location }).where('departure_time').gte(now).exec(function(err, rides) {
+      if (err) {
+        console.log(err);
+      } else {
+        callback(null, rides);
+      }
+    });
+  };
+
+  that.findRidesByDestination = function(location, callback) {
+    var now = new Date();
+    rideSchema.find({ destination: location }).where('departure_time').gte(now).exec(function(err, rides) {
+      if (err) {
+        console.log(err);
+      } else {
+        callback(null, rides);
+      }
+    });
+  };
+
+  // assumption: date passed in are at 00:00 time.
+  that.findRidesByDate = function(date, callback) {
+    var end = new Date(date.getTime() + (24 * 60 * 60 * 1000));
+    var now = new Date();
+    rideSchema.find({ where('departure_time').gte(now).gte(date).lte(end).exec(function(err, rides) {
+      if (err) {
+        console.log(err);
+      } else {
+        callback(null, rides);
+      }
+    });
+  };
+
+  // does not check if ride has closed
   that.getRide = function(rideID, callback) {
-    rideSchema.find({}, function(e, doc) {
-      callback(doc);
+    rideSchema.findById(rideId, function (err, ride) {
+      if (err) {
+        console.log(err);
+      } else {
+        if (ride) {
+          callback(null, ride);
+        } else {
+          callback({ msg: 'Invalid ride.' });
+        }
+      }
     });
   };
 
   that.addRide = function(origin, destination, departure_time,
-                          capacity, creator, riders, passphrase,
+                          total_capacity, creator, riders, passphrase,
                           callback) {
     // check if valid ride
     rideSchema.create({
-      "origin": origin,
-      "destination": destination,
-      "departure_time": departure_time,
-      "capacity": capacity,
-      "creator": creator,
-      "riders": riders,
-      "passphrase": passphrase
+      origin: origin,
+      destination: destination,
+      departure_time: departure_time,
+      total_capacity: total_capacity,
+      remaining_capacity: total_capacity - 1,
+      creator: creator,
+      riders: riders,
+      passphrase: passphrase
     });
   };
 
   that.addRider = function(rideID, rider, callback) {
     // checks if rider exists
-    rideSchema.find({ "_id": rideID }, {}, function(e, doc) {
-      rideSchema.update({ "_id": rideID },
-                        { $push: { "riders": rider } },
-                        function(e, subdoc) {
+    rideSchema.find({ _id: rideID }, {}, function(err, doc) {
+      rideSchema.update({ _id: rideID },
+                        { $inc: { 'remaining_capacity' : -1 } },
+                        { $push: { riders: rider } },
+                        function(err, subdoc) {
 
       });
     });
@@ -52,18 +114,18 @@ var Ride = (function Ride() {
 
   that.removeRider = function(rideID, rider, callback) {
     // checks if rider exists
-    rideSchema.find({ "_id": rideID }, {}, function(e, doc) {
-      rideSchema.update({ "_id": rideID },
-                        { $pull: { "riders": rider } },
-                        function(e, subdoc) {
-        
+    rideSchema.find({ _id: rideID }, {}, function(err, doc) {
+      rideSchema.update({ _id: rideID },
+                        { $inc: { 'remaining_capacity' : 1 } },
+                        { $pull: { riders: rider } },
+                        function(err, subdoc) {
       });
     });
   };
 
   that.deleteRide = function(rideID, callback) {
     // check if valid ride
-    rideSchema.find({ "_id": rideID }).remove(function(e, doc) {
+    rideSchema.find({ _id: rideID }).remove(function(err, doc) {
     });
   };
 
