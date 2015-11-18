@@ -13,8 +13,9 @@ var Review = (function Review() {
     reviewSchema.findOne({ "_id": reviewID }, function(err, review) {
       if (err) {
         callback(err);
+      } else {
+        callback(null, review);
       }
-      callback(null, review);
     });
   };
 
