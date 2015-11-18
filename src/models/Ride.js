@@ -102,30 +102,40 @@ var Ride = (function Ride() {
 
   that.addRider = function(rideID, rider, callback) {
     // checks if rider exists
-    rideSchema.find({ _id: rideID }, {}, function(err, doc) {
-      rideSchema.update({ _id: rideID },
-                        { $inc: { 'remaining_capacity' : -1 } },
-                        { $push: { riders: rider } },
-                        function(err, subdoc) {
-
+      rideSchema.findByIdAndUpdate(rideID,
+                                    { $inc: { 'remaining_capacity' : -1 } },
+                                    { $push: { riders: rider } },
+                                    function(err) {
+                                      if (err){
+                                        console.log(err);
+                                      } else {
+                                        callback(null);
+                                      }
       });
-    });
   };
 
   that.removeRider = function(rideID, rider, callback) {
     // checks if rider exists
-    rideSchema.find({ _id: rideID }, {}, function(err, doc) {
-      rideSchema.update({ _id: rideID },
-                        { $inc: { 'remaining_capacity' : 1 } },
-                        { $pull: { riders: rider } },
-                        function(err, subdoc) {
-      });
+    rideSchema.findByIdAndUpdate(rideID,
+                                  { $inc: { 'remaining_capacity' : 1 } },
+                                  { $pull: { riders: rider } },
+                                  function(err) {
+                                    if (err) {
+                                      console.log(err);
+                                    } else {
+                                      callback(null);
+                                    }
     });
   };
 
   that.deleteRide = function(rideID, callback) {
     // check if valid ride
-    rideSchema.find({ _id: rideID }).remove(function(err, doc) {
+    rideSchema.findByIdAndRemove(rideId, function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        callback(null);
+      }
     });
   };
 
