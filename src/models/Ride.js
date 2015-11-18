@@ -16,7 +16,7 @@ var Ride = (function Ride() {
   that.getAllRides = function(callback) {
     rideSchema.find({}, function(err, rides) {
       if (err) {
-        console.log(err);
+        callback(err);
       } else {
         callback(null, rides);
       }
@@ -27,7 +27,7 @@ var Ride = (function Ride() {
     var now = new Date();
     rideSchema.where('remaining_capacity').gte(1).where('departure_time').gte(now).exec(function(err, rides) {
       if (err) {
-        console.log(err);
+        callback(err);
       } else {
         callback(null, rides);
       }
@@ -38,7 +38,7 @@ var Ride = (function Ride() {
     var now = new Date();
     rideSchema.find({ origin: location }).where('departure_time').gte(now).exec(function(err, rides) {
       if (err) {
-        console.log(err);
+        callback(err);
       } else {
         callback(null, rides);
       }
@@ -49,7 +49,7 @@ var Ride = (function Ride() {
     var now = new Date();
     rideSchema.find({ destination: location }).where('departure_time').gte(now).exec(function(err, rides) {
       if (err) {
-        console.log(err);
+        callback(err);
       } else {
         callback(null, rides);
       }
@@ -62,7 +62,7 @@ var Ride = (function Ride() {
     var now = new Date();
     rideSchema.find({ where('departure_time').gte(now).gte(date).lte(end).exec(function(err, rides) {
       if (err) {
-        console.log(err);
+        callback(err);
       } else {
         callback(null, rides);
       }
@@ -73,7 +73,7 @@ var Ride = (function Ride() {
   that.getRide = function(rideID, callback) {
     rideSchema.findById(rideId, function (err, ride) {
       if (err) {
-        console.log(err);
+        callback(err);
       } else {
         if (ride) {
           callback(null, ride);
@@ -107,7 +107,7 @@ var Ride = (function Ride() {
                                     { $push: { riders: riderId } },
                                     function(err) {
                                       if (err){
-                                        console.log(err);
+                                        callback(err);
                                       } else {
                                         callback(null);
                                       }
@@ -116,7 +116,7 @@ var Ride = (function Ride() {
                                     { $push: {rides: rideId} },
                                     function (err) {
                                       if (err) {
-                                        console.log(err);
+                                        callback(err);
                                       } else {
                                         callback(null);
                                       }
@@ -130,7 +130,7 @@ var Ride = (function Ride() {
                                   { $pull: { riders: riderId } },
                                   function(err) {
                                     if (err) {
-                                      console.log(err);
+                                      callback(err);
                                     } else {
                                       callback(null);
                                     }
@@ -139,7 +139,7 @@ var Ride = (function Ride() {
                                   { $pull: {rides: rideId} },
                                   function (err) {
                                     if (err) {
-                                      console.log(err);
+                                      callback(err);
                                     } else {
                                       callback(null);
                                     }
@@ -150,7 +150,7 @@ var Ride = (function Ride() {
     // check if valid ride
     rideSchema.findByIdAndRemove(rideId, function(err) {
       if (err) {
-        console.log(err);
+        callback(err);
       } else {
         callback(null);
       }
