@@ -7,7 +7,7 @@ var User = require('./User');
 
 // update current ride methods to include both capacities and transport means
 // doesn't include error handling
-// all the get ride methods (except getRide) finds rides that have not yet passed.
+// all the get ride methods (except getRide) finds rides that have not yet closed (whose departure times are still in the future)
 
 var Ride = (function Ride() {
 
@@ -101,26 +101,30 @@ var Ride = (function Ride() {
   };
 
   that.addRider = function(rideID, riderId, callback) {
-    // checks if rider exists
-      rideSchema.findByIdAndUpdate(rideID,
-                                    { $inc: { 'remaining_capacity' : -1 } },
-                                    { $push: { riders: riderId } },
-                                    function(err) {
-                                      if (err){
-                                        callback(err);
-                                      } else {
-                                        callback(null);
-                                      }
-      });
-      userSchema.findByIdAndUpdate(riderId,
-                                    { $push: {rides: rideId} },
-                                    function (err) {
-                                      if (err) {
-                                        callback(err);
-                                      } else {
-                                        callback(null);
-                                      }
-      });
+    // checks if ride is full
+    rideSchema.findById(rideId, function(err, ride) {
+      if (ride.remaining_capacity === 0) {
+        callback( { msg: "ride full" } );
+      } else {
+        rideSchema.findByIdAndUpdate(rideID,
+                                      { $inc: { 'remaining_capacity' : -1 } },
+                                      { $push: { riders: riderId } },
+                                      function(err) {
+                                        if (err){
+                                          callback(err);
+                                        } else {
+                                          userSchema.findByIdAndUpdate(riderId, { $push: {rides: rideId} },
+                                                                              function (err) {
+                                                                                if (err) {
+                                                                                  callback(err);
+                                                                                } else {
+                                                                                  callback(null);
+                                                                                }
+                                                                              });
+                                        }
+                                    });
+      }
+    });
   };
 
   that.removeRider = function(rideID, riderId, callback) {
@@ -132,16 +136,26 @@ var Ride = (function Ride() {
                                     if (err) {
                                       callback(err);
                                     } else {
-                                      callback(null);
-                                    }
-    });
-    userSchema.findByIdAndUpdate(riderId,
-                                  { $pull: {rides: rideId} },
-                                  function (err) {
-                                    if (err) {
-                                      callback(err);
-                                    } else {
-                                      callback(null);
+                                      userSchema.findByIdAndUpdate(riderId,
+                                                                    { $pull: {rides: rideId} },
+                                                                    function (err) {
+                                                                      if (err) {
+                                                                        callback(err);
+                                                                      } else {
+                                                                        //delete ride if no more riders
+                                                                        rideSchema.findById(rideId, function (err, ride) {
+                                                                          if (ride.remaining_capacity === ride.total_capacity) {
+                                                                            deleteRide(rideId, function(err)) {
+                                                                              if (err) {
+                                                                                callback(err);
+                                                                              } else {
+                                                                                callback(null);
+                                                                              }
+                                                                            }
+                                                                          }
+                                                                        });
+                                                                      }
+                                      });
                                     }
     });
   };
