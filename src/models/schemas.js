@@ -5,6 +5,7 @@ var ObjectId = Schema.Types.ObjectId;
 
 var userSchema = Schema({
   kerberos: String,
+  password: String,
   rating: Number,
   reviews: [{ type: ObjectId, ref: 'reviewSchema' }],
   rides: [{ type: ObjectId, ref: 'rideSchema' }]
