@@ -28,12 +28,13 @@ var requireAuthentication = function(req, res, next) {
   that is brute-forcing urls should not gain any information.
 */
 var requireParticipation = function(req, res, next) {
-  var ids = //do we have the ids of people in the ride?
-  if (ids.indexOf(req.currentUser._id) < 0)) {	
-    utils.sendErrResponse(res, 404, 'Resource not found.');
-  } else {
-    next();
-  }
+	Ride.inRide(req.currentUser._id, function (err, result) {
+		if (err || result < 0) {
+			utils.sendErrResponse(res, 404, 'Resource not found.');
+		} else {
+			next();
+		}
+	});
 };
 
 /*
@@ -71,24 +72,91 @@ router.post('/', requireContent);
 /*
   At this point, all requests are authenticated and checked:
   1. Clients must be logged into some account
-  2. If accessing or modifying a specific resource, the client must own that tweet
+  2. If accessing or modifying a specific resource, the client must be a participant in that ride
   3. Requests are well-formed
 */
 
 /*
-  GET /tweets
+  GET /rides
   No request parameters
   Response:
-    - success: true if the server succeeded in getting the user's tweets
-    - content: on success, an object with a single field 'tweets', which contains a list of all users' tweets
+    - success: true if the server succeeded in getting the open rides
+    - content: on success, an object with a single field 'rides', which contains a list of all open rides
     - err: on failure, an error message
 */
 router.get('/', function(req, res) {
-  User.getAllTweets(function(err, tweets) {
+  Ride.getAllRides(function(err, rides) {
     if (err) {
       utils.sendErrResponse(res, 500, 'An unknown error occurred.');
     } else {
-      utils.sendSuccessResponse(res, { tweets: tweets });
+      utils.sendSuccessResponse(res, { rides: rides });
     }
   });
 });
+
+/*
+  GET /rides/:ride
+  Request parameters:
+    - ride: the unique ID of the ride within the logged in user's ride collection
+  Response:
+    - success: true if the server succeeded in getting the user's rides
+    - content: on success, the ride object with ID equal to the ride referenced in the URL
+    - err: on failure, an error message
+*/
+router.get('/:ride', function(req, res) {
+  utils.sendSuccessResponse(res, req.ride);
+});
+
+/*
+  POST /tweets
+  Request body:
+    - content: the content of the tweet
+  Response:
+    - success: true if the server succeeded in recording the user's tweet
+    - err: on failure, an error message
+*/
+router.post('/', function(req, res) {
+  Ride.addRide(req.currentUser._id, {
+    content: req.body.content,
+    creator: req.currentUser.username
+  }, function(err, tweet) {
+    if (err) {
+      utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+    } else {
+      utils.sendSuccessResponse(res);
+    }
+  });
+});
+
+router.post('/retweet/:tweet', function(req, res) {
+  User.retweet(req.currentUser.username, req.tweet._id, function(err, tweet){
+    if (err) {
+        utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+      } else {
+        utils.sendSuccessResponse(res);
+      }
+  });
+});
+
+/*
+  DELETE /tweets/:tweet
+  Request parameters:
+    - tweet ID: the unique ID of the tweet within the logged in user's tweet collection
+  Response:
+    - success: true if the server succeeded in deleting the user's tweet
+    - err: on failure, an error message
+*/
+router.delete('/:tweet', function(req, res) {
+  User.removeTweet(
+    req.currentUser.username, 
+    req.tweet._id, 
+    function(err) {
+      if (err) {
+        utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+      } else {
+        utils.sendSuccessResponse(res);
+      }
+  });
+});
+
+module.exports = router;
