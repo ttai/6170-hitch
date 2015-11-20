@@ -38,23 +38,11 @@ var requireParticipation = function(req, res, next) {
 };
 
 /*
-  For create requests, require that the request body
-  contains a 'content' field. Send error code 400 if not.
-*/
-var requireContent = function(req, res, next) {
-  if (!req.body.content) {
-    utils.sendErrResponse(res, 400, 'Content required in request.');
-  } else {
-    next();
-  }
-};
-
-/*
   Grab a ride from the store whenever one is referenced with an ID in the
   request path (any routes defined with :ride as a paramter).
 */
 router.param('ride', function(req, res, next, rideId) {
-  User.getRide(req.currentUser._id, rideId, function(err, ride) {
+  Ride.getRide(req.currentUser._id, rideId, function(err, ride) {
     if (ride) {
       req.ride = ride;
       next();
@@ -66,8 +54,7 @@ router.param('ride', function(req, res, next, rideId) {
 
 // Register the middleware handlers above.
 router.all('*', requireAuthentication);
-router.all('/:ride', requireOwnership);
-router.post('/', requireContent);
+router.all('/:ride', requireParticipation);
 
 /*
   At this point, all requests are authenticated and checked:
@@ -108,55 +95,31 @@ router.get('/:ride', function(req, res) {
 });
 
 /*
-  POST /tweets
+  Create a new ride in the system, and adds current user to the ride.
+
+  POST /users
   Request body:
-    - content: the content of the tweet
+    - origin
+    - destination
+    - departure_time
+    - total_capacity
+    - transport
   Response:
-    - success: true if the server succeeded in recording the user's tweet
-    - err: on failure, an error message
+    - success: true if user creation succeeded; false otherwise
+    - err: on error, an error message
 */
 router.post('/', function(req, res) {
-  Ride.addRide(req.currentUser._id, {
-    content: req.body.content,
-    creator: req.currentUser.username
-  }, function(err, tweet) {
-    if (err) {
-      utils.sendErrResponse(res, 500, 'An unknown error occurred.');
-    } else {
-      utils.sendSuccessResponse(res);
-    }
-  });
-});
-
-router.post('/retweet/:tweet', function(req, res) {
-  User.retweet(req.currentUser.username, req.tweet._id, function(err, tweet){
-    if (err) {
-        utils.sendErrResponse(res, 500, 'An unknown error occurred.');
-      } else {
-        utils.sendSuccessResponse(res);
-      }
-  });
-});
-
-/*
-  DELETE /tweets/:tweet
-  Request parameters:
-    - tweet ID: the unique ID of the tweet within the logged in user's tweet collection
-  Response:
-    - success: true if the server succeeded in deleting the user's tweet
-    - err: on failure, an error message
-*/
-router.delete('/:tweet', function(req, res) {
-  User.removeTweet(
-    req.currentUser.username, 
-    req.tweet._id, 
-    function(err) {
-      if (err) {
-        utils.sendErrResponse(res, 500, 'An unknown error occurred.');
-      } else {
-        utils.sendSuccessResponse(res);
-      }
-  });
+  Ride.addRide(req.currentUser._id, req.body.origin, req.body.destination, req.body.departure_time,
+  						  req.body.total_capacity, req.body.transport, req.body.passphrase,
+						    function(err, result) {
+						      if (err) {
+						          utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
+						        }
+						      } else {
+						      	//what content to send on sucess?
+						        utils.sendSuccessResponse(res, req.body.username);
+						      }
+						  });
 });
 
 module.exports = router;

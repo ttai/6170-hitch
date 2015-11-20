@@ -95,8 +95,8 @@ var Ride = (function Ride() {
     });
   };
 
-  that.addRide = function(origin, destination, departure_time,
-                          total_capacity, riders, transport, passphrase,
+  that.addRide = function(userId, origin, destination, departure_time,
+                          total_capacity, transport, passphrase,
                           callback) {
     // check if valid ride
     rideSchema.create({
@@ -105,7 +105,7 @@ var Ride = (function Ride() {
       departure_time: departure_time,
       total_capacity: total_capacity,
       remaining_capacity: total_capacity - 1,
-      riders: riders,
+      riders: [userId],
       transport: transport,
       passphrase: passphrase
     });
