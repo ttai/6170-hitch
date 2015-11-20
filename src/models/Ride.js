@@ -23,6 +23,17 @@ var Ride = (function Ride() {
     });
   };
 
+  that.inRide = function(userId, callback) {
+    rideSchema.findById(rideId, function (err, ride) {
+      if (err) {
+        callback(err, null);
+      } else {
+        var riders = ride.riders;
+        callback(null, riders.indexOf(userId));
+      }
+    })
+  };
+
   that.getAllOpenRides = function(callback) {
     var now = new Date();
     rideSchema.where('remaining_capacity').gte(1).where('departure_time').gte(now).exec(function(err, rides) {
@@ -60,7 +71,7 @@ var Ride = (function Ride() {
   that.findRidesByDate = function(date, callback) {
     var end = new Date(date.getTime() + (24 * 60 * 60 * 1000));
     var now = new Date();
-    rideSchema.find({ where('departure_time').gte(now).gte(date).lte(end).exec(function(err, rides) {
+    rideSchema.find({}).where('departure_time').gte(now).gte(date).lte(end).exec(function(err, rides) {
       if (err) {
         callback(err);
       } else {
