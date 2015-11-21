@@ -19,4 +19,12 @@
           $('.error').text(response.err);
       });
     });
+
+  $(document).on('click', '#join-ride', function (evt) {
+
+  });
+
+  $(document).on('click', '#leave-ride', function (evt) {
+
+  });
 })();
