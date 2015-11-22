@@ -41,7 +41,7 @@ router.post('/:review', function(req, res) {
 
 // Delete review
 router.delete('/:review', function(req, res) {
-  review.deleteReview(req.body.reviewID, function(err) {
+  reviews.deleteReview(req.body.reviewID, function(err) {
     if (err) {
       utils.sendErrResponse(res, 500, 'An unknown error occured')
     } else {
