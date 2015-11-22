@@ -7,18 +7,12 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   </head>
   <body>
+    <% if (typeof(e) !== 'undefined') { %>
+      <div id='error'> <%= e %> </div>
+    <% } %>
     <h2>Welcome, <%= username %></h2>
     <p>Create a new ride!</p>
-    
     <form method="post" action="/rides/">
-      <div class="form-group">
-        <label for="origin">Origin:</label>
-        <input type="text" class="form-control" name="origin" placeholder="Enter origin">
-      </div>
-      <div class="form-group">
-        <label for="destination">Destination:</label>
-        <input type="text" class="form-control" name="destination" placeholder="Enter destination">
-      </div>
       <div class="form-group">
         <label for="date">Departure Date:</label>
         <input type="date" class="form-control" name="date">
@@ -26,6 +20,14 @@
       <div class="form-group">
         <label for="time">Departure Time:</label>
         <input type="time" class="form-control" name="time">
+      </div>
+      <div class="form-group">
+        <label for="start_location">Start Location:</label>
+        <input type="text" class="form-control" name="start_location" placeholder="Enter start location">
+      </div>
+      <div class="form-group">
+        <label for="destination">Destination:</label>
+        <input type="text" class="form-control" name="destination" placeholder="Enter destination">
       </div>
       <div class="form-group">
         <label for="capacity">Capacity:</label>
