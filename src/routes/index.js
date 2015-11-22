@@ -10,7 +10,7 @@ router.get('/', function(req, res, next) {
   var currentUser = req.session.currentUser;
   Ride.getAllOpenRides(function(err, rides) {
     if (err) {
-      utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+      res.render('error', {'message': 'An unknown error occured', 'error.status': 500})
     } else {
       if (currentUser) {
         res.render('index', {'username': currentUser, 'rides': rides, 'loggedIn': true})
