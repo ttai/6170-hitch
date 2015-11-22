@@ -11,9 +11,9 @@ var Ride = require('../models/Ride');
 */
 var requireAuthentication = function(req, res, next) {
   if (!req.currentUser) {
-    res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500})
+    res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500});
   } else {
-    res.render('index', {'username': req.currentUser});
+    next();
   }
 };
 
@@ -30,7 +30,7 @@ var requireAuthentication = function(req, res, next) {
 var requireParticipation = function(req, res, next) {
 	Ride.inRide(req.currentUser._id, function (err, result) {
 		if (err || result < 0) {
-      res.render('error', {'message': 'Resource not found.', 'error.status': 404})
+      res.render('error', {'message': 'Resource not found.', 'error.status': 404});
 		} else {
 			next();
 		}
@@ -47,7 +47,7 @@ router.param('ride', function(req, res, next, rideId) {
       req.ride = ride;
       next();
     } else {
-      utils.sendErrResponse(res, 404, 'Resource not found.');
+      res.render('error', {'message': 'Resource not found.', 'error.status': 404});
     }
   });
 });
@@ -74,9 +74,9 @@ router.all('/:ride', requireParticipation);
 router.get('/', function(req, res) {
   Ride.getAllRides(function(err, rides) {
     if (err) {
-      utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+      res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500});
     } else {
-      utils.sendSuccessResponse(res, { rides: rides });
+      res.render('rides', { rides: rides });
     }
   });
 });
@@ -91,7 +91,7 @@ router.get('/', function(req, res) {
     - err: on failure, an error message
 */
 router.get('/:ride', function(req, res) {
-  utils.sendSuccessResponse(res, req.ride);
+  res.render('ride', { rides: req.ride });
 });
 
 /*
@@ -109,17 +109,16 @@ router.get('/:ride', function(req, res) {
     - err: on error, an error message
 */
 router.post('/', function(req, res) {
-  Ride.addRide(req.currentUser._id, req.body.origin, req.body.destination, req.body.departure_time,
-  						  req.body.total_capacity, req.body.transport, req.body.passphrase,
-						    function(err, result) {
-						      if (err) {
-						          utils.sendErrResponse(res, 500, 'An unknown error has occurred.');
-						        }
-						      } else {
-						      	//what content to send on sucess?
-						        utils.sendSuccessResponse(res, req.body.username);
-						      }
-						  });
+  Ride.addRide(req.currentUser._id, req.body.origin, req.body.destination,
+               req.body.departure_time, req.body.total_capacity, req.body.transport,
+               req.body.passphrase, function(err, result) {
+   if (err) {
+     res.render('error', {'message': 'Must be logged in to use this feature.',
+                          'error.status': 500});
+   } else {
+     res.redirect('/');
+   }
+  });
 });
 
 router.post('/participate/:ride', function(req, res) {
@@ -127,14 +126,19 @@ router.post('/participate/:ride', function(req, res) {
     if (err || result < 0) {
       Ride.removeRider(req.ride._id, req/currentUser._id, function(err, result) {
         if (err) {
-          utils.sendErrResponse(res, 404, 'Resource not found.');
+          res.render('error', {'message': 'Resource not found.', 'error.status': 404});
+        } else {
+          res.redirect('/');
         }
+      });
     } else {
       Ride.removeRider(req.ride._id, req/currentUser._id, function(err, result) {
         if (err) {
-          utils.sendErrResponse(res, 404, 'Resource not found.');
+          res.render('error', {'message': 'Resource not found.', 'error.status': 404});
+        } else {
+          res.redirect('/');
         }
-      })
+      });
     }
   });
 });

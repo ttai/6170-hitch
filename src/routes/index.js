@@ -13,9 +13,9 @@ router.get('/', function(req, res, next) {
       res.render('error', {'message': 'An unknown error occured', 'error.status': 500})
     } else {
       if (currentUser) {
-        res.render('index', {'username': currentUser, 'rides': rides, 'loggedIn': true})
+        res.render('index', {'user': currentUser, 'rides': rides, 'loggedIn': true})
       } else {
-        res.render('index', {'username': currentUser, 'rides': rides, 'loggedIn': false})
+        res.render('index', {'user': currentUser, 'rides': rides, 'loggedIn': false})
       }
     }
   });

@@ -141,33 +141,33 @@ var Ride = (function Ride() {
   that.removeRider = function(rideID, riderId, callback) {
     // checks if rider exists
     rideSchema.findByIdAndUpdate(rideID,
-                                  { $inc: { 'remaining_capacity' : 1 } },
-                                  { $pull: { riders: riderId } },
-                                  function(err) {
-                                    if (err) {
-                                      callback(err);
-                                    } else {
-                                      userSchema.findByIdAndUpdate(riderId,
-                                                                    { $pull: {rides: rideId} },
-                                                                    function (err) {
-                                                                      if (err) {
-                                                                        callback(err);
-                                                                      } else {
-                                                                        //delete ride if no more riders
-                                                                        rideSchema.findById(rideId, function (err, ride) {
-                                                                          if (ride.remaining_capacity === ride.total_capacity) {
-                                                                            deleteRide(rideId, function(err)) {
-                                                                              if (err) {
-                                                                                callback(err);
-                                                                              } else {
-                                                                                callback(null);
-                                                                              }
-                                                                            }
-                                                                          }
-                                                                        });
-                                                                      }
-                                      });
-                                    }
+                                 { $inc: { 'remaining_capacity' : 1 } },
+                                 { $pull: { riders: riderId } },
+                                 function(err) {
+      if (err) {
+        callback(err);
+      } else {
+        userSchema.findByIdAndUpdate(riderId,
+                                     { $pull: {rides: rideId} },
+                                     function (err) {
+          if (err) {
+            callback(err);
+          } else {
+            //delete ride if no more riders
+            rideSchema.findById(rideId, function (err, ride) {
+              if (ride.remaining_capacity === ride.total_capacity) {
+                deleteRide(rideId, function(err) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    callback(null);
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
     });
   };
 

@@ -95,11 +95,11 @@ var User = (function User() {
       var n_reviews = user.reviews.length;
       var new_rating = (user.rating * n_reviews + review.rating) / (n_reviews + 1);
       userSchema.update({ "_id": userId },
-                        { $set: { "rating", new_rating },
+                        { $set: { "rating": new_rating },
                           $push: { "reviews": review._id } },
                         function(err) {
         if (err) {
-          callback(err):
+          callback(err);
         } else {
           callback(null, null);
         }
