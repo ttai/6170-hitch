@@ -49,7 +49,17 @@ var Review = (function Review() {
   };
   
   that.deleteReview = function(reviewID, callback) {
-    reviewSchema.find({ "_id": reviewID }).remove(function(err) {
+    reviewSchema.find({ "_id": reviewID }, function(err, review) {
+      userSchema.find({ "_id": review.revieweeID }, function(err, user) {
+        var index = user.reviews.indexOf(reviewID);
+        user.reviews.splice(index, 1);
+        userSchema.update({ "_id": user._id },
+                          { $set: { "reviews": user.reviews } },
+                          function(err) {
+          callback(err);
+        });
+      });
+    }).remove(function(err) {
       callback(err);
     });
   };
