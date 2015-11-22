@@ -8,9 +8,14 @@
     <h2>Welcome, <%= username %></h2>
     <p>Create a new ride!</p>
     
-    <form method="post" action="tweets/tweet">
-      <textarea  name = 'tweet' rows="4" cols="50"></textarea>
-      <p><button type="submit">Add</button></p>
+    <form method="post" action="/rides/">
+      <p>Origin: <input type="text" name="origin"></p>
+      <p>Destination: <input type="text" name="destination"></p>
+      <p>Destination: <input type="text" name="destination"></p>
+      <p>Departure Time: <input type="text" name="departure_time"></p>
+      <p>Capacity: <input type="number" name="total_capacity"></p>
+      <p>Transport: <input type="text" name="transport"></p>
+      <p><button type="submit">Submit</button></p>
     </form>
 
   </body>
