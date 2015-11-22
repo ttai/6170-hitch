@@ -28,9 +28,15 @@ var Review = (function Review() {
       "rating": rating,
       "comment": comment
     }, {}, function(err, review) {
-      userSchema.update({ "_id": revieweeID }, { $push: { "reviews": review._id } }, 
-                        function(err) {
-        callback(err);
+      userSchema.find({ "_id": revieweeId }, function(err, user) {
+        var n_reviews = user.reviews.length;
+        var new_rating = (user.rating * n_reviews + rating) / (n_reviews + 1);
+        userSchema.update({ "_id": revieweeID },
+                          { $set: { "rating", new_rating },
+                            $push: { "reviews": review._id } }, 
+                          function(err) {
+          callback(err);
+        });
       });
     });
   };
