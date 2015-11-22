@@ -3,19 +3,46 @@
   <head>
     <title>Fritter</title>
     <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   </head>
   <body>
     <h2>Welcome, <%= username %></h2>
     <p>Create a new ride!</p>
     
     <form method="post" action="/rides/">
-      <p>Origin: <input type="text" name="origin"></p>
-      <p>Destination: <input type="text" name="destination"></p>
-      <p>Destination: <input type="text" name="destination"></p>
-      <p>Departure Time: <input type="text" name="departure_time"></p>
-      <p>Capacity: <input type="number" name="total_capacity"></p>
-      <p>Transport: <input type="text" name="transport"></p>
-      <p><button type="submit">Submit</button></p>
+      <div class="form-group">
+        <label for="origin">Origin:</label>
+        <input type="text" class="form-control" name="origin" placeholder="Enter origin">
+      </div>
+      <div class="form-group">
+        <label for="destination">Destination:</label>
+        <input type="text" class="form-control" name="destination" placeholder="Enter destination">
+      </div>
+      <div class="form-group">
+        <label for="date">Departure Date:</label>
+        <input type="date" class="form-control" name="date">
+      </div>
+      <div class="form-group">
+        <label for="time">Departure Time:</label>
+        <input type="time" class="form-control" name="time">
+      </div>
+      <div class="form-group">
+        <label for="capacity">Capacity:</label>
+        <input type="number" class="form-control" name="capacity" placeholder="Enter capacity">
+      </div>
+      <div class="form-group">
+        <label for="origin">Transport:</label>
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Ride <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="#">Taxi</a></li>
+            <li><a href="#">Uber</a></li>
+            <li><a href="#">Lyft</a></li>
+          </ul>
+      </div>
+      <button type="submit" class="btn btn-default">Submit</button>
     </form>
 
   </body>
