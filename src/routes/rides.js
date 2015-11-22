@@ -109,16 +109,16 @@ router.get('/:ride', function(req, res) {
     - err: on error, an error message
 */
 router.post('/', function(req, res) {
-  Ride.addRide(req.currentUser._id, req.body.origin, req.body.destination, req.body.departure_time,
-  						  req.body.total_capacity, req.body.transport, req.body.passphrase,
-						    function(err, result) {
-						      if (err) {
-                    res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500});
-						        }
-						      } else {
-                    res.redirect('/');
-						      }
-						  });
+  Ride.addRide(req.currentUser._id, req.body.origin, req.body.destination,
+               req.body.departure_time, req.body.total_capacity, req.body.transport,
+               req.body.passphrase, function(err, result) {
+   if (err) {
+     res.render('error', {'message': 'Must be logged in to use this feature.',
+                          'error.status': 500});
+   } else {
+     res.redirect('/');
+   }
+  });
 });
 
 router.post('/participate/:ride', function(req, res) {
@@ -130,6 +130,7 @@ router.post('/participate/:ride', function(req, res) {
         } else {
           res.redirect('/');
         }
+      });
     } else {
       Ride.removeRider(req.ride._id, req/currentUser._id, function(err, result) {
         if (err) {
@@ -137,7 +138,7 @@ router.post('/participate/:ride', function(req, res) {
         } else {
           res.redirect('/');
         }
-      })
+      });
     }
   });
 });
