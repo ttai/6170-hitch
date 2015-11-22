@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Register</title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+  </head>
+  <body>
+    <% if (typeof(e) !== 'undefined') { %>
+      <div id='error'> <%= e %> </div>
+    <% } %>
+    <h2> Register </h2>
+    <p> Have an account? <a href='/users/login'>Log In</a> <p>
+    <p><button type="submit", id = "Register">Register</button></p>  
+  </body>
+</html>
