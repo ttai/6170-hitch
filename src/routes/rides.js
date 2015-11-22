@@ -11,9 +11,9 @@ var Ride = require('../models/Ride');
 */
 var requireAuthentication = function(req, res, next) {
   if (!req.currentUser) {
-    utils.sendErrResponse(res, 403, 'Must be logged in to use this feature.');
+    res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500})
   } else {
-    next();
+    res.render('index', {'username': req.currentUser});
   }
 };
 
@@ -30,7 +30,7 @@ var requireAuthentication = function(req, res, next) {
 var requireParticipation = function(req, res, next) {
 	Ride.inRide(req.currentUser._id, function (err, result) {
 		if (err || result < 0) {
-			utils.sendErrResponse(res, 404, 'Resource not found.');
+      res.render('error', {'message': 'Resource not found.', 'error.status': 404})
 		} else {
 			next();
 		}
