@@ -49,3 +49,5 @@ router.delete('/:review', function(req, res) {
     }
   })
 });
+
+module.exports = router;
