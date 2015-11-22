@@ -17,11 +17,11 @@ var User = (function User() {
       } else if (count > 0) {
         callback(null, { taken: true });
       } else {
-        userSchema.create({"kerberos": currentKerberos, rating: 5, reviews: [], rides: []}, function(e, info) {
+        userSchema.create({"kerberos": currentKerberos, rating: 5, reviews: [], rides: []}, function(e, user) {
           if (e) {
             callback(e);
           } else {
-            callback(null, null);
+            callback(null, user);
           }
         });
       }     
@@ -34,7 +34,7 @@ var User = (function User() {
       if (err) {
         callback(err);
       } else if (user.password === candidatepw) {
-        callback(null, true);
+        callback(null, user);
       } else {
         callback(null, false);
       }
