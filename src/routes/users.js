@@ -1,13 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var users = require('../models/user');
+var User = require('../models/User');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
-
-
 
 /*
   For both login and create user, we want to send an error code if the user
@@ -18,14 +16,26 @@ router.get('/', function(req, res, next) {
 
 var isLoggedInOrInvalidBody = function(req, res) {
   if (req.currentUser) {
-    utils.sendErrResponse(res, 403, 'There is already a user logged in.');
+    res.render('error', { 'message' : 'There is already a user logged in.',
+                          'error.status' : 403 });
     return true;
   } else if (!(req.body.username && req.body.password)) {
-    utils.sendErrResponse(res, 400, 'Username or password not provided.');
+    res.render('error', { 'message' : 'Username or password not provided.',
+                          'error.status' : 400 });
     return true;
   }
   return false;
 };
+
+/*
+  View the reviews of a particular user.
+*/
+router.get('/:user', function(req, res) {
+  User.find({ '_id' : req.body.userID }, function(err, user) {
+    res.render('user', { 'currentUser' : req.session.currentUser,
+                         'user' : user });
+  });
+});
 
 /*
   Determine whether there is a current user logged in
@@ -36,13 +46,13 @@ var isLoggedInOrInvalidBody = function(req, res) {
     - success.loggedIn: true if there is a user logged in; false otherwise
     - success.user: if success.loggedIn, the currently logged in user
 */
-router.get('/current', function(req, res) {
-  if (req.currentUser) {
-    utils.sendSuccessResponse(res, { loggedIn : true, user : req.currentUser.username });
-  } else {
-    utils.sendSuccessResponse(res, { loggedIn : false });
-  }
-});
+// router.get('/current', function(req, res) {
+//   if (req.currentUser) {
+//     utils.sendSuccessResponse(res, { loggedIn : true, user : req.currentUser.username });
+//   } else {
+//     utils.sendSuccessResponse(res, { loggedIn : false });
+//   }
+// });
 
 
 module.exports = router;
