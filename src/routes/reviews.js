@@ -1,13 +1,13 @@
 var express = require('express');
 var router = express.Router();
-var users = require('../models/User');
-var rides = require('../models/Ride');
-var reviews = require('../models/Review');
+var User = require('../models/User');
+var Ride = require('../models/Ride');
+var Review = require('../models/Review');
 var utils = require('../utils/utils');
 
 // Add review
 router.post('/', function(req, res) {
-  reviews.addReview(req.body.rideID, req.body.reviewerID, req.body.revieweeID,
+  Review.addReview(req.body.rideID, req.body.reviewerID, req.body.revieweeID,
     req.body.rating, req.body.comment, function(err) {
       if (err) {
         utils.sendErrResponse(res, 500, 'An unknown error occured.')
@@ -19,7 +19,7 @@ router.post('/', function(req, res) {
 
 // Update review rating
 router.post('/:review', function(req, res) {
-  reviews.setReviewRating(req.body.reviewID, req.body.rating, function(err) {
+  Review.setReviewRating(req.body.reviewID, req.body.rating, function(err) {
     if (err) {
       utils.sendErrResponse(res, 500, 'An unknown error occured.')
     } else {
@@ -30,7 +30,7 @@ router.post('/:review', function(req, res) {
 
 // Update review comment
 router.post('/:review', function(req, res) {
-  reviews.setReviewComment(req.body.reviewID, req.body.comment, function(err) {
+  Review.setReviewComment(req.body.reviewID, req.body.comment, function(err) {
     if (err) {
       utils.sendErrResponse(res, 500, 'An unknown error occured.')
     } else {
@@ -41,7 +41,7 @@ router.post('/:review', function(req, res) {
 
 // Delete review
 router.delete('/:review', function(req, res) {
-  reviews.deleteReview(req.body.reviewID, function(err) {
+  Review.deleteReview(req.body.reviewID, function(err) {
     if (err) {
       utils.sendErrResponse(res, 500, 'An unknown error occured')
     } else {
