@@ -1,2 +1,19 @@
 <!DOCTYPE HTML>
 <!-- This should have the past + current rides for a user -->
+
+<html>
+  <head>
+    <title>User page</title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+  </head>
+  <body>
+    <% if (typeof(e) !== 'undefined') { %>
+      <div id='error'> <%= e %> </div>
+    <% } %>
+    <h1>Rides</h1>
+    <% for (var i = 0; i < rides.length; ++i) { %>
+      <%= rides[i].riders %>
+    <% } %>
+  </body>
+</html>
+
