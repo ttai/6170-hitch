@@ -122,4 +122,21 @@ router.post('/', function(req, res) {
 						  });
 });
 
+router.post('/participate/:ride', function(req, res) {
+  Ride.inRide(req.currentUser._id, function (err, result) {
+    if (err || result < 0) {
+      Ride.removeRider(req.ride._id, req/currentUser._id, function(err, result) {
+        if (err) {
+          utils.sendErrResponse(res, 404, 'Resource not found.');
+        }
+    } else {
+      Ride.removeRider(req.ride._id, req/currentUser._id, function(err, result) {
+        if (err) {
+          utils.sendErrResponse(res, 404, 'Resource not found.');
+        }
+      })
+    }
+  });
+});
+
 module.exports = router;
