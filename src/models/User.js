@@ -1,4 +1,4 @@
-//Data model which represents a user
+// Data model which represents a user
 var mongoose = require("mongoose");
 var schemas = require("./schemas");
 var userSchema = schemas.userSchema;
@@ -8,9 +8,8 @@ var Ride = require('./Ride');
 var User = (function User() {
 
   var that = Object.create(User.prototype);
-  //returns the user object if it exists
 
-  //password or certificate authentication 
+  // password or certificate authentication 
   that.createUser = function(currentKerberos, callback){
     userSchema.count({kerberos:currentKerberos}, function (err, count) {
       if (currentKerberos===""){
@@ -26,8 +25,8 @@ var User = (function User() {
           }
         });
       }     
-    })
-  }
+    });
+  };
 
   // Verify password for login
   that.verifyPassword = function(userId, candidatepw, callback) {
@@ -38,26 +37,25 @@ var User = (function User() {
       else{
         callback(null,false);
       }
-    })
-    
-}
+    });
+  };
 
   // Adds a user to a specific ride
   that.joinRide= function(userId, ride1, callback){
     Ride.update({"ride": ride1}, {$push: {"riders": userId}}, function(e){});
-  }
+  };
 
   // Deletes a user from a specific ride
   that.leaveRide=function(userId, ride, callback){
     Ride.update({"ride": ride1}, {$pull: {"riders": userId}}, function(e){});
-  }
+  };
 
   // Give a list of all reviews given to a user
   that.getReviews=function(userId, callback){
     userSchema.find({ '_id': userId }, function(err, user){
       callback(null, user.reviews);
     })
-  }
+  };
 
   // Gives the user's average rating.
   that.getUserRating=function(userId, callback){
@@ -68,17 +66,21 @@ var User = (function User() {
 
 
   // do add review!
-  that.addReview=function(userId,review,callback){
-    userSchema.update({ '_id': userId }, {$push: {"reviews": review}}, function(e){});
-  }
-
+  that.addReview = function(userId, review, callback) {
+    userSchema.find({ "_id": userId }, function(err, user) {
+      var n_reviews = user.reviews.length;
+      var new_rating = (user.rating * n_reviews + review.rating) / (n_reviews + 1);
+      userSchema.update({ "_id": userId },
+                        { $set: { "rating", new_rating },
+                          $push: { "reviews": review._id } },
+                        function(err) {
+        callback(err);
+      });
+    });
+  };
 
   Object.freeze(that);
   return that;
 })();
 
-
-
-//var User = mongoose.model("User",userSchema);
-//User.create({username:"all",password:"pass", tweets:[]});
 module.exports = User;
