@@ -34,7 +34,7 @@
               <td><%= rides[i].departure_time %></td>
               <td><%= rides[i].origin %></td>
               <td><%= rides[i].destination %></td>
-              <td><%= rides[i].remaning_capacity %></td>
+              <td><%= rides[i].remaining_capacity %></td>
               <td><%= rides[i].transport %></td>  
               <form method="post" action="/rides/participate/:ride">
                 <% if (rides[i].riders.indexOf(user._id) < 0) {%>
