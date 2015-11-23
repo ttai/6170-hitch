@@ -109,7 +109,7 @@ var Ride = (function Ride() {
       total_capacity: total_capacity,
       remaining_capacity: total_capacity - 1,
       riders: [userId],
-      transport: transport,
+      transport: transport
     }, function(err, ride) {
           if (err) {
             console.log("error")
