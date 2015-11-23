@@ -3,6 +3,10 @@ var router = express.Router();
 var User = require('../models/User');
 var Ride = require('../models/Ride');
 
+var schemas = require('../models/schemas');
+var rideModel = schemas.rideModel;
+var userModel = schemas.userModel;
+
 /* GET users listing. */
 // router.get('/', function(req, res, next) {
 //   res.send('respond with a resource');
@@ -67,7 +71,6 @@ router.get('/', function(req, res, next) {
 /*
   Registers a new user based on kerberos and password.
 */
-
 router.post('/', function(req, res) {
   if (isLoggedInOrInvalidBody(req, res)) {
     return;
@@ -76,18 +79,17 @@ router.post('/', function(req, res) {
   var password = req.body.password;
 
   User.createUser(username, password, 
-    function(err,user) {
-
-      if (err) {
-        if (err.taken) {
-          res.render('register', {'e' : "Kerberos already exists"});
-        } else {
-          res.send("error");
-        }
+                  function(err,user) {
+    if (err) {
+      if (err.taken) {
+        res.render('register', {'e' : "Kerberos already exists"});
       } else {
-        req.session.currentUser = user;
-        res.redirect('/');
+        res.send("error");
       }
+    } else {
+      req.session.currentUser = user;
+      res.redirect('/');
+    }
   });
 });
 
@@ -122,10 +124,14 @@ router.get('/logout', function(req, res) {
 
 // Get the rides of the current logged in user
 router.get('/my_rides', function(req, res) {
-  Ride.find({ '_id' : req.session.currentUser.rides }, function(err, rides) {
+  User.getRides(req.session.currentUser._id, function(err, rides) {
     res.render('my_rides', { 'currentUser' : req.session.currentUser,
                              'rides' : rides });
   });
+//   rideModel.find({ '_id' : req.session.currentUser.rides }, function(err, rides) {
+//     res.render('my_rides', { 'currentUser' : req.session.currentUser,
+//                              'rides' : rides });
+//   });
 });
 
 module.exports = router;

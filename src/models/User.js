@@ -2,6 +2,7 @@
 var mongoose = require("mongoose");
 var schemas = require("./schemas");
 var userModel = schemas.userModel;
+var rideModel = schemas.rideModel;
 var Review = require('./Review');
 var Ride = require('./Ride');
 
@@ -69,6 +70,19 @@ var User = (function User() {
       } else {
         callback(null, null)
       }
+    });
+  };
+
+  // Give a list of all rides that a user is/was part of
+  that.getRides = function(userId, callback) {
+    userModel.findOne({ '_id' : userId }, function(err, user) {
+      rideModel.find({ '_id' : user.rides }, function(err, rides) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, rides);
+        }
+      });
     });
   };
 
