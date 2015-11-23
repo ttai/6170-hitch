@@ -123,8 +123,8 @@ var Ride = (function Ride() {
                                       } else {
                                         callback(null);
                                       };
-                                    }
-        });       }
+                                    })
+        }       
     });
   };
 
@@ -136,8 +136,8 @@ var Ride = (function Ride() {
       } else {
         rideModel.update({_id: rideId }, { $inc: {'remaining_capacity' : -1} }, function(err, result) {
           rideModel.update({_id: rideId }, { $push: { riders: riderId } }, function(err, result) {
-              console.log('removed rider')
-              userModel.findByIdAndUpdate(riderId,
+              console.log('added rider')
+              userModel.update({ _id: riderId },
                                            { $push: {rides: rideId } },
                                            function (err, result) {
                 if (err) {
