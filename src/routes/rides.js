@@ -78,7 +78,7 @@ router.get('/', function(req, res) {
     if (err) {
       res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500});
     } else {
-      res.render('rides', { rides: rides });
+      res.render('rides', { 'user': req.session.currentUser, rides: rides });
     }
   });
 });
@@ -93,7 +93,7 @@ router.get('/', function(req, res) {
     - err: on failure, an error message
 */
 router.get('/:ride', function(req, res) {
-  res.render('ride', { rides: req.ride });
+  res.render('ride', { 'user': req.session.currentUser, rides: req.ride });
 });
 
 /*

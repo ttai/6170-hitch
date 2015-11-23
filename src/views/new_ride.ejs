@@ -13,6 +13,7 @@
     <script> </script>
   </head>
   <body>
+    <h2>Welcome, <%= user.kerberos %></h2>
     <header>
       <% include header %>
     </header>
@@ -20,8 +21,7 @@
     <% if (typeof(e) !== 'undefined') { %>
       <div id='error'> <%= e %> </div>
     <% } %>
-    <h2>Welcome, <%= user.kerberos %></h2>
-    <p>Create a new ride!</p>
+    <h1>Create a new ride</h1>
     <form method="post" action="/rides/">
       <div class="form-group">
         <label for="date">Departure Date:</label>

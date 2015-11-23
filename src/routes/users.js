@@ -62,7 +62,7 @@ router.get('/register', function(req, res) {
 router.get('/', function(req, res, next) {
   var currentUser = req.session.currentUser;
   if (currentUser) {
-    res.render('index', {"username": currentUser});
+    res.render('index', {"user": currentUser});
   } else {
     res.redirect('/');
   }
@@ -125,7 +125,7 @@ router.get('/logout', function(req, res) {
 // Get the rides of the current logged in user
 router.get('/my_rides', function(req, res) {
   User.getRides(req.session.currentUser._id, function(err, rides) {
-    res.render('my_rides', { 'currentUser' : req.session.currentUser,
+    res.render('my_rides', { 'user' : req.session.currentUser,
                              'rides' : rides });
   });
 //   rideModel.find({ '_id' : req.session.currentUser.rides }, function(err, rides) {
