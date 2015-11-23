@@ -1,2 +1,1 @@
-cd src
-npm start
+web: node src/app.js
