@@ -102,6 +102,7 @@ var Ride = (function Ride() {
                           total_capacity, transport, passphrase,
                           callback) {
     // check if valid ride
+    console.log('adding ride');
     rideModel.create({
       origin: origin,
       destination: destination,
@@ -111,7 +112,13 @@ var Ride = (function Ride() {
       riders: [userId],
       transport: transport,
       passphrase: passphrase
-    });
+    }, function(err, ride) {
+          if (err) {
+            callback(e);
+          } else {
+            callback(null, ride);
+          }
+        });
   };
 
   that.addRider = function(rideID, riderId, callback) {
