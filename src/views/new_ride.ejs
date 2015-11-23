@@ -21,39 +21,41 @@
     <% if (typeof(e) !== 'undefined') { %>
       <div id='error'> <%= e %> </div>
     <% } %>
-    <h1>Create a new ride</h1>
-    <form method="post" action="/rides/">
-      <div class="form-group">
-        <label for="date">Departure Date:</label>
-        <input type="date" class="form-control" name="date">
-      </div>
-      <div class="form-group">
-        <label for="time">Departure Time:</label>
-        <input type="time" class="form-control" name="time">
-      </div>
-      <div class="form-group">
-        <label for="origin">Start Location:</label>
-        <input type="text" class="form-control" name="origin" placeholder="Enter start location">
-      </div>
-      <div class="form-group">
-        <label for="destination">Destination:</label>
-        <input type="text" class="form-control" name="destination" placeholder="Enter destination">
-      </div>
-      <div class="form-group">
-        <label for="capacity">Capacity:</label>
-        <input type="number" class="form-control" name="capacity" placeholder="Enter capacity">
-      </div>
-      <div class="form-group">
-        <label for="transport">Transport:</label>
-        <input type="text" class="form-control" name="transport" placeholder="eg. Taxi">
-        <!-- <select class="form-control" name="origin" id="origin">
-          <option>Taxi</option>
-          <option>Uber</option>
-          <option>Lyft</option>
-        </select> -->
-      </div>
-      <button type="submit" class="btn btn-default">Submit</button>
-    </form>
+    <div class="container">
+      <h1>Create a new ride</h1>
+      <form method="post" action="/rides/">
+        <div class="form-group">
+          <label for="date">Departure Date:</label>
+          <input type="date" class="form-control" name="date">
+        </div>
+        <div class="form-group">
+          <label for="time">Departure Time:</label>
+          <input type="time" class="form-control" name="time">
+        </div>
+        <div class="form-group">
+          <label for="origin">Start Location:</label>
+          <input type="text" class="form-control" name="origin" placeholder="Enter start location">
+        </div>
+        <div class="form-group">
+          <label for="destination">Destination:</label>
+          <input type="text" class="form-control" name="destination" placeholder="Enter destination">
+        </div>
+        <div class="form-group">
+          <label for="capacity">Capacity:</label>
+          <input type="number" class="form-control" name="capacity" placeholder="Enter capacity">
+        </div>
+        <div class="form-group">
+          <label for="transport">Transport:</label>
+          <input type="text" class="form-control" name="transport" placeholder="eg. Taxi">
+          <!-- <select class="form-control" name="origin" id="origin">
+            <option>Taxi</option>
+            <option>Uber</option>
+            <option>Lyft</option>
+          </select> -->
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+    </div>
 
   </body>
 </html>
