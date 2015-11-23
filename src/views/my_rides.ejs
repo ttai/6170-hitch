@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Your Rides</title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+  </head>
+  <body>
+    <% if (typeof(e) !== 'undefined') { %>
+      <div id='error'> <%= e %> </div>
+    <% } %>
+    <h1>Your Rides</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Departure time</th>
+          <th>Start Location</th>
+          <th>Destination</th>
+          <th>Seats open</th>
+          <th>Transport</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (var i = 0; i < rides.length; ++i) { %>
+          <td><%= rides[i].departure_time %></td>
+          <td><%= rides[i].origin %></td>
+          <td><%= rides[i].destination %></td>
+          <td><%= rides[i].remaining_capacity %></td>
+          <td><%= rides[i].transport %></td>
+        <% } %>
+      </tbody>
+    </table>
+  </body>
+</html>

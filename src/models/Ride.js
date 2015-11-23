@@ -36,7 +36,7 @@ var Ride = (function Ride() {
 
   that.getAllOpenRides = function(callback) {
     var now = new Date();
-    rideSchema.where('remaining_capacity').gte(1).where('departure_time').gte(now).exec(function(err, rides) {
+    rideSchema.find({}).where('remaining_capacity').gte(1).where('departure_time').gte(now).exec(function(err, rides) {
       if (err) {
         callback(err);
       } else {
