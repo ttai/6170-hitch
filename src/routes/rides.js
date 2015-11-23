@@ -46,7 +46,7 @@ var requireParticipation = function(req, res, next) {
 
 router.get('/new_ride', function(req, res) {
   if (req.session.currentUser) {
-    res.redirect('new_ride');
+    res.render('new_ride', {user: req.session.currentUser});
   } else {
     console.log("current user", currentUser);
     res.render('/');

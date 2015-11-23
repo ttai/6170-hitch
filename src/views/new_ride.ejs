@@ -9,7 +9,7 @@
 
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    
+
     <script> </script>
   </head>
   <body>
@@ -20,7 +20,7 @@
     <% if (typeof(e) !== 'undefined') { %>
       <div id='error'> <%= e %> </div>
     <% } %>
-    <h2>Welcome, <%= username %></h2>
+    <h2>Welcome, <%= user.kerberos %></h2>
     <p>Create a new ride!</p>
     <form method="post" action="/rides/">
       <div class="form-group">
