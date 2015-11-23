@@ -103,8 +103,8 @@ router.get('/login', function(req, res) {
 // Allows a user to sign in
 router.post('/login', function(req, res) {
   var password = req.body.password;
-  var userID = req.body.userID;
-  User.verifyPassword(userID, password, function(err, user) {
+  var username = req.body.username;
+  User.verifyPassword(username, password, function(err, user) {
     if (user) {
       req.session.currentUser = user;
       res.redirect('/')
