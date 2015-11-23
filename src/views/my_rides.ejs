@@ -5,6 +5,10 @@
     <link rel='stylesheet' href='/stylesheets/style.css'/>
   </head>
   <body>
+    <header>
+      <% include header %>
+    </header>
+
     <% if (typeof(e) !== 'undefined') { %>
       <div id='error'> <%= e %> </div>
     <% } %>
