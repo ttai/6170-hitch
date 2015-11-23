@@ -9,6 +9,15 @@ var User = (function User() {
 
   var that = Object.create(User.prototype);
 
+  that.getUser = function(userId, callback) {
+    userModel.find({ '_id': userId }, function(err, user) {
+      if (err) {
+        callback(err);
+      } else {
+        callback(null, user)
+      }
+    });
+  }
   // password or certificate authentication 
   that.createUser = function(currentKerberos, callback){
     userModel.count({kerberos:currentKerberos}, function (err, count) {
