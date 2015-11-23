@@ -41,6 +41,18 @@ var requireParticipation = function(req, res, next) {
 };
 
 /*
+  Go to register page
+*/
+
+router.get('/new_ride', function(req, res) {
+  if (req.session.currentUser) {
+    res.redirect('/');
+  } else {
+    res.render('new_ride');
+  }
+});
+
+/*
   Grab a ride from the store whenever one is referenced with an ID in the
   request path (any routes defined with :ride as a paramter).
 */
