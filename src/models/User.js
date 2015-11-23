@@ -76,13 +76,17 @@ var User = (function User() {
   // Give a list of all rides that a user is/was part of
   that.getRides = function(userId, callback) {
     userModel.findOne({ '_id' : userId }, function(err, user) {
-      rideModel.find({ '_id' : user.rides }, function(err, rides) {
-        if (err) {
-          callback(err);
-        } else {
-          callback(null, rides);
-        }
-      });
+      if (user.rides.length) {
+        rideModel.find({ '_id' : user.rides }, function(err, rides) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(null, rides);
+          }
+        });
+      } else {
+        callback(null, []);
+      }
     });
   };
 
