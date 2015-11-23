@@ -10,7 +10,7 @@ router.post('/', function(req, res) {
   Review.addReview(req.body.rideID, req.body.reviewerID, req.body.revieweeID,
     req.body.rating, req.body.comment, function(err) {
       if (err) {
-        utils.sendErrResponse(res, 500, 'An unknown error occured.')
+        res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500});
       } else {
         utils.sendSuccessResponse(res);
       }
@@ -21,7 +21,7 @@ router.post('/', function(req, res) {
 router.post('/:review', function(req, res) {
   Review.setReviewRating(req.body.reviewID, req.body.rating, function(err) {
     if (err) {
-      utils.sendErrResponse(res, 500, 'An unknown error occured.')
+      res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500});
     } else {
       utils.sendSuccessResponse(res);
     }
@@ -32,7 +32,7 @@ router.post('/:review', function(req, res) {
 router.post('/:review', function(req, res) {
   Review.setReviewComment(req.body.reviewID, req.body.comment, function(err) {
     if (err) {
-      utils.sendErrResponse(res, 500, 'An unknown error occured.')
+      res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500});
     } else {
       utils.sendSuccessResponse(res);
     }
@@ -43,7 +43,7 @@ router.post('/:review', function(req, res) {
 router.delete('/:review', function(req, res) {
   Review.deleteReview(req.body.reviewID, function(err) {
     if (err) {
-      utils.sendErrResponse(res, 500, 'An unknown error occured')
+      res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500});
     } else {
       utils.sendSuccessResponse(res);
     }
