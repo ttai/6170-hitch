@@ -31,7 +31,7 @@ var requireAuthentication = function(req, res, next) {
   that is brute-forcing urls should not gain any information.
 */
 var requireParticipation = function(req, res, next) {
-	Ride.inRide(req.session.currentUser._id, function (err, result) {
+	Ride.inRide(req.session.currentUser._id, req.body.ride_id, function (err, result) {
 		if (err || result < 0) {
       res.render('error', {'message': 'Resource not found.', 'error.status': 404});
 		} else {
@@ -127,8 +127,10 @@ router.post('/', function(req, res) {
 router.post('/participate', function(req, res) {
   var rideID = req.body.ride_id;
   Ride.inRide(req.session.currentUser._id, rideID, function (err, result) {
-    if (err || result < 0) {
-      Ride.removeRider(rideID, req.session.currentUser._id, function(err, result) {
+    if (err) {
+      res.render('error', {'message': 'Resource not found.', 'error.status': 404});
+    } else if (result < 0) {
+      Ride.addRider(rideID, req.session.currentUser._id, function(err, result) {
         if (err) {
           res.render('error', {'message': 'Resource not found.', 'error.status': 404});
         } else {

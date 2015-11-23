@@ -164,7 +164,7 @@ var Ride = (function Ride() {
             //delete ride if no more riders
             rideModel.findById(rideId, function (err, ride) {
               if (ride.remaining_capacity === ride.total_capacity) {
-                deleteRide(rideId, function(err) {
+                that.deleteRide(rideId, function(err) {
                   if (err) {
                     callback(err);
                   } else {
