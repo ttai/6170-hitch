@@ -115,9 +115,16 @@ var Ride = (function Ride() {
        if (err) {
          callback(err);
        } else {
-        console.log(ride);
-        callback(null, ride);
-       }
+        userModel.findByIdAndUpdate(userId,
+                                    {$push: {rides: ride._id} },
+                                    function (err) {
+                                      if (err) {
+                                        callback(err);
+                                      } else {
+                                        callback(null);
+                                      };
+                                    }
+        });       }
     });
   };
 
