@@ -77,7 +77,7 @@ var User = (function User() {
   that.getRides = function(userId, callback) {
     userModel.findOne({ '_id' : userId }, function(err, user) {
       if (user.rides.length) {
-        rideModel.find({ '_id' : user.rides }, function(err, rides) {
+        rideModel.find({ '_id' : { $in: user.rides } }, function(err, rides) {
           if (err) {
             callback(err);
           } else {
