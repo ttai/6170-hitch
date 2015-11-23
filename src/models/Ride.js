@@ -29,6 +29,7 @@ var Ride = (function Ride() {
         callback(err, null);
       } else {
         var riders = ride.riders;
+        console.log(riders);
         callback(null, riders.indexOf(userId));
       }
     });
@@ -114,7 +115,8 @@ var Ride = (function Ride() {
        if (err) {
          callback(err);
        } else {
-         callback(null, ride);
+        console.log(ride);
+        callback(null, ride);
        }
     });
   };
@@ -148,29 +150,38 @@ var Ride = (function Ride() {
 
   that.removeRider = function(rideId, riderId, callback) {
     // checks if rider exists
-    rideModel.findByIdAndUpdate(rideId,
+    var ObjectId = mongoose.Types.ObjectId;
+    console.log('here', ObjectId(riderId));
+    rideModel.update({_id: rideId },
                                  { $inc: { 'remaining_capacity' : 1 } },
-                                 { $pull: { riders: riderId } },
-                                 function(err) {
+                                 { $pull: { riders: ObjectId(riderId) } },
+                                 function (err, result) {
       if (err) {
-        callback(err);
+        console.log('error 1');
+        callback(err, null);
       } else {
+        console.log('removed rider')
         userModel.findByIdAndUpdate(riderId,
-                                     { $pull: {rides: rideId} },
-                                     function (err) {
+                                     { $pull: {rides: ObjectId(rideId) } },
+                                     function (err, result) {
           if (err) {
-            callback(err);
+            console.log('error 2');
+            callback(err,null);
           } else {
             //delete ride if no more riders
             rideModel.findById(rideId, function (err, ride) {
               if (ride.remaining_capacity === ride.total_capacity) {
                 that.deleteRide(rideId, function(err) {
                   if (err) {
-                    callback(err);
+                    console.log('error 3');
+                    callback(err, null);
                   } else {
-                    callback(null);
+                    console.log('deleted ride');
+                    callback(null, null);
                   }
                 });
+              } else {
+                callback(null,null);
               }
             });
           }
@@ -181,13 +192,13 @@ var Ride = (function Ride() {
 
   that.deleteRide = function(rideId, callback) {
     // check if valid ride
-    rideModel.findByIdAndRemove(rideId, function(err) {
+    /*rideModel.findByIdAndRemove(rideId, function(err) {
       if (err) {
         callback(err);
       } else {
         callback(null);
       }
-    });
+    });*/
   };
 
   Object.freeze(that);

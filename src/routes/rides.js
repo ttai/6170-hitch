@@ -130,6 +130,7 @@ router.post('/participate', function(req, res) {
     if (err) {
       res.render('error', {'message': 'Resource not found.', 'error.status': 404});
     } else if (result < 0) {
+      console.log('adding rider');
       Ride.addRider(rideID, req.session.currentUser._id, function(err, result) {
         if (err) {
           res.render('error', {'message': 'Resource not found.', 'error.status': 404});
@@ -138,6 +139,7 @@ router.post('/participate', function(req, res) {
         }
       });
     } else {
+      console.log('removing rider');
       Ride.removeRider(rideID, req.session.currentUser._id, function(err, result) {
         if (err) {
           res.render('error', {'message': 'Resource not found.', 'error.status': 404});
