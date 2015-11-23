@@ -13,7 +13,7 @@ moment().format();
   Clients which are not logged in will receive a 403 error code.
 */
 var requireAuthentication = function(req, res, next) {
-  if (!req.currentUser) {
+  if (!req.session.currentUser) {
     res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500});
   } else {
     next();
@@ -31,7 +31,7 @@ var requireAuthentication = function(req, res, next) {
   that is brute-forcing urls should not gain any information.
 */
 var requireParticipation = function(req, res, next) {
-	Ride.inRide(req.currentUser._id, function (err, result) {
+	Ride.inRide(req.session.currentUser._id, function (err, result) {
 		if (err || result < 0) {
       res.render('error', {'message': 'Resource not found.', 'error.status': 404});
 		} else {
@@ -58,7 +58,7 @@ router.get('/new_ride', function(req, res) {
   request path (any routes defined with :ride as a paramter).
 */
 router.param('ride', function(req, res, next, rideId) {
-  Ride.getRide(req.currentUser._id, rideId, function(err, ride) {
+  Ride.getRide(req.session.currentUser._id, rideId, function(err, ride) {
     if (ride) {
       req.ride = ride;
       next();
@@ -127,7 +127,7 @@ router.get('/:ride', function(req, res) {
 router.post('/', function(req, res) {
   var time = req.body.date.concat(" ".concat(req.body.time))
   var departure_time = moment(time)
-  Ride.addRide(req.currentUser._id, req.body.origin, req.body.destination,
+  Ride.addRide(req.session.currentUser._id, req.body.origin, req.body.destination,
                req.body.departure_time, req.body.capacity, req.body.transport,
                function(err, result) {
    if (err) {
@@ -140,7 +140,7 @@ router.post('/', function(req, res) {
 });
 
 router.post('/participate/:ride', function(req, res) {
-  Ride.inRide(req.currentUser._id, function (err, result) {
+  Ride.inRide(req.session.currentUser._id, function (err, result) {
     if (err || result < 0) {
       Ride.removeRider(req.ride._id, req/currentUser._id, function(err, result) {
         if (err) {
@@ -150,7 +150,7 @@ router.post('/participate/:ride', function(req, res) {
         }
       });
     } else {
-      Ride.removeRider(req.ride._id, req/currentUser._id, function(err, result) {
+      Ride.removeRider(req.ride._id, req.session.currentUser._id, function(err, result) {
         if (err) {
           res.render('error', {'message': 'Resource not found.', 'error.status': 404});
         } else {
