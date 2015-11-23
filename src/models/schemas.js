@@ -30,6 +30,12 @@ var reviewSchema = Schema({
   comment: String
 });
 
-exports.userSchema = userSchema;
+module.exports = {
+    userSchema: userSchema,
+    rideSchema: rideSchema,
+    reviewSchema: reviewSchema
+};
+
+/*exports.userSchema = userSchema;
 exports.rideSchema = rideSchema;
-exports.reviewSchema = reviewSchema;
+exports.reviewSchema = reviewSchema;*/
