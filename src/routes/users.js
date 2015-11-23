@@ -32,28 +32,15 @@ var isLoggedInOrInvalidBody = function(req, res) {
   View the reviews of a particular user.
 */
 router.get('/:user', function(req, res) {
-  User.find({ '_id' : req.body.userID }, function(err, user) {
+  User.getUser(req.body.userID, function(err, user) {
+    if (err) {
+      res.render('error', { 'message' : 'Resource not found.', 'error.status': 404});
+    } else{
     res.render('user', { 'currentUser' : req.session.currentUser,
                          'user' : user });
+    }
   });
 });
-
-/*
-  Determine whether there is a current user logged in
-
-  GET /users/current
-  No request parameters
-  Response:
-    - success.loggedIn: true if there is a user logged in; false otherwise
-    - success.user: if success.loggedIn, the currently logged in user
-*/
-// router.get('/current', function(req, res) {
-//   if (req.currentUser) {
-//     utils.sendSuccessResponse(res, { loggedIn : true, user : req.currentUser.username });
-//   } else {
-//     utils.sendSuccessResponse(res, { loggedIn : false });
-//   }
-// });
 
 /*
   Go to register page
