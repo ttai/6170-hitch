@@ -5,6 +5,9 @@ var utils = require('../utils/utils');
 var User = require('../models/User');
 var Ride = require('../models/Ride');
 
+var moment = require('moment');
+moment().format();
+
 /*
   Require authentication on ALL access to /rides/*
   Clients which are not logged in will receive a 403 error code.
@@ -109,9 +112,11 @@ router.get('/:ride', function(req, res) {
     - err: on error, an error message
 */
 router.post('/', function(req, res) {
+  var time = req.body.date.concat(" ".concat(req.body.time))
+  var departure_time = moment(time)
   Ride.addRide(req.currentUser._id, req.body.origin, req.body.destination,
-               req.body.departure_time, req.body.total_capacity, req.body.transport,
-               req.body.passphrase, function(err, result) {
+               req.body.departure_time, req.body.capacity, req.body.transport,
+               function(err, result) {
    if (err) {
      res.render('error', {'message': 'Must be logged in to use this feature.',
                           'error.status': 500});
