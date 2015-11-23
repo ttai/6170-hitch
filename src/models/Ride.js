@@ -103,22 +103,20 @@ var Ride = (function Ride() {
                           callback) {
     // check if valid ride
     rideModel.create({
-      origin: origin,
-      destination: destination,
-      departure_time: departure_time,
-      total_capacity: total_capacity,
-      remaining_capacity: total_capacity - 1,
-      riders: [userId],
-      transport: transport,
+      'origin': origin,
+      'destination': destination,
+      'departure_time': departure_time,
+      'total_capacity': total_capacity,
+      'remaining_capacity': total_capacity - 1,
+      'riders': [userId],
+      'transport': transport,
     }, function(err, ride) {
-          if (err) {
-            console.log("error")
-            callback(err);
-          } else {
-            console.log("added to db")
-            callback(null, ride);
-          }
-        });
+       if (err) {
+         callback(err);
+       } else {
+         callback(null, ride);
+       }
+    });
   };
 
   that.addRider = function(rideID, riderId, callback) {

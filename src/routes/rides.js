@@ -128,7 +128,7 @@ router.post('/', function(req, res) {
   var time = req.body.date.concat(" ".concat(req.body.time))
   var departure_time = moment(time)
   Ride.addRide(req.session.currentUser._id, req.body.origin, req.body.destination,
-               req.body.departure_time, req.body.capacity, req.body.transport,
+               departure_time.toDate(), req.body.capacity, req.body.transport,
                function(err, result) {
    if (err) {
      res.render('error', {'message': 'Must be logged in to use this feature.',
