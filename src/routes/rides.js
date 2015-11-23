@@ -57,20 +57,20 @@ router.get('/new_ride', function(req, res) {
   Grab a ride from the store whenever one is referenced with an ID in the
   request path (any routes defined with :ride as a paramter).
 */
-router.param('ride', function(req, res, next, rideId) {
-  Ride.getRide(req.session.currentUser._id, rideId, function(err, ride) {
-    if (ride) {
-      req.ride = ride;
-      next();
-    } else {
-      res.render('error', {'message': 'Resource not found.', 'error.status': 404});
-    }
-  });
-});
+// router.param('ride', function(req, res, next, rideId) {
+//   Ride.getRide(req.session.currentUser._id, rideId, function(err, ride) {
+//     if (ride) {
+//       req.ride = ride;
+//       next();
+//     } else {
+//       res.render('error', {'message': 'Resource not found.', 'error.status': 404});
+//     }
+//   });
+// });
 
 // Register the middleware handlers above.
-router.all('*', requireAuthentication);
-router.all('/:ride', requireParticipation);
+// router.all('*', requireAuthentication);
+// router.all('/:ride', requireParticipation);
 
 /*
   At this point, all requests are authenticated and checked:
@@ -139,10 +139,11 @@ router.post('/', function(req, res) {
   });
 });
 
-router.post('/participate/:ride', function(req, res) {
-  Ride.inRide(req.session.currentUser._id, function (err, result) {
+router.post('/participate', function(req, res) {
+  var rideID = req.body.ride_id;
+  Ride.inRide(req.session.currentUser._id, rideID, function (err, result) {
     if (err || result < 0) {
-      Ride.removeRider(req.ride._id, req.session.currentUser._id, function(err, result) {
+      Ride.removeRider(rideID, req.session.currentUser._id, function(err, result) {
         if (err) {
           res.render('error', {'message': 'Resource not found.', 'error.status': 404});
         } else {
@@ -150,7 +151,7 @@ router.post('/participate/:ride', function(req, res) {
         }
       });
     } else {
-      Ride.removeRider(req.ride._id, req.session.currentUser._id, function(err, result) {
+      Ride.removeRider(rideID, req.session.currentUser._id, function(err, result) {
         if (err) {
           res.render('error', {'message': 'Resource not found.', 'error.status': 404});
         } else {

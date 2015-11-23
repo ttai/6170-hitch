@@ -44,7 +44,8 @@
                 <td><%= rides[i].destination %></td>
                 <td><%= rides[i].remaining_capacity %></td>
                 <td><%= rides[i].transport %></td>
-                <form method="post" action="/rides/participate/:ride">
+                <form method="post" action="/rides/participate">
+                  <input type="hidden" name = "ride_id" value=<%= rides[i]._id %>></input>
                   <% if (rides[i].riders.indexOf(user._id) < 0) {%>
                     <td> <button type="submit" class="btn btn-default">Join ride</button> </td>
                   <%} else { %>
