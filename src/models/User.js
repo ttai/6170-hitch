@@ -1,7 +1,7 @@
 // Data model which represents a user
 var mongoose = require("mongoose");
 var schemas = require("./schemas");
-var userSchema = schemas.userSchema;
+var userModel = schemas.userModel;
 var Review = require('./Review');
 var Ride = require('./Ride');
 
@@ -11,13 +11,13 @@ var User = (function User() {
 
   // password or certificate authentication 
   that.createUser = function(currentKerberos, callback){
-    userSchema.count({kerberos:currentKerberos}, function (err, count) {
+    userModel.count({kerberos:currentKerberos}, function (err, count) {
       if (currentKerberos === "") {
         callback(err);
       } else if (count > 0) {
         callback(null, { taken: true });
       } else {
-        userSchema.create({"kerberos": currentKerberos, rating: 5, reviews: [], rides: []}, function(e, user) {
+        userModel.create({"kerberos": currentKerberos, rating: 5, reviews: [], rides: []}, function(e, user) {
           if (e) {
             callback(e);
           } else {
@@ -30,7 +30,7 @@ var User = (function User() {
 
   // Verify password for login
   that.verifyPassword = function(userId, candidatepw, callback) {
-    userSchema.find({ '_id': userId }, function(err, user) {
+    userModel.find({ '_id': userId }, function(err, user) {
       if (err) {
         callback(err);
       } else if (user.password === candidatepw) {
@@ -65,7 +65,7 @@ var User = (function User() {
 
   // Give a list of all reviews given to a user
   that.getReviews = function(userId, callback) {
-    userSchema.find({ '_id': userId }, function(err, user){
+    userModel.find({ '_id': userId }, function(err, user){
       if (err) {
         callback(err);
       } else {
@@ -76,7 +76,7 @@ var User = (function User() {
 
   // Gives the user's average rating.
   that.getUserRating = function(userId, callback) {
-    userSchema.find({ '_id': userId }, function(err, user) {
+    userModel.find({ '_id': userId }, function(err, user) {
       if (err) {
         callback(err);
       } else {
@@ -88,13 +88,13 @@ var User = (function User() {
 
   // do add review!
   that.addReview = function(userId, review, callback) {
-    userSchema.find({ "_id": userId }, function(err, user) {
+    userModel.find({ "_id": userId }, function(err, user) {
       if (err) {
         callback(err);
       }
       var n_reviews = user.reviews.length;
       var new_rating = (user.rating * n_reviews + review.rating) / (n_reviews + 1);
-      userSchema.update({ "_id": userId },
+      userModel.update({ "_id": userId },
                         { $set: { "rating": new_rating },
                           $push: { "reviews": review._id } },
                         function(err) {

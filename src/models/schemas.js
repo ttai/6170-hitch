@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.Types.ObjectId;
 
-var userSchema = Schema({
+var userSchema = new Schema({
   kerberos: { type: String, required: true, index: { unique: true } },
   password: { type: String, required: true },
   rating: Number,
@@ -11,7 +11,7 @@ var userSchema = Schema({
   rides: [{ type: ObjectId, ref: 'rideSchema' }]
 });
 
-var rideSchema = Schema({
+var rideSchema = new Schema({
   origin: { type: String, required: true },
   destination: { type: String, required: true },
   departure_time: { type: Date, required: true },
@@ -22,7 +22,7 @@ var rideSchema = Schema({
   passphrase: String
 });
 
-var reviewSchema = Schema({
+var reviewSchema = new Schema({
   ride: { type: ObjectId, ref: 'rideSchema', required: true },
   reviewer: { type: ObjectId, ref: 'userSchema', required: true },
   reviewee: { type: ObjectId, ref: 'userSchema', required: true },
@@ -31,11 +31,7 @@ var reviewSchema = Schema({
 });
 
 module.exports = {
-    userSchema: userSchema,
-    rideSchema: rideSchema,
-    reviewSchema: reviewSchema
+  userModel: mongoose.model('User', userSchema),
+  rideModel: mongoose.model('Ride', rideSchema),
+  reviewModel: mongoose.model('Review', reviewSchema)
 };
-
-/*exports.userSchema = userSchema;
-exports.rideSchema = rideSchema;
-exports.reviewSchema = reviewSchema;*/
