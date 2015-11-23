@@ -127,6 +127,7 @@ router.post('/', function(req, res) {
 router.post('/participate', function(req, res) {
   var rideID = req.body.ride_id;
   Ride.inRide(req.session.currentUser._id, rideID, function (err, result) {
+    console.log('result', result)
     if (err) {
       res.render('error', {'message': 'Resource not found.', 'error.status': 404});
     } else if (result < 0) {

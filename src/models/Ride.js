@@ -127,23 +127,36 @@ var Ride = (function Ride() {
       if (ride.remaining_capacity === 0) {
         callback( { msg: "ride full" } );
       } else {
-        rideModel.findByIdAndUpdate(rideId,
-                                    { $inc: { 'remaining_capacity' : -1 } },
-                                    { $push: { riders: riderId } },
-                                    function(err) {
-                                      if (err){
-                                        callback(err);
-                                      } else {
-                                        userModel.findByIdAndUpdate(riderId, { $push: {rides: rideId} },
-                                                                              function (err) {
-                                                                                if (err) {
-                                                                                  callback(err);
-                                                                                } else {
-                                                                                  callback(null);
-                                                                                }
-                                                                              });
-                                        }
-                                    });
+        rideModel.update({_id: rideId }, { $inc: {'remaining_capacity' : -1} }, function(err, result) {
+          rideModel.update({_id: rideId }, { $push: { riders: riderId } }, function(err, result) {
+              console.log('removed rider')
+              userModel.findByIdAndUpdate(riderId,
+                                           { $push: {rides: rideId } },
+                                           function (err, result) {
+                if (err) {
+                  console.log('error 2');
+                  callback(err,null);
+                } else {
+                  //delete ride if no more riders
+                  rideModel.findById(rideId, function (err, ride) {
+                    if (ride.remaining_capacity === ride.total_capacity) {
+                      that.deleteRide(rideId, function(err) {
+                        if (err) {
+                          console.log('error 3');
+                          callback(err, null);
+                        } else {
+                          console.log('deleted ride');
+                          callback(null, null);
+                        }
+                      });
+                    } else {
+                      callback(null,null);
+                    }
+                  });
+                }
+              });
+            });
+        });
       }
     });
   };
@@ -154,39 +167,40 @@ var Ride = (function Ride() {
     console.log('here', ObjectId(riderId));
     rideModel.update({_id: rideId },
                                  { $inc: { 'remaining_capacity' : 1 } },
-                                 { $pull: { riders: ObjectId(riderId) } },
                                  function (err, result) {
       if (err) {
         console.log('error 1');
         callback(err, null);
       } else {
-        console.log('removed rider')
-        userModel.findByIdAndUpdate(riderId,
-                                     { $pull: {rides: ObjectId(rideId) } },
-                                     function (err, result) {
-          if (err) {
-            console.log('error 2');
-            callback(err,null);
-          } else {
-            //delete ride if no more riders
-            rideModel.findById(rideId, function (err, ride) {
-              if (ride.remaining_capacity === ride.total_capacity) {
-                that.deleteRide(rideId, function(err) {
-                  if (err) {
-                    console.log('error 3');
-                    callback(err, null);
+        rideModel.update({_id: rideId }, { $pull: { riders: ObjectId(riderId) } }, function(err, result) {
+            console.log('removed rider')
+            userModel.findByIdAndUpdate(riderId,
+                                         { $pull: {rides: ObjectId(rideId) } },
+                                         function (err, result) {
+              if (err) {
+                console.log('error 2');
+                callback(err,null);
+              } else {
+                //delete ride if no more riders
+                rideModel.findById(rideId, function (err, ride) {
+                  if (ride.remaining_capacity === ride.total_capacity) {
+                    that.deleteRide(rideId, function(err) {
+                      if (err) {
+                        console.log('error 3');
+                        callback(err, null);
+                      } else {
+                        console.log('deleted ride');
+                        callback(null, null);
+                      }
+                    });
                   } else {
-                    console.log('deleted ride');
-                    callback(null, null);
+                    callback(null,null);
                   }
                 });
-              } else {
-                callback(null,null);
               }
             });
-          }
-        });
-      }
+          });
+        }
     });
   };
 
