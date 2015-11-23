@@ -23,7 +23,7 @@ var Ride = (function Ride() {
     });
   };
 
-  that.inRide = function(userId, callback) {
+  that.inRide = function(userId, rideId, callback) {
     rideModel.findById(rideId, function (err, ride) {
       if (err) {
         callback(err, null);
@@ -31,7 +31,7 @@ var Ride = (function Ride() {
         var riders = ride.riders;
         callback(null, riders.indexOf(userId));
       }
-    })
+    });
   };
 
   that.getAllOpenRides = function(callback) {
