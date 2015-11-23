@@ -41,14 +41,15 @@ var requireParticipation = function(req, res, next) {
 };
 
 /*
-  Go to register page
+  Go to new ride page
 */
 
 router.get('/new_ride', function(req, res) {
   if (req.session.currentUser) {
-    res.redirect('/');
+    res.redirect('new_ride');
   } else {
-    res.render('new_ride');
+    console.log("current user", currentUser);
+    res.render('/');
   }
 });
 
