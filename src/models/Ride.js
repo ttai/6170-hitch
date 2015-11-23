@@ -144,28 +144,13 @@ var Ride = (function Ride() {
                   console.log('error 2');
                   callback(err,null);
                 } else {
-                  //delete ride if no more riders
-                  rideModel.findById(rideId, function (err, ride) {
-                    if (ride.remaining_capacity === ride.total_capacity) {
-                      that.deleteRide(rideId, function(err) {
-                        if (err) {
-                          console.log('error 3');
-                          callback(err, null);
-                        } else {
-                          console.log('deleted ride');
-                          callback(null, null);
-                        }
-                      });
-                    } else {
                       callback(null,null);
                     }
                   });
-                }
+                });
               });
-            });
+            };
         });
-      }
-    });
   };
 
   that.removeRider = function(rideId, riderId, callback) {
@@ -213,13 +198,13 @@ var Ride = (function Ride() {
 
   that.deleteRide = function(rideId, callback) {
     // check if valid ride
-    /*rideModel.findByIdAndRemove(rideId, function(err) {
+    rideModel.findByIdAndRemove(rideId, function(err) {
       if (err) {
         callback(err);
       } else {
         callback(null);
       }
-    });*/
+    });
   };
 
   Object.freeze(that);
