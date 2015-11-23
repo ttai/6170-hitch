@@ -14,20 +14,16 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Departure time</th>
-          <th>Start Location</th>
-          <th>Destination</th>
-          <th>Seats open</th>
-          <th>Transport</th>
+          <th>Rating</th>
+          <th>Reviewer</th>
+          <th>Comment</th>
         </tr>
       </thead>
       <tbody>
-        <% for (var i = 0; i < rides.length; ++i) { %>
-          <td><%= rides[i].departure_time %></td>
-          <td><%= rides[i].origin %></td>
-          <td><%= rides[i].destination %></td>
-          <td><%= rides[i].remaining_capacity %></td>
-          <td><%= rides[i].transport %></td>
+        <% for (var i = 0; i < reviews.length; ++i) { %>
+          <td><%= reviews[i].rating %></td>
+          <td><%= reviews[i].reviewer %></td>
+          <td><%= reviews[i].comment %></td>
         <% } %>
       </tbody>
     </table>
