@@ -99,10 +99,9 @@ var Ride = (function Ride() {
   };
 
   that.addRide = function(userId, origin, destination, departure_time,
-                          total_capacity, transport, passphrase,
+                          total_capacity, transport,
                           callback) {
     // check if valid ride
-    console.log('adding ride');
     rideModel.create({
       origin: origin,
       destination: destination,
@@ -111,11 +110,12 @@ var Ride = (function Ride() {
       remaining_capacity: total_capacity - 1,
       riders: [userId],
       transport: transport,
-      passphrase: passphrase
     }, function(err, ride) {
           if (err) {
-            callback(e);
+            console.log("error")
+            callback(err);
           } else {
+            console.log("added to db")
             callback(null, ride);
           }
         });
