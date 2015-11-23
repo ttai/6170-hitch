@@ -49,7 +49,6 @@ router.get('/new_ride', function(req, res) {
   if (req.session.currentUser) {
     res.render('new_ride', {user: req.session.currentUser});
   } else {
-    console.log("current user", currentUser);
     res.render('/');
   }
 });
@@ -128,11 +127,9 @@ router.post('/', function(req, res) {
 router.post('/participate', function(req, res) {
   var rideID = req.body.ride_id;
   Ride.inRide(req.session.currentUser._id, rideID, function (err, result) {
-    console.log('result', result)
     if (err) {
       res.render('error', {'message': 'Resource not found.', 'error.status': 404});
     } else if (result < 0) {
-      console.log('adding rider');
       Ride.addRider(rideID, req.session.currentUser._id, function(err, result) {
         if (err) {
           res.render('error', {'message': 'Resource not found.', 'error.status': 404});
@@ -141,7 +138,6 @@ router.post('/participate', function(req, res) {
         }
       });
     } else {
-      console.log('removing rider');
       Ride.removeRider(rideID, req.session.currentUser._id, function(err, result) {
         if (err) {
           res.render('error', {'message': 'Resource not found.', 'error.status': 404});

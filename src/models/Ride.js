@@ -29,7 +29,6 @@ var Ride = (function Ride() {
         callback(err, null);
       } else {
         var riders = ride.riders;
-        console.log(riders);
         callback(null, riders.indexOf(userId));
       }
     });
@@ -136,12 +135,10 @@ var Ride = (function Ride() {
       } else {
         rideModel.update({_id: rideId }, { $inc: {'remaining_capacity' : -1} }, function(err, result) {
           rideModel.update({_id: rideId }, { $push: { riders: riderId } }, function(err, result) {
-              console.log('added rider')
               userModel.update({ _id: riderId },
                                            { $push: {rides: rideId } },
                                            function (err, result) {
                 if (err) {
-                  console.log('error 2');
                   callback(err,null);
                 } else {
                       callback(null,null);
@@ -156,21 +153,17 @@ var Ride = (function Ride() {
   that.removeRider = function(rideId, riderId, callback) {
     // checks if rider exists
     var ObjectId = mongoose.Types.ObjectId;
-    console.log('here', ObjectId(riderId));
     rideModel.update({_id: rideId },
                                  { $inc: { 'remaining_capacity' : 1 } },
                                  function (err, result) {
       if (err) {
-        console.log('error 1');
         callback(err, null);
       } else {
         rideModel.update({_id: rideId }, { $pull: { riders: ObjectId(riderId) } }, function(err, result) {
-            console.log('removed rider')
             userModel.findByIdAndUpdate(riderId,
                                          { $pull: {rides: ObjectId(rideId) } },
                                          function (err, result) {
               if (err) {
-                console.log('error 2');
                 callback(err,null);
               } else {
                 //delete ride if no more riders
@@ -178,10 +171,8 @@ var Ride = (function Ride() {
                   if (ride.remaining_capacity === ride.total_capacity) {
                     that.deleteRide(rideId, function(err) {
                       if (err) {
-                        console.log('error 3');
                         callback(err, null);
                       } else {
-                        console.log('deleted ride');
                         callback(null, null);
                       }
                     });
