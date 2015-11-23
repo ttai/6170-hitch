@@ -19,14 +19,14 @@ var User = (function User() {
     });
   }
   // password or certificate authentication 
-  that.createUser = function(currentKerberos, callback){
+  that.createUser = function(currentKerberos, inputPass, callback){
     userModel.count({kerberos:currentKerberos}, function (err, count) {
       if (currentKerberos === "") {
         callback(err);
       } else if (count > 0) {
         callback(null, { taken: true });
       } else {
-        userModel.create({"kerberos": currentKerberos, rating: 5, reviews: [], rides: []}, function(e, user) {
+        userModel.create({"kerberos": currentKerberos, "password": inputPass, rating: 5, reviews: [], rides: []}, function(e, user) {
           if (e) {
             callback(e);
           } else {
