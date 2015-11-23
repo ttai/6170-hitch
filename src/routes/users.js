@@ -1,11 +1,12 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/User');
+var Ride = require('../models/Ride');
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+// router.get('/', function(req, res, next) {
+//   res.send('respond with a resource');
+// });
 
 /*
   For both login and create user, we want to send an error code if the user
@@ -66,6 +67,16 @@ router.get('/register', function(req, res) {
   }
 });
 
+// Gets list of all available rides after login
+router.get('/', function(req, res, next) {
+  var currentUser = req.session.currentUser;
+  if (currentUser) {
+    res.render('index', {"username": currentUser});
+  } else {
+    res.redirect('/');
+  }
+});
+
 /*
   Registers a new user based on kerberos and password.
 */
@@ -74,10 +85,10 @@ router.post('/', function(req, res) {
   if (isLoggedInOrInvalidBody(req, res)) {
     return;
   }
-  var kerberos = req.body.kerberos;
+  var username = req.body.username;
   var password = req.body.password;
 
-  User.createUser(kerberos, password, 
+  User.createUser(username, password, 
     function(err,user) {
 
       if (err) {
@@ -88,30 +99,30 @@ router.post('/', function(req, res) {
         }
       } else {
         req.session.currentUser = user;
-        res.redirect('/users');
+        res.redirect('/');
       }
   });
 });
 
-// Sign in page
-router.get('/signin', function(req, res) {
+// Login page
+router.get('/login', function(req, res) {
   if (req.session.currentUser) {
     res.redirect('/');
   } else {
-    res.render('signin');
+    res.render('login');
   }
 });
 
 // Allows a user to sign in
-router.post('/signin', function(req, res) {
+router.post('/login', function(req, res) {
   var password = req.body.password;
   var userID = req.body.userID;
   users.verifyPassword(userID, password, function(err, user) {
     if (user) {
       req.session.currentUser = user;
-      res.redirect('/users')
+      res.redirect('/')
     } else {
-      res.render('signin', {'e':"Incorrect Kerberos or Password"});
+      res.render('login', {'e':"Incorrect Kerberos or Password"});
     }
   })
 });
@@ -122,8 +133,12 @@ router.get('/logout', function(req, res) {
   res.redirect('/');
 });
 
-
-  
-
+// Get the rides of the current logged in user
+router.get('/my_rides', function(req, res) {
+  Ride.find({ '_id' : req.session.currentUser.rides }, function(err, rides) {
+    res.render('my_rides', { 'currentUser' : req.session.currentUser,
+                             'rides' : rides });
+  });
+});
 
 module.exports = router;
