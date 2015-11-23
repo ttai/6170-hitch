@@ -58,7 +58,7 @@ router.get('/new_ride', function(req, res) {
   request path (any routes defined with :ride as a paramter).
 */
 router.param('ride', function(req, res, next, rideId) {
-  Ride.getRide(req.session.currentUser._id, rideId, function(err, ride) {
+  Ride.getRide(rideId, function(err, ride) {
     if (ride) {
       req.ride = ride;
       next();
@@ -141,8 +141,10 @@ router.post('/', function(req, res) {
 
 router.post('/participate/:ride', function(req, res) {
   Ride.inRide(req.session.currentUser._id, function (err, result) {
-    if (err || result < 0) {
-      Ride.removeRider(req.ride._id, req.session.currentUser._id, function(err, result) {
+    if (err) {
+        res.render('error', {'message': 'Resource not found.', 'error.status': 404});
+    } else if (result < 0) {
+      Ride.addRider(req.ride._id, req.session.currentUser._id, function(err, result) {
         if (err) {
           res.render('error', {'message': 'Resource not found.', 'error.status': 404});
         } else {

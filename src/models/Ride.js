@@ -84,7 +84,7 @@ var Ride = (function Ride() {
   };
 
   // does not check if ride has closed
-  that.getRide = function(rideID, callback) {
+  that.getRide = function(rideId, callback) {
     rideModel.findById(rideId, function (err, ride) {
       if (err) {
         callback(err);
@@ -119,13 +119,13 @@ var Ride = (function Ride() {
     });
   };
 
-  that.addRider = function(rideID, riderId, callback) {
+  that.addRider = function(rideId, riderId, callback) {
     // checks if ride is full
     rideModel.findById(rideId, function(err, ride) {
       if (ride.remaining_capacity === 0) {
         callback( { msg: "ride full" } );
       } else {
-        rideModel.findByIdAndUpdate(rideID,
+        rideModel.findByIdAndUpdate(rideId,
                                     { $inc: { 'remaining_capacity' : -1 } },
                                     { $push: { riders: riderId } },
                                     function(err) {
@@ -146,9 +146,9 @@ var Ride = (function Ride() {
     });
   };
 
-  that.removeRider = function(rideID, riderId, callback) {
+  that.removeRider = function(rideId, riderId, callback) {
     // checks if rider exists
-    rideModel.findByIdAndUpdate(rideID,
+    rideModel.findByIdAndUpdate(rideId,
                                  { $inc: { 'remaining_capacity' : 1 } },
                                  { $pull: { riders: riderId } },
                                  function(err) {
@@ -179,7 +179,7 @@ var Ride = (function Ride() {
     });
   };
 
-  that.deleteRide = function(rideID, callback) {
+  that.deleteRide = function(rideId, callback) {
     // check if valid ride
     rideModel.findByIdAndRemove(rideId, function(err) {
       if (err) {
