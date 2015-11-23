@@ -38,8 +38,8 @@ var User = (function User() {
   };
 
   // Verify password for login
-  that.verifyPassword = function(userId, candidatepw, callback) {
-    userModel.find({ '_id': userId }, function(err, user) {
+  that.verifyPassword = function(username, candidatepw, callback) {
+    userModel.findOne({ 'kerberos' : username }, function(err, user) {
       if (err) {
         callback(err);
       } else if (user.password === candidatepw) {
