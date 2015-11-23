@@ -137,7 +137,7 @@ router.post('/participate', function(req, res) {
         if (err) {
           res.render('error', {'message': 'Resource not found.', 'error.status': 404});
         } else {
-          res.redirect('/');
+          res.redirect(req.get('referer'));
         }
       });
     } else {
@@ -146,7 +146,7 @@ router.post('/participate', function(req, res) {
         if (err) {
           res.render('error', {'message': 'Resource not found.', 'error.status': 404});
         } else {
-          res.redirect('/');
+          res.redirect(req.get('referer'));
         }
       });
     }
