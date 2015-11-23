@@ -31,7 +31,7 @@ var isLoggedInOrInvalidBody = function(req, res) {
 /*
   View the reviews of a particular user.
 */
-router.get('/:user', function(req, res) {
+router.get('/user/:user', function(req, res) {
   User.getUser(req.body.userID, function(err, user) {
     if (err) {
       res.render('error', { 'message' : 'Resource not found.', 'error.status': 404});
