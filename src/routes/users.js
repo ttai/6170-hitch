@@ -54,5 +54,76 @@ router.get('/:user', function(req, res) {
 //   }
 // });
 
+/*
+  Go to register page
+*/
+
+router.get('/register', function(req, res) {
+  if (req.session.currentUser) {
+    res.redirect('/');
+  } else {
+    res.render('register');
+  }
+});
+
+/*
+  Registers a new user based on kerberos and password.
+*/
+
+router.post('/', function(req, res) {
+  if (isLoggedInOrInvalidBody(req, res)) {
+    return;
+  }
+  var kerberos = req.body.kerberos;
+  var password = req.body.password;
+
+  User.createUser(kerberos, password, 
+    function(err,user) {
+
+      if (err) {
+        if (err.taken) {
+          res.render('register', {'e' : "Kerberos already exists"});
+        } else {
+          res.send("error");
+        }
+      } else {
+        req.session.currentUser = user;
+        res.redirect('/users');
+      }
+  });
+});
+
+// Sign in page
+router.get('/signin', function(req, res) {
+  if (req.session.currentUser) {
+    res.redirect('/');
+  } else {
+    res.render('signin');
+  }
+});
+
+// Allows a user to sign in
+router.post('/signin', function(req, res) {
+  var password = req.body.password;
+  var userID = req.body.userID;
+  users.verifyPassword(userID, password, function(err, user) {
+    if (user) {
+      req.session.currentUser = user;
+      res.redirect('/users')
+    } else {
+      res.render('signin', {'e':"Incorrect Kerberos or Password"});
+    }
+  })
+});
+
+// Logs a user out
+router.get('/logout', function(req, res) {
+  req.session.currentUser = undefined;
+  res.redirect('/');
+});
+
+
+  
+
 
 module.exports = router;

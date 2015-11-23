@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Fritter</title>
+    <title>Hitch</title>
     <link rel='stylesheet' href='/stylesheets/style.css'/>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -34,15 +34,12 @@
         <input type="number" class="form-control" name="capacity" placeholder="Enter capacity">
       </div>
       <div class="form-group">
-        <label for="Transport">Transport:</label>
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Ride <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu">
-            <li><a href="#">Taxi</a></li>
-            <li><a href="#">Uber</a></li>
-            <li><a href="#">Lyft</a></li>
-          </ul>
+        <label for="origin">Transport:</label>
+        <select class="form-control" name="origin" id="origin">
+          <option>Taxi</option>
+          <option>Uber</option>
+          <option>Lyft</option>
+        </select>
       </div>
       <button type="submit" class="btn btn-default">Submit</button>
     </form>
