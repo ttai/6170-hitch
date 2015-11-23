@@ -7,6 +7,10 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   </head>
   <body>
+    <header>
+      <% include header %>
+    </header>
+
     <% if (typeof(e) !== 'undefined') { %>
       <div id='error'> <%= e %> </div>
     <% } %>
