@@ -18,8 +18,7 @@ var rideSchema = new Schema({
   total_capacity: { type: Number, required: true },
   remaining_capacity: { type: Number, required: true },
   riders: [{ type: ObjectId, ref: 'userSchema' }],
-  transport: String,
-  passphrase: String
+  transport: String
 });
 
 var reviewSchema = new Schema({
