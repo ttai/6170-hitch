@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/User');
+var Ride = require('../models/Ride');
 
 /* GET users listing. */
 // router.get('/', function(req, res, next) {
@@ -130,6 +131,14 @@ router.post('/login', function(req, res) {
 router.get('/logout', function(req, res) {
   req.session.currentUser = undefined;
   res.redirect('/');
+});
+
+// Get the rides of the current logged in user
+router.get('/my_rides', function(req, res) {
+  Ride.find({ '_id' : req.session.currentUser.rides }, function(err, rides) {
+    res.render('my_rides', { 'currentUser' : req.session.currentUser,
+                             'rides' : rides });
+  });
 });
 
 module.exports = router;
