@@ -104,7 +104,7 @@ router.get('/login', function(req, res) {
 router.post('/login', function(req, res) {
   var password = req.body.password;
   var userID = req.body.userID;
-  users.verifyPassword(userID, password, function(err, user) {
+  User.verifyPassword(userID, password, function(err, user) {
     if (user) {
       req.session.currentUser = user;
       res.redirect('/')
