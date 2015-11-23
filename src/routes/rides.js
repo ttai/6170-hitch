@@ -142,7 +142,7 @@ router.post('/', function(req, res) {
 router.post('/participate/:ride', function(req, res) {
   Ride.inRide(req.session.currentUser._id, function (err, result) {
     if (err || result < 0) {
-      Ride.removeRider(req.ride._id, req/currentUser._id, function(err, result) {
+      Ride.removeRider(req.ride._id, req.session.currentUser._id, function(err, result) {
         if (err) {
           res.render('error', {'message': 'Resource not found.', 'error.status': 404});
         } else {
