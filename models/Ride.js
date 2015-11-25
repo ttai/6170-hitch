@@ -127,6 +127,16 @@ var Ride = (function Ride() {
     });
   };
 
+  that.getRiders = function(rideId, callback) {
+    rideModel.findOne(rideId, function (err, ride) {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, ride.riders);
+      }
+    });
+  }
+
   that.addRider = function(rideId, riderId, callback) {
     // checks if ride is full
     rideModel.findById(rideId, function(err, ride) {
