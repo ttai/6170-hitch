@@ -8,7 +8,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.js"></script>
+    <script> 
+      $(document).ready( function () {
+          $('#open_rides').DataTable();
+      } );
+    </script>
   </head>
   <body> 
   	<% if (typeof(e) !== 'undefined') { %>
@@ -24,7 +31,7 @@
 
       <div class="container">
         <h1>Open rides</h1>
-        <table class="table">
+        <table class="table" id = "open_rides">
           <thead>
             <tr>
               <th>Departure time</th>
@@ -38,7 +45,7 @@
           <tbody>
             <% for (var i = 0; i < rides.length; i ++) {%>
               <tr>
-                <td><%= rides[i].departure_time.toLocaleString() %></td>
+                <td><%= rides[i].departure_time.toLocaleString %></td>
                 <td><%= rides[i].origin %></td>
                 <td><%= rides[i].destination %></td>
                 <td><%= rides[i].remaining_capacity %></td>
