@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 
 var User = require('../models/User');
-var Ride = require('../models/Ride');
 
 /*
   For both login and create user, we want to send an error code if the user
