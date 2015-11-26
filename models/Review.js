@@ -84,7 +84,7 @@ var Review = (function Review() {
       userModel.findById(review.revieweeId, function(err, user) {
         var index = user.reviews.indexOf(reviewId);
         user.reviews.splice(index, 1);
-        userModel.update({ "_id": user._id },
+        userModel.findByIdAndUpdate(user._id,
                           { $set: { "reviews": user.reviews } },
                           function(err) {
                             callback(err);

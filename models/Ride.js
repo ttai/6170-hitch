@@ -27,6 +27,8 @@ var Ride = (function Ride() {
     rideModel.findById(rideId, function (err, ride) {
       if (err) {
         callback(err, null);
+      } else if (!ride) {
+        callback( {msg: 'Invalid ride'} );
       } else {
         var riders = ride.riders;
         callback(null, riders.indexOf(userId));
@@ -48,6 +50,7 @@ var Ride = (function Ride() {
               });
   };
 
+  // TODO: Use Google Maps API to find rides by location
   that.findRidesByPickup = function(location, callback) {
     var now = new Date();
     rideModel.find({ origin: location }).where('departure_time').gte(now).exec(function(err, rides) {
@@ -59,6 +62,7 @@ var Ride = (function Ride() {
     });
   };
 
+  // TODO: Use Google Maps API to find rides by location
   that.findRidesByDestination = function(location, callback) {
     var now = new Date();
     rideModel.find({ destination: location }).where('departure_time').gte(now).exec(function(err, rides) {
@@ -88,12 +92,10 @@ var Ride = (function Ride() {
     rideModel.findById(rideId, function (err, ride) {
       if (err) {
         callback(err);
+      } else if (!ride) {
+        callback({ msg: 'Invalid ride.' });
       } else {
-        if (ride) {
-          callback(null, ride);
-        } else {
-          callback({ msg: 'Invalid ride.' });
-        }
+        callback(null, ride);
       }
     });
   };
@@ -101,7 +103,6 @@ var Ride = (function Ride() {
   that.addRide = function(userId, origin, destination, departure_time,
                           total_capacity, transport,
                           callback) {
-    // check if valid ride
     rideModel.create({
       'origin': origin,
       'destination': destination,
@@ -128,11 +129,22 @@ var Ride = (function Ride() {
   };
 
   that.getRiders = function(rideId, callback) {
-    rideModel.findOne(rideId, function (err, ride) {
+    rideModel.findById(rideId, function (err, ride) {
       if (err) {
         callback(err, null);
       } else {
-        callback(null, ride.riders);
+        var ridersIds = ride.riders;
+        var riderUsernames = [];
+        riderIds.forEach(function (err, ride) {
+          userModel.getUsername(rideId, function (err, username) {
+            if (err) {
+              callback(err);
+            } else {
+              riderUsernames.push(username);
+            }
+          })
+        });
+        callback(null, riderUsernames);
       }
     });
   }
@@ -140,12 +152,14 @@ var Ride = (function Ride() {
   that.addRider = function(rideId, riderId, callback) {
     // checks if ride is full
     rideModel.findById(rideId, function(err, ride) {
-      if (ride.remaining_capacity === 0) {
+      if (!ride) {
+        callback({ msg: 'Invalid ride.' });
+      } else if (ride.remaining_capacity === 0) {
         callback( { msg: "ride full" } );
       } else {
-        rideModel.update({_id: rideId }, { $inc: {'remaining_capacity' : -1} }, function(err, result) {
-          rideModel.update({_id: rideId }, { $push: { riders: riderId } }, function(err, result) {
-              userModel.update({ _id: riderId },
+        rideModel.findByIdAndUpdate(rideId, { $inc: {'remaining_capacity' : -1} }, function(err, result) {
+          rideModel.findByIdAndUpdate(rideId, { $push: { riders: riderId } }, function(err, result) {
+              userModel.findByIdAndUpdate(rideId,
                                            { $push: {rides: rideId } },
                                            function (err, result) {
                 if (err) {
@@ -161,15 +175,14 @@ var Ride = (function Ride() {
   };
 
   that.removeRider = function(rideId, riderId, callback) {
-    // checks if rider exists
     var ObjectId = mongoose.Types.ObjectId;
-    rideModel.update({_id: rideId },
+    rideModel.findByIdAndUpdate(rideId,
                                  { $inc: { 'remaining_capacity' : 1 } },
                                  function (err, result) {
       if (err) {
         callback(err, null);
       } else {
-        rideModel.update({_id: rideId }, { $pull: { riders: ObjectId(riderId) } }, function(err, result) {
+        rideModel.findByIdAndUpdate(rideId, { $pull: { riders: ObjectId(riderId) } }, function(err, result) {
             userModel.findByIdAndUpdate(riderId,
                                          { $pull: {rides: ObjectId(rideId) } },
                                          function (err, result) {
@@ -198,7 +211,6 @@ var Ride = (function Ride() {
   };
 
   that.deleteRide = function(rideId, callback) {
-    // check if valid ride
     rideModel.findByIdAndRemove(rideId, function(err) {
       if (err) {
         callback(err);
