@@ -16,11 +16,14 @@ router.post('/', function(req, res) {
     })
 });
 
-// Get review page
+// Get review page for a particular ride
 router.get('/:ride', function(req, res) {
   var user = req.session.currentUser;
   var ride_id = req.params.ride;
-  res.render('reviews', { 'user' : req.session.currentUser });
+  Ride.getOtherRiders(ride_id, user._id, function(err, other_riders) {
+    res.render('reviews', { 'user' : req.session.currentUser,
+                            'other_riders' : other_riders });
+  });
 });
 
 // Update review rating
