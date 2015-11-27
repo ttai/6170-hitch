@@ -5,6 +5,8 @@ var rideModel = schemas.rideModel;
 var reviewModel = schemas.reviewModel;
 var User = require('./User');
 
+var ObjectId = mongoose.Types.ObjectId;
+
 // update current ride methods to include both capacities and transport means
 // doesn't include error handling
 // all the get ride methods (except getRide) finds rides that have not yet closed (whose departure times are still in the future)
@@ -143,11 +145,11 @@ var Ride = (function Ride() {
 
   that.getOtherRiders = function(rideId, userId, callback) {
     that.getRiders(rideId, function(err, riders) {
-      var index = riders.indexOf(userId);
-      if (index > -1) {
-        riders.splice(index, 1);
-      }
-      callback(err, riders);
+      var user_id = ObjectId(userId);
+      var other_riders = riders.filter(function(rider) {
+        return !user_id.equals(rider._id);
+      });
+      callback(err, other_riders);
     });
   };
 
