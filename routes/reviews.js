@@ -7,13 +7,13 @@ var utils = require('../utils/utils');
 // Add review
 router.post('/', function(req, res) {
   Review.addReview(req.body.rideID, req.body.reviewerID, req.body.revieweeID,
-    req.body.rating, req.body.comment, function(err) {
-      if (err) {
-        res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500});
-      } else {
-        utils.sendSuccessResponse(res);
-      }
-    })
+                   req.body.rating, req.body.comment, function(err) {
+    if (err) {
+      res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500});
+    } else {
+      utils.sendSuccessResponse(res);
+    }
+  });
 });
 
 // Get review page for a particular ride
@@ -34,7 +34,7 @@ router.post('/:review', function(req, res) {
     } else {
       utils.sendSuccessResponse(res);
     }
-  })
+  });
 });
 
 // Update review comment
@@ -45,7 +45,7 @@ router.post('/:review', function(req, res) {
     } else {
       utils.sendSuccessResponse(res);
     }
-  })
+  });
 });
 
 // Delete review
@@ -56,7 +56,7 @@ router.delete('/:review', function(req, res) {
     } else {
       utils.sendSuccessResponse(res);
     }
-  })
+  });
 });
 
 module.exports = router;
