@@ -159,7 +159,10 @@ var Ride = (function Ride() {
       } else {
         rideModel.findByIdAndUpdate(rideId, { $inc: {'remaining_capacity' : -1} }, function(err, result) {
           rideModel.findByIdAndUpdate(rideId, { $push: { riders: riderId } }, function(err, result) {
-              userModel.findByIdAndUpdate(rideId,
+            if (err) {
+              callback(err);
+            } else{
+              userModel.findByIdAndUpdate(riderId,
                                            { $push: {rides: rideId } },
                                            function (err, result) {
                 if (err) {
@@ -168,10 +171,11 @@ var Ride = (function Ride() {
                       callback(null,null);
                     }
                   });
-                });
-              });
-            };
+            }
+          });
         });
+      };
+    });
   };
 
   that.removeRider = function(rideId, riderId, callback) {
@@ -183,6 +187,9 @@ var Ride = (function Ride() {
         callback(err, null);
       } else {
         rideModel.findByIdAndUpdate(rideId, { $pull: { riders: ObjectId(riderId) } }, function(err, result) {
+          if (err) {
+            callback(err)
+          } else {
             userModel.findByIdAndUpdate(riderId,
                                          { $pull: {rides: ObjectId(rideId) } },
                                          function (err, result) {
@@ -205,8 +212,9 @@ var Ride = (function Ride() {
                 });
               }
             });
-          });
-        }
+          }
+        });
+      }
     });
   };
 
