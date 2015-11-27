@@ -133,19 +133,22 @@ var Ride = (function Ride() {
       if (err) {
         callback(err, null);
       } else {
-        var ridersIds = ride.riders;
-        var riderUsernames = [];
-        riderIds.forEach(function (err, ride) {
-          userModel.getUsername(rideId, function (err, username) {
-            if (err) {
-              callback(err);
-            } else {
-              riderUsernames.push(username);
-            }
-          });
+        var riderIds = ride.riders;
+        userModel.find({ '_id' : { $in : riderIds } },
+                       function(err, riders) {
+          callback(err, riders);
         });
-        callback(null, riderUsernames);
       }
+    });
+  };
+
+  that.getOtherRiders = function(rideId, userId, callback) {
+    that.getRiders(rideId, function(err, riders) {
+      var index = riders.indexOf(userId);
+      if (index > -1) {
+        riders.splice(index, 1);
+      }
+      callback(err, riders);
     });
   };
 
@@ -163,8 +166,8 @@ var Ride = (function Ride() {
               callback(err);
             } else{
               userModel.findByIdAndUpdate(riderId,
-                                           { $push: {rides: rideId } },
-                                           function (err, result) {
+                                          { $push: {rides: rideId } },
+                                          function (err, result) {
                 if (err) {
                   callback(err,null);
                 } else {
