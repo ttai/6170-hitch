@@ -188,6 +188,8 @@ var Ride = (function Ride() {
       } else {
         rideModel.findByIdAndUpdate(rideId, { $pull: { riders: ObjectId(riderId) } }, function(err, result) {
           if (err) {
+            callback(err)
+          } else {
             userModel.findByIdAndUpdate(riderId,
                                          { $pull: {rides: ObjectId(rideId) } },
                                          function (err, result) {
