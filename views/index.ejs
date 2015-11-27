@@ -45,7 +45,7 @@
           <tbody>
             <% for (var i = 0; i < rides.length; i ++) {%>
               <tr>
-                <td><%= rides[i].departure_time.toDateString().concat(" ".concat(rides[i].departure_time.toLocaleTimeString())) %></td>
+                <td><%= rides[i].departure_time.toLocaleString() %></td>
                 <td><%= rides[i].origin %></td>
                 <td><%= rides[i].destination %></td>
                 <td><%= rides[i].remaining_capacity %></td>
