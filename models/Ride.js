@@ -133,26 +133,10 @@ var Ride = (function Ride() {
       if (err) {
         callback(err, null);
       } else {
-<<<<<<< HEAD
-        var ridersIds = ride.riders;
-        var riderKerberos = [];
-        riderIds.forEach(function (err, ride) {
-          userModel.getKerberos(rideId, function (err, kerberos) {
-            if (err) {
-              callback(err);
-            } else {
-              riderKerberos.push(kerberos);
-            }
-          })
-        });
-        callback(null, riderKerberos);
-=======
         var riderIds = ride.riders;
-        userModel.find({ '_id' : { $in : riderIds } },
-                       function(err, riders) {
+        userModel.find({ '_id' : { $in : riderIds } }, function(err, riders) {
           callback(err, riders);
         });
->>>>>>> e496837604cbe7b991de03392d862a34c22594c4
       }
     });
   };
