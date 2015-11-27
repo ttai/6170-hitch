@@ -24,7 +24,7 @@ var User = (function User() {
     });
   };
 
-  that.getUsername = function (userId, callback) {
+  that.getKerberos = function (userId, callback) {
     userModel.findById(userId, function (err, user) {
       if (err) {
         callback(err);
@@ -64,8 +64,8 @@ var User = (function User() {
   };
 
   // Verify password for login
-  that.verifyPassword = function (username, candidatepw, callback) {
-    userModel.findOne({ 'kerberos' : username }, function (err, user) {
+  that.verifyPassword = function (kerberos, candidatepw, callback) {
+    userModel.findOne({ 'kerberos' : kerberos }, function (err, user) {
       if (err) {
         callback(err);
       } else if (!user) {

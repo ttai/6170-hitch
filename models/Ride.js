@@ -134,17 +134,17 @@ var Ride = (function Ride() {
         callback(err, null);
       } else {
         var ridersIds = ride.riders;
-        var riderUsernames = [];
+        var riderKerberos = [];
         riderIds.forEach(function (err, ride) {
-          userModel.getUsername(rideId, function (err, username) {
+          userModel.getKerberos(rideId, function (err, kerberos) {
             if (err) {
               callback(err);
             } else {
-              riderUsernames.push(username);
+              riderKerberos.push(kerberos);
             }
           })
         });
-        callback(null, riderUsernames);
+        callback(null, riderKerberos);
       }
     });
   }

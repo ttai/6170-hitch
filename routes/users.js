@@ -15,8 +15,8 @@ var isLoggedInOrInvalidBody = function(req, res) {
     res.render('error', { 'message' : 'There is already a user logged in.',
                           'error.status' : 403 });
     return true;
-  } else if (!(req.body.username && req.body.password)) {
-    res.render('error', { 'message' : 'Username or password not provided.',
+  } else if (!(req.body.kerberos && req.body.password)) {
+    res.render('error', { 'message' : 'kerberos or password not provided.',
                           'error.status' : 400 });
     return true;
   }
@@ -64,10 +64,10 @@ router.post('/', function(req, res) {
   if (isLoggedInOrInvalidBody(req, res)) {
     return;
   }
-  var username = req.body.username;
+  var kerberos = req.body.kerberos;
   var password = req.body.password;
 
-  User.createUser(username, password, 
+  User.createUser(kerberos, password, 
                   function(err,user) {
     if (err) {
       if (err.taken) {
@@ -94,8 +94,8 @@ router.get('/login', function(req, res) {
 // Allows a user to sign in
 router.post('/login', function(req, res) {
   var password = req.body.password;
-  var username = req.body.username;
-  User.verifyPassword(username, password, function(err, user) {
+  var kerberos = req.body.kerberos;
+  User.verifyPassword(kerberos, password, function(err, user) {
     if (user) {
       req.session.currentUser = user;
       res.redirect('/')
