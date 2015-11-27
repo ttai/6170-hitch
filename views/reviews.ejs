@@ -15,5 +15,10 @@
     <header>
       <% include header %>
     </header>
+
+    <h2>Riders Who Rode With You</h2>
+    <% for (var i = 0; i < other_riders.length; ++i) { %>
+      <p><%= other_riders[i].kerberos %></p>
+    <% } %>
   </body>
 </html>

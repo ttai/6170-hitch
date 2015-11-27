@@ -46,19 +46,19 @@ var User = (function User() {
       } else if (count > 0) {
         callback({ taken: true });
       } else {
-        userModel.create({"kerberos": currentKerberos,
-                          "password": inputPass,
-                          rating: 5,
-                          reviews: [],
-                          rides: []
-                          },
-                          function (err, user) {
-                            if (err) {
-                              callback(err);
-                            } else {
-                              callback(null, user);
-                            }
-                          });
+        userModel.create({
+          "kerberos": currentKerberos,
+          "password": inputPass,
+          rating: 5,
+          reviews: [],
+          rides: []
+        }, function (err, user) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(null, user);
+          }
+        });
       }
     });
   };
@@ -73,9 +73,9 @@ var User = (function User() {
       } else {
         if (user.password !== candidatepw) {
             callback(null, false);
-          } else {
-            callback(null, user); 
-          }
+        } else {
+          callback(null, user); 
+        }
       }
     });
   };
@@ -89,7 +89,8 @@ var User = (function User() {
         callback({ msg: 'Invalid user' });
       } else {
         if (user.rides.length) {
-          rideModel.find({ '_id' : { $in: user.rides } }, function (err, rides) {
+          rideModel.find({ '_id' : { $in: user.rides } },
+                         function (err, rides) {
             if (err) {
               callback(err);
             } else {
@@ -142,16 +143,18 @@ var User = (function User() {
         if (index < 0) {
           callback( { msg: 'Invalid review'} );
         } else {
-          var new_rating = (user.rating * num_reviews + review.rating - reviews[index]) / (num_reviews);
+          var new_rating =
+              (user.rating * num_reviews + review.rating - reviews[index]) /
+              (num_reviews);
           userModel.findByIdAndUpdate(userId, 
                                       { $set: {rating: new_rating} },
                                       function (err, result) {
-                                        if (err) {
-                                          callback(err);
-                                        } else {
-                                          callback(null, null);
-                                        }
-                                      });
+            if (err) {
+              callback(err);
+            } else {
+              callback(null, null);
+            }
+          });
         }
       }
     });
@@ -162,20 +165,19 @@ var User = (function User() {
     userModel.findByIdAndUpdate(userId,
                                 { $addToSet: {reviews: review._id } },
                                 function (err, result) {
-                                  if (err) {
-                                    callback(err);
-                                  } else {
-                                    that.updateRating(userId, review._id, function (err, result) {
-                                      if (err) {
-                                        callback(err);
-                                      } else {
-                                        callback(null, null);
-                                      }
-                                    });
-                                  }
-                                });
+      if (err) {
+        callback(err);
+      } else {
+        that.updateRating(userId, review._id, function (err, result) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(null, null);
+          }
+        });
+      }
+    });
   };
-
 
   Object.freeze(that);
   return that;

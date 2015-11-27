@@ -55,27 +55,27 @@ var Review = (function Review() {
 
   that.setReviewRating = function(reviewerId, revieweeId, reviewId, rating, callback) {
     reviewModel.findbyIdAndUpdate(reviewId, { $set: { "rating": rating } },
-                        function(err, result) {
-                          if (err) {
-                            callback(err);
-                          } else {
-                            User.updateRating(userId, reviewId, function (err, result) {
-                              if (err) {
-                                callback(err);
-                              } else {
-                                callback(null, null);
-                              }
-                            });
-                          }
+                                  function(err, result) {
+      if (err) {
+        callback(err);
+      } else {
+        User.updateRating(userId, reviewId, function (err, result) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(null, null);
+          }
+        });
+      }
     });
   };
 
   that.setReviewComment = function(reviewId, comment, callback) {
     reviewModel.findbyIdAndUpdate(reviewId, { $set: { "comment": comment } }, 
-                        function(err) {
-                          if (err) {
-                            callback(err);
-                          }
+                                  function(err) {
+      if (err) {
+        callback(err);
+      }
     });
   };
   
@@ -85,10 +85,10 @@ var Review = (function Review() {
         var index = user.reviews.indexOf(reviewId);
         user.reviews.splice(index, 1);
         userModel.findByIdAndUpdate(user._id,
-                          { $set: { "reviews": user.reviews } },
-                          function(err) {
-                            callback(err);
-                        });
+                                    { $set: { "reviews": user.reviews } },
+                                    function(err) {
+          callback(err);
+        });
       });
     }).remove(function(err) {
       callback(err);

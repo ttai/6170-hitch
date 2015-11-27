@@ -39,15 +39,15 @@ var Ride = (function Ride() {
   that.getAllOpenRides = function(callback) {
     var now = new Date();
     rideModel.find({})
-              .where('remaining_capacity').gte(1)
-              .where('departure_time').gte(now)
-              .exec(function(err, rides) {
-                if (err) {
-                  callback(err);
-                } else {
-                  callback(null, rides);
-                }
-              });
+      .where('remaining_capacity').gte(1)
+      .where('departure_time').gte(now)
+      .exec(function(err, rides) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, rides);
+        }
+      });
   };
 
   // TODO: Use Google Maps API to find rides by location
@@ -118,13 +118,13 @@ var Ride = (function Ride() {
         userModel.findByIdAndUpdate(userId,
                                     {$push: {rides: ride._id} },
                                     function (err) {
-                                      if (err) {
-                                        callback(err);
-                                      } else {
-                                        callback(null);
-                                      };
-                                    })
-        }       
+          if (err) {
+            callback(err);
+          } else {
+            callback(null);
+          };
+        });
+      }       
     });
   };
 
@@ -133,6 +133,7 @@ var Ride = (function Ride() {
       if (err) {
         callback(err, null);
       } else {
+<<<<<<< HEAD
         var ridersIds = ride.riders;
         var riderKerberos = [];
         riderIds.forEach(function (err, ride) {
@@ -145,9 +146,26 @@ var Ride = (function Ride() {
           })
         });
         callback(null, riderKerberos);
+=======
+        var riderIds = ride.riders;
+        userModel.find({ '_id' : { $in : riderIds } },
+                       function(err, riders) {
+          callback(err, riders);
+        });
+>>>>>>> e496837604cbe7b991de03392d862a34c22594c4
       }
     });
-  }
+  };
+
+  that.getOtherRiders = function(rideId, userId, callback) {
+    that.getRiders(rideId, function(err, riders) {
+      var index = riders.indexOf(userId);
+      if (index > -1) {
+        riders.splice(index, 1);
+      }
+      callback(err, riders);
+    });
+  };
 
   that.addRider = function(rideId, riderId, callback) {
     // checks if ride is full
@@ -163,18 +181,18 @@ var Ride = (function Ride() {
               callback(err);
             } else{
               userModel.findByIdAndUpdate(riderId,
-                                           { $push: {rides: rideId } },
-                                           function (err, result) {
+                                          { $push: {rides: rideId } },
+                                          function (err, result) {
                 if (err) {
                   callback(err,null);
                 } else {
-                      callback(null,null);
-                    }
-                  });
+                  callback(null,null);
+                }
+              });
             }
           });
         });
-      };
+      }
     });
   };
 
@@ -186,13 +204,15 @@ var Ride = (function Ride() {
       if (err) {
         callback(err, null);
       } else {
-        rideModel.findByIdAndUpdate(rideId, { $pull: { riders: ObjectId(riderId) } }, function(err, result) {
+        rideModel.findByIdAndUpdate(rideId,
+                                    { $pull: { riders: ObjectId(riderId) } },
+                                    function(err, result) {
           if (err) {
             callback(err)
           } else {
             userModel.findByIdAndUpdate(riderId,
-                                         { $pull: {rides: ObjectId(rideId) } },
-                                         function (err, result) {
+                                        { $pull: {rides: ObjectId(rideId) } },
+                                        function (err, result) {
               if (err) {
                 callback(err,null);
               } else {
