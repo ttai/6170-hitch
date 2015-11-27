@@ -16,9 +16,19 @@
       <% include header %>
     </header>
 
-    <h2>Riders Who Rode With You</h2>
-    <% for (var i = 0; i < other_riders.length; ++i) { %>
-      <p><%= other_riders[i].kerberos %></p>
-    <% } %>
+    <h4><b>Riders Who Rode With You</b></h4>
+      <ul>
+        <% for (var i = 0; i < other_riders.length; ++i) { %>
+          <li>
+            <form action="/reviews/<%= ride_id %>" method="post">
+              <h5><b><%= other_riders[i].kerberos %></b></h5>
+              <p>Comment:</p>
+              <p><textarea name="comment" cols="50" rows="4"></textarea></p>
+              <p><input type="submit" value="Update"></p>
+            </form>
+          </li>
+        <% } %>
+      </ul>
   </body>
 </html>
+

@@ -22,6 +22,7 @@ router.get('/:ride', function(req, res) {
   var ride_id = req.params.ride;
   Ride.getOtherRiders(ride_id, user._id, function(err, other_riders) {
     res.render('reviews', { 'user' : req.session.currentUser,
+                            'ride_id' : ride_id,
                             'other_riders' : other_riders });
   });
 });
