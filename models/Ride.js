@@ -39,15 +39,15 @@ var Ride = (function Ride() {
   that.getAllOpenRides = function(callback) {
     var now = new Date();
     rideModel.find({})
-              .where('remaining_capacity').gte(1)
-              .where('departure_time').gte(now)
-              .exec(function(err, rides) {
-                if (err) {
-                  callback(err);
-                } else {
-                  callback(null, rides);
-                }
-              });
+      .where('remaining_capacity').gte(1)
+      .where('departure_time').gte(now)
+      .exec(function(err, rides) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, rides);
+        }
+      });
   };
 
   // TODO: Use Google Maps API to find rides by location
@@ -118,13 +118,13 @@ var Ride = (function Ride() {
         userModel.findByIdAndUpdate(userId,
                                     {$push: {rides: ride._id} },
                                     function (err) {
-                                      if (err) {
-                                        callback(err);
-                                      } else {
-                                        callback(null);
-                                      };
-                                    })
-        }       
+          if (err) {
+            callback(err);
+          } else {
+            callback(null);
+          };
+        });
+      }       
     });
   };
 
@@ -142,12 +142,12 @@ var Ride = (function Ride() {
             } else {
               riderUsernames.push(username);
             }
-          })
+          });
         });
         callback(null, riderUsernames);
       }
     });
-  }
+  };
 
   that.addRider = function(rideId, riderId, callback) {
     // checks if ride is full
@@ -168,13 +168,13 @@ var Ride = (function Ride() {
                 if (err) {
                   callback(err,null);
                 } else {
-                      callback(null,null);
-                    }
-                  });
+                  callback(null,null);
+                }
+              });
             }
           });
         });
-      };
+      }
     });
   };
 
@@ -186,13 +186,15 @@ var Ride = (function Ride() {
       if (err) {
         callback(err, null);
       } else {
-        rideModel.findByIdAndUpdate(rideId, { $pull: { riders: ObjectId(riderId) } }, function(err, result) {
+        rideModel.findByIdAndUpdate(rideId,
+                                    { $pull: { riders: ObjectId(riderId) } },
+                                    function(err, result) {
           if (err) {
             callback(err)
           } else {
             userModel.findByIdAndUpdate(riderId,
-                                         { $pull: {rides: ObjectId(rideId) } },
-                                         function (err, result) {
+                                        { $pull: {rides: ObjectId(rideId) } },
+                                        function (err, result) {
               if (err) {
                 callback(err,null);
               } else {
