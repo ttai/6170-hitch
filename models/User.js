@@ -10,91 +10,106 @@ var User = (function User() {
 
   var that = Object.create(User.prototype);
 
-  that.getUser = function(userId, callback) {
-    userModel.find({ '_id': userId }, function(err, user) {
+  that.getUser = function (userId, callback) {
+    userModel.findById(userId, function (err, user) {
       if (err) {
         callback(err);
       } else {
-        callback(null, user)
+        if (user) {
+          callback(null, user);
+        } else {
+          callback({ msg: 'No such user' });
+        }
       }
     });
-  }
-  // password or certificate authentication 
-  that.createUser = function(currentKerberos, inputPass, callback){
-    userModel.count({kerberos:currentKerberos}, function (err, count) {
+  };
+
+  that.getUsername = function (userId, callback) {
+    userModel.findById(userId, function (err, user) {
+      if (err) {
+        callback(err);
+      } else {
+        if (user) {
+          callback(null, user.kerberos);
+        } else {
+          callback({ msg: 'No such user' });
+        }
+      }
+    });
+  };
+
+  // password authentication, should be turned into 
+  that.createUser = function (currentKerberos, inputPass, callback){
+    userModel.count( { kerberos: currentKerberos }, function (err, count) {
       if (currentKerberos === "") {
         callback(err);
       } else if (count > 0) {
-        callback(null, { taken: true });
+        callback({ taken: true });
       } else {
-        userModel.create({"kerberos": currentKerberos, "password": inputPass, rating: 5, reviews: [], rides: []}, function(e, user) {
-          if (e) {
-            callback(e);
-          } else {
-            callback(null, user);
-          }
-        });
-      }     
+        userModel.create({"kerberos": currentKerberos,
+                          "password": inputPass,
+                          rating: 5,
+                          reviews: [],
+                          rides: []
+                          },
+                          function (err, user) {
+                            if (err) {
+                              callback(err);
+                            } else {
+                              callback(null, user);
+                            }
+                          });
+      }
     });
   };
 
   // Verify password for login
-  that.verifyPassword = function(username, candidatepw, callback) {
-    userModel.findOne({ 'kerberos' : username }, function(err, user) {
+  that.verifyPassword = function (username, candidatepw, callback) {
+    userModel.findOne({ 'kerberos' : username }, function (err, user) {
       if (err) {
         callback(err);
-      } else if (user.password === candidatepw) {
-        callback(null, user);
+      } else if (!user) {
+        callback({ msg: 'Invalid user' });
       } else {
-        callback(null, false);
-      }
-    });
-  };
-
-  // Adds a user to a specific ride
-  that.joinRide = function(userId, ride1, callback) {
-    Ride.update({"ride": ride1}, {$push: {"riders": userId}}, function(err) {
-      if (err) {
-        callback(err);
-      } else {
-        callback(null, null)
-      }
-    });
-  };
-
-  // Deletes a user from a specific ride
-  that.leaveRide = function(userId, ride, callback) {
-    Ride.update({"ride": ride1}, {$pull: {"riders": userId}}, function(err) {
-      if (err) {
-        callback(err);
-      } else {
-        callback(null, null)
+        if (user.password !== candidatepw) {
+            callback(null, false);
+          } else {
+            callback(null, user); 
+          }
       }
     });
   };
 
   // Give a list of all rides that a user is/was part of
-  that.getRides = function(userId, callback) {
-    userModel.findOne({ '_id' : userId }, function(err, user) {
-      if (user.rides.length) {
-        rideModel.find({ '_id' : { $in: user.rides } }, function(err, rides) {
-          if (err) {
-            callback(err);
-          } else {
-            callback(null, rides);
-          }
-        });
+  that.getRides = function (userId, callback) {
+    userModel.findById(userId, function (err, user) {
+      if (err) {
+        callback(err);
+      } else if (!user) {
+        callback({ msg: 'Invalid user' });
       } else {
-        callback(null, []);
+        if (user.rides.length) {
+          rideModel.find({ '_id' : { $in: user.rides } }, function (err, rides) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(null, rides);
+            }
+          });
+        } else {
+          callback(null, []);
+        }
       }
     });
   };
 
   // Give a list of all reviews given to a user
-  that.getReviews = function(userId, callback) {
-    userModel.find({ '_id': userId }, function(err, user){
+  that.getReviews = function (userId, callback) {
+    userModel.findById(userId, function (err, user){
       if (err) {
         callback(err);
+      } else if (!user) {
+        callback({ msg: 'Invalid user' });
       } else {
         callback(null, user.reviews);
       }
@@ -102,37 +117,65 @@ var User = (function User() {
   };
 
   // Gives the user's average rating.
-  that.getUserRating = function(userId, callback) {
-    userModel.find({ '_id': userId }, function(err, user) {
+  that.getUserRating = function (userId, callback) {
+    userModel.findById(userId, function (err, user) {
       if (err) {
         callback(err);
+      } else if (!user) {
+        callback({ msg: 'Invalid user' });
       } else {
         callback(null, user.rating);
       }
     });
   };
 
-
-  // do add review!
-  that.addReview = function(userId, review, callback) {
-    userModel.find({ "_id": userId }, function(err, user) {
+  that.updateRating = function (userId, reviewId, callback) {
+    userModel.findById(userId, function (err, user) {
       if (err) {
         callback(err);
-      }
-      var n_reviews = user.reviews.length;
-      var new_rating = (user.rating * n_reviews + review.rating) / (n_reviews + 1);
-      userModel.update({ "_id": userId },
-                        { $set: { "rating": new_rating },
-                          $push: { "reviews": review._id } },
-                        function(err) {
-        if (err) {
-          callback(err);
+      } else if (!user) {
+        callback({ msg: 'Invalid user' });
+      } else {
+        var reviews = user.reviews;
+        var index = reviews.indexOf(review._id);
+        var num_reviews = reviews.length;
+        if (index < 0) {
+          callback( { msg: 'Invalid review'} );
         } else {
-          callback(null, null);
+          var new_rating = (user.rating * num_reviews + review.rating - reviews[index]) / (num_reviews);
+          userModel.findByIdAndUpdate(userId, 
+                                      { $set: {rating: new_rating} },
+                                      function (err, result) {
+                                        if (err) {
+                                          callback(err);
+                                        } else {
+                                          callback(null, null);
+                                        }
+                                      });
         }
-      });
+      }
     });
   };
+
+  // do add review!
+  that.addReview = function (userId, review, callback) {
+    userModel.findByIdAndUpdate(userId,
+                                { $addToSet: {reviews: review._id } },
+                                function (err, result) {
+                                  if (err) {
+                                    callback(err);
+                                  } else {
+                                    that.updateRating(userId, review._id, function (err, result) {
+                                      if (err) {
+                                        callback(err);
+                                      } else {
+                                        callback(null, null);
+                                      }
+                                    });
+                                  }
+                                });
+  };
+
 
   Object.freeze(that);
   return that;

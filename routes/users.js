@@ -1,16 +1,7 @@
 var express = require('express');
 var router = express.Router();
+
 var User = require('../models/User');
-var Ride = require('../models/Ride');
-
-var schemas = require('../models/schemas');
-var rideModel = schemas.rideModel;
-var userModel = schemas.userModel;
-
-/* GET users listing. */
-// router.get('/', function(req, res, next) {
-//   res.send('respond with a resource');
-// });
 
 /*
   For both login and create user, we want to send an error code if the user
@@ -40,8 +31,7 @@ router.get('/user/:user', function(req, res) {
     if (err) {
       res.render('error', { 'message' : 'Resource not found.', 'error.status': 404});
     } else{
-    res.render('user', { 'currentUser' : req.session.currentUser,
-                         'user' : user });
+      res.render('user', { 'currentUser' : req.session.currentUser, 'user' : user });
     }
   });
 });
@@ -49,7 +39,6 @@ router.get('/user/:user', function(req, res) {
 /*
   Go to register page
 */
-
 router.get('/register', function(req, res) {
   if (req.session.currentUser) {
     res.redirect('/');
@@ -128,10 +117,6 @@ router.get('/my_rides', function(req, res) {
     res.render('my_rides', { 'user' : req.session.currentUser,
                              'rides' : rides });
   });
-//   rideModel.find({ '_id' : req.session.currentUser.rides }, function(err, rides) {
-//     res.render('my_rides', { 'currentUser' : req.session.currentUser,
-//                              'rides' : rides });
-//   });
 });
 
 module.exports = router;

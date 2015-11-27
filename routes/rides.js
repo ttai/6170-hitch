@@ -1,8 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var utils = require('../utils/utils');
 
-var User = require('../models/User');
 var Ride = require('../models/Ride');
 
 var moment = require('moment');
@@ -21,7 +19,7 @@ var requireAuthentication = function(req, res, next) {
 };
 
 /*
-  Require ownership whenever accessing a particular ride
+  Require participation whenever accessing a particular ride
   This means that the client accessing the resource must be logged in
   as the user that originally created the ride. Clients who are not owners 
   of this particular resource will receive a 404.
@@ -44,7 +42,6 @@ var requireAuthentication = function(req, res, next) {
 /*
   Go to new ride page
 */
-
 router.get('/new_ride', function(req, res) {
   if (req.session.currentUser) {
     res.render('new_ride', {user: req.session.currentUser});
