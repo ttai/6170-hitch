@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Review = require('../models/Review');
+var Ride = require('../models/Ride');
 var utils = require('../utils/utils');
 
 // Add review
@@ -13,6 +14,13 @@ router.post('/', function(req, res) {
         utils.sendSuccessResponse(res);
       }
     })
+});
+
+// Get review page
+router.get('/:ride', function(req, res) {
+  var user = req.session.currentUser;
+  var ride_id = req.params.ride;
+  res.render('reviews', { 'user' : req.session.currentUser });
 });
 
 // Update review rating
