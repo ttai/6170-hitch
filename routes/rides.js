@@ -31,8 +31,7 @@ var requireAuthentication = function(req, res, next) {
 var requireParticipation = function(req, res, next) {
 	Ride.inRide(req.session.currentUser._id, req.params.ride, function (err, result) {
 		if (err || result < 0) {
-      console.log('error:', err)
-      res.render('error', {'message': 'Resource not found.', 'error.status': 404});
+      res.redirect('/');
 		} else {
 			next();
 		}
@@ -46,7 +45,7 @@ router.get('/new_ride', function(req, res) {
   if (req.session.currentUser) {
     res.render('new_ride', {user: req.session.currentUser});
   } else {
-    res.render('/');
+    res.redirect('/');
   }
 });
 
@@ -94,7 +93,7 @@ router.get('/:ride', function(req, res) {
       } else {
         Ride.getRiders(req.params.ride, function (err, riders) {
           if (err) {
-            res.render('error', {'message': 'Resource not found.', 'error.status': 404});
+            res.redirect('/');
           } else {
             res.render('ride', { 'user': req.session.currentUser, ride: ride, riders: riders});
           }
@@ -133,20 +132,20 @@ router.post('/', function(req, res) {
 });
 
 router.post('/participate', function(req, res) {
-  var rideID = req.body.ride_id;
-  Ride.inRide(req.session.currentUser._id, rideID, function (err, result) {
+  var rideId = req.body.ride_id;
+  Ride.inRide(req.session.currentUser._id, rideId, function (err, result) {
     if (err) {
       res.render('error', {'message': 'Resource not found.', 'error.status': 404});
     } else if (result < 0) {
-      Ride.addRider(rideID, req.session.currentUser._id, function(err, result) {
+      Ride.addRider(rideId, req.session.currentUser._id, function(err, result) {
         if (err) {
           res.render('error', {'message': 'Resource not found.', 'error.status': 404});
         } else {
-          res.redirect(req.get('referer'));
+          res.redirect('/rides/' + rideId);
         }
       });
     } else {
-      Ride.removeRider(rideID, req.session.currentUser._id, function(err, result) {
+      Ride.removeRider(rideId, req.session.currentUser._id, function(err, result) {
         if (err) {
           res.render('error', {'message': 'Resource not found.', 'error.status': 404});
         } else {
