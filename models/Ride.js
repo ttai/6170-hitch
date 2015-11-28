@@ -113,6 +113,7 @@ var Ride = (function Ride() {
       'total_capacity': total_capacity,
       'remaining_capacity': total_capacity - 1,
       'riders': [userId],
+      'creator': userId,
       'transport': transport,
     }, function(err, ride) {
        if (err) {
@@ -234,7 +235,17 @@ var Ride = (function Ride() {
                       }
                     });
                   } else {
-                    callback(null,null);
+                    if (ride.creator === riderId) {
+                      rideModel.findByIdAndUpdate(rideId, { $set: {creator: undefined } },
+                                                  function (err, result) {
+                                                    if (err) {
+                                                      callback(err,null);
+                                                    } else {
+                                                      callback(null,null);
+                                                    }
+
+                      });
+                    }
                   }
                 });
               }

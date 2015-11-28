@@ -17,6 +17,7 @@ var rideSchema = new Schema({
   departure_time: { type: Date, required: true },
   total_capacity: { type: Number, required: true },
   remaining_capacity: { type: Number, required: true },
+  creator: {type: ObjectId, ref: 'userSchema'},
   riders: [{ type: ObjectId, ref: 'userSchema' }],
   transport: String
 });
