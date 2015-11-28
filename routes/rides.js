@@ -135,11 +135,12 @@ router.post('/remove', function(req, res){
   var rideId = req.body.ride_id;
   var userId = req.body.user_id;
   Ride.getRide(rideId, function(err, ride) {
-    if ((err || !ride) || (ride.creator !==req.session.currentUser._id)) {
+    if ((err || !ride) || (String(ride.creator) !== String(req.session.currentUser._id))) {
       res.render('error', {'message': 'Resource not found.', 'error.status': 404});
     } else {
       Ride.removeRider(rideId, userId, function(err, result) {
         if (err) {
+          console.log(err);
           res.render('error',{'message': 'Resource not found.', 'error.status': 404});
         } else {
           res.redirect('/rides/' + rideId);
