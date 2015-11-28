@@ -26,7 +26,7 @@
       <b>Departure time:</b> <%= ride.departure_time.toLocaleString() %> <br>
       <h3>Ride Participants</h3>
        <% for (var i = 0; i < riders.length; ++i) { %>
-        <b><%= riders[i].kerberos %></b> <%= riders[i].rating %> stars <br>
+        <a href='/users/<%= riders[i]._id %>'><b><%= riders[i].kerberos %></b></a> <%= riders[i].rating %> stars <br>
        <% } %>
     </div>
 

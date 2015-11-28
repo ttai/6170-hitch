@@ -42,7 +42,7 @@
         </thead>
         <tbody>
           <% for (var i = 0; i < rides.length; ++i) { %>
-            <tr>
+            <tr class="clickable-row" data-href="/rides/<%= rides[i]._id %>" style="cursor: pointer;">
               <td><%= rides[i].departure_time.toLocaleString() %></td>
               <td><%= rides[i].origin %></td>
               <td><%= rides[i].destination %></td>
