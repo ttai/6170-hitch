@@ -32,9 +32,11 @@
       </thead>
       <tbody>
         <% for (var i = 0; i < reviews.length; ++i) { %>
-          <td><%= reviews[i].rating %></td>
-          <td><%= reviews[i].reviewer %></td>
-          <td><%= reviews[i].comment %></td>
+          <tr>
+            <td><%= reviews[i].rating %></td>
+            <td><%= reviews[i].kerberos %></td>
+            <td><%= reviews[i].comment %></td>
+          </tr>
         <% } %>
       </tbody>
     </table>

@@ -3,6 +3,7 @@ var mongoose = require("mongoose");
 var schemas = require("./schemas");
 var userModel = schemas.userModel;
 var rideModel = schemas.rideModel;
+var reviewModel = schemas.reviewModel;
 
 var User = (function User() {
 
@@ -110,9 +111,30 @@ var User = (function User() {
       } else if (!user) {
         callback({ msg: 'Invalid user' });
       } else {
-        callback(null, user.reviews);
+        reviewModel.find({ _id: { $in: user.reviews}}, function(err, reviews) {
+          var userReviews = reviews.slice(0);
+          var index = 0;
+          (function next() {
+            if (!reviews.length) {
+              console.log('userReviews', userReviews);
+              return callback(null, userReviews);
+            }
+            var review = reviews.shift();
+            userModel.findById(review.reviewer, function(err, user) {
+              console.log('user.kerberos', user.kerberos)
+              if (err) {
+                return callback(err);
+              } else {
+                userReviews[index].kerberos = user.kerberos;
+                console.log('index kerberos', userReviews[index].kerberos)
+                index += 1;
+                next();
+              }
+            })
+          })();
+        });
       }
-    })
+    });
   };
 
   // Gives the user's average rating.
@@ -166,12 +188,10 @@ var User = (function User() {
     userModel.findByIdAndUpdate(userId,
                                 { $addToSet: {reviews: review._id } },
                                 function (err, result) {
-      console.log("userModel find by Id and update")
       if (err) {
         callback(err);
       } else {
         that.updateRating(userId, review, function (err, result) {
-          console.log("userModel update rating")
           if (err) {
             callback(err);
           } else {

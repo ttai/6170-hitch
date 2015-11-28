@@ -29,11 +29,16 @@ var isLoggedInOrInvalidBody = function(req, res) {
 router.get('/user/:user', function(req, res) {
   // User.getUser(req.body.userID, function(err, user) {
   User.getUser(req.params.user, function(err, user) {
-    console.log("err", err)
     if (err) {
       res.render('error', { 'message' : 'Resource not found.', 'error.status': 404});
-    } else{
-      res.render('user', { 'currentUser' : req.session.currentUser, 'user' : user, 'reviews' : user.reviews});
+    } else {
+      User.getReviews(user._id, function(err, reviews) {
+        if (err) {
+          res.render('error', { 'message' : 'Resource not found.', 'error.status': 404});
+        } else {
+          res.render('user', { 'currentUser' : req.session.currentUser, 'user' : user, 'reviews' : reviews});
+        } 
+      })
     }
   });
 });
