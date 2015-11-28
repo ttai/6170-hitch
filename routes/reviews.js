@@ -30,8 +30,10 @@ router.get('/:ride', function(req, res) {
 
 // Add or update review
 router.post('/:review', function(req, res) {
-  Review.addReview(req.body.rideID, req.body.reviewerID, req.body.revieweeID,
-                     req.body.rating, req.body.comment, function(err) {
+  // console.log('rating', req.body.rating)  
+  Review.addReview(req.body.ride_id, req.body.reviewer_id, req.body.reviewee_id,
+                     5, req.body.comment, function(err) { 
+                     // req.body.rating, req.body.comment, function(err) {
       if (err) {
         res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500});
       } else {

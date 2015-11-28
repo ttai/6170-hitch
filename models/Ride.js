@@ -26,7 +26,7 @@ var Ride = (function Ride() {
   };
 
   that.inRide = function(userId, rideId, callback) {
-    console.log("id",rideId);
+    // console.log("id",rideId);
     rideModel.findById(rideId, function (err, ride) {
       if (err) {
         callback(err, null);
@@ -138,7 +138,7 @@ var Ride = (function Ride() {
       } else {
         var riderIds = ride.riders;
         userModel.find({ '_id' : { $in : riderIds } }, function(err, riders) {
-          console.log("riders",riders);
+          // console.log("riders",riders);
           callback(err, riders);
         });
       }
@@ -151,21 +151,26 @@ var Ride = (function Ride() {
       var other_riders = riders.filter(function(rider) {
         return !user_id.equals(rider._id);
       });
-      var other_riders_reviews = []
-      other_riders.forEach(function(rider) {
-        reviewModel.find({ride: rideId, reviewer: userId, reviewee: rider._id}, function(err, review) {
+      var other_riders_copy = other_riders.slice(0);
+      var other_riders_reviews = [];
+      (function next(){
+        if (!other_riders_copy.length) {
+          return callback(null, other_riders, other_riders_reviews);
+        }
+        var other_rider = other_riders_copy.shift();
+        reviewModel.find({ride: rideId, reviewer: userId, reviewee: other_rider._id}, function(err, review) {
           if (err) {
-            other_riders_reviews.push(null);
+            return callback(err);
           } else {
-            if (review) {
+            if (review.length > 0) {
               other_riders_reviews.push(review);
             } else {
               other_riders_reviews.push(null);
             }
+            next();
           }
-        });
-      });
-      callback(err, other_riders, other_riders_reviews);
+        })
+      })();
     });
   };
 

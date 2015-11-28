@@ -34,19 +34,19 @@ var Review = (function Review() {
     });
   };
 
-  // that.existsReview = function(rideId, reviewerId, revieweeId, callback) {
-  //   reviewModel.find({ride: rideId, reviewer: reviewerId, reviewee: revieweeId}, function(err, review) {
-  //     if (err) {
-  //       callback(err, null);
-  //     } else {
-  //       if (review) {
-  //         callback(null, true);
-  //       } else {
-  //         callback(null, false);
-  //       }
-  //     }
-  //   })
-  // }
+  that.existsReview = function(rideId, reviewerId, revieweeId, callback) {
+    reviewModel.find({ride: rideId, reviewer: reviewerId, reviewee: revieweeId}, function(err, review) {
+      if (err) {
+        callback(err, null);
+      } else {
+        if (review) {
+          callback(null, review);
+        } else {
+          callback(null, null);
+        }
+      }
+    })
+  }
 
   that.addReview = function(rideId, reviewerId, revieweeId, 
                             rating, comment, callback) {
@@ -54,17 +54,20 @@ var Review = (function Review() {
       if (err) {
         callback(err, null);
       } else {
-        if (review) {
-          reviewModel.findbyIdAndUpdate(reviewId, { $set: { "rating": rating } },
+        if (review.length > 0) {
+          reviewModel.findByIdAndUpdate(review._id, { $set: { "rating": rating } },
                                         function(err, result) {
+            console.log("updating rating in review")
             if (err) {
               callback(err, null);
             } else {
-              User.updateRating(userId, reviewId, function (err, result) {
+              User.updateRating(userId, review._id, function (err, result) {
+                console.log("updating rating in user")
                 if (err) {
                   callback(err, null);
                 } else {
-                  reviewModel.findbyIdAndUpdate(reviewId, { $set: { "comment": comment } }, 
+                  console.log("updating comment in review")
+                  reviewModel.findByIdAndUpdate(review._id, { $set: { "comment": comment } }, 
                                                 function(err) {
                     if (err) {
                       callback(err, null);
@@ -83,8 +86,8 @@ var Review = (function Review() {
             "reviewee": revieweeId,
             "rating": rating,
             "comment": comment
-          }, {}, function(err, review) {
-            userModel.addReview(revieweeId, review, function(err, result) {
+          }, function(err, review) {
+            User.addReview(revieweeId, review, function(err, result) {
               if (err) {
                 callback(err, null);
               } else {
