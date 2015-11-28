@@ -1,14 +1,9 @@
 <!DOCTYPE HTML>
+<div class="header"> 
+	<h1> Hitch <h1> 
+</div> 
 <h2>Welcome, <%= user.kerberos %></h2>
-<script>
-	$(document).ready(function () {
-	    $('.nav').on('mouseover', 'li', function() {
-		    $('.nav li.active').removeClass('active');
-		    $(this).addClass('active');
-		});
-	});
-</script>
-<ul class="nav nav-pills nav-justified">
+<ul class="nav nav-tabs nav-justified">
   <li role="presentation"><a href='/'>Rides</a></li>
   <li role="presentation"><a href='/users/my_rides'>My Rides</a></li>
   <li role="presentation"><a href='/rides/new_ride'>New Ride</a></li>
