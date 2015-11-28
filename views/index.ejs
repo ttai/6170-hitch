@@ -54,6 +54,7 @@
               <th>Departure Time</th>
               <th>Start Location</th>
               <th>Destination</th>
+              <th>Seats Taken</th>
               <th>Seats Open</th>
               <th>Transport</th>
               <th>Action</th>
@@ -65,6 +66,7 @@
                 <td><%= rides[i].departure_time.toLocaleString() %></td>
                 <td><%= rides[i].origin %></td>
                 <td><%= rides[i].destination %></td>
+                <td><%= rides[i].total_capacity - rides[i].remaining_capacity %></td>
                 <td><%= rides[i].remaining_capacity %></td>
                 <td><%= rides[i].transport %></td>
                 </td>
