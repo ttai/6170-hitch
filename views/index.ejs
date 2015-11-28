@@ -15,11 +15,6 @@
       $(document).ready( function () {
           $('#open_rides').DataTable();
       } );
-      $(document).ready(function($) {
-          $(".clickable-row").click(function() {
-              window.document.location = $(this).data("href");
-          });
-      });
     </script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
@@ -66,7 +61,7 @@
           </thead>
           <tbody>
             <% for (var i = 0; i < rides.length; i ++) {%>
-              <tr class="clickable-row" data-href="/rides/<%= rides[i]._id %>" style="cursor: pointer;">
+              <tr class="clickable-row" data-href="" style="cursor: pointer;">
                 <td><%= rides[i].departure_time.toLocaleString() %></td>
                 <td><%= rides[i].origin %></td>
                 <td><%= rides[i].destination %></td>
