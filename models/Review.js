@@ -34,19 +34,19 @@ var Review = (function Review() {
     });
   };
 
-  that.existsReview = function(rideId, reviewerId, revieweeId, callback) {
-    reviewModel.find({ride: rideId, reviewer: reviewerId, reviewee: revieweeId}, function(err, review) {
-      if (err) {
-        callback(err, null);
-      } else {
-        if (review) {
-          callback(null, true);
-        } else {
-          callback(null, false);
-        }
-      }
-    })
-  }
+  // that.existsReview = function(rideId, reviewerId, revieweeId, callback) {
+  //   reviewModel.find({ride: rideId, reviewer: reviewerId, reviewee: revieweeId}, function(err, review) {
+  //     if (err) {
+  //       callback(err, null);
+  //     } else {
+  //       if (review) {
+  //         callback(null, true);
+  //       } else {
+  //         callback(null, false);
+  //       }
+  //     }
+  //   })
+  // }
 
   that.addReview = function(rideId, reviewerId, revieweeId, 
                             rating, comment, callback) {

@@ -148,22 +148,24 @@ var Ride = (function Ride() {
   that.getOtherRiders = function(rideId, userId, callback) {
     that.getRiders(rideId, function(err, riders) {
       var user_id = ObjectId(userId);
-      var other_unreviewed_riders = []
-      var other_reviwed_riders = []
-      riders.forEach(function(rider) {
-        reviewModel.existsReview(rideId, userId, rider._id, function(err, flag) {
+      var other_riders = riders.filter(function(rider) {
+        return !user_id.equals(rider._id);
+      });
+      var other_riders_reviews = []
+      other_riders.forEach(function(rider) {
+        reviewModel.find({ride: rideId, reviewer: userId, reviewee: rider._id}, function(err, review) {
           if (err) {
-            callback(err, null, null)
+            other_riders_reviews.push(null);
           } else {
-            if (!flag && !user_id.equals(rider._id)) {
-              other_unreviewed_riders.push(rider);
+            if (review) {
+              other_riders_reviews.push(review);
             } else {
-              other_reviwed_riders.push(rider);
+              other_riders_reviews.push(null);
             }
           }
         });
-      })
-      callback(err, other_unreviewed_riders, other_reviwed_riders);
+      });
+      callback(err, other_riders, other_riders_reviews);
     });
   };
 
