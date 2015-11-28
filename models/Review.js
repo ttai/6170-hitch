@@ -50,24 +50,26 @@ var Review = (function Review() {
 
   that.addReview = function(rideId, reviewerId, revieweeId, 
                             rating, comment, callback) {
+    console.log("reached model")
     reviewModel.find({ride: rideId, reviewer: reviewerId, reviewee: revieweeId}, function(err, review) {
       if (err) {
         callback(err, null);
       } else {
         if (review.length > 0) {
-          reviewModel.findByIdAndUpdate(review._id, { $set: { "rating": rating } },
+          reviewModel.findByIdAndUpdate(review[0]._id, { $set: { "rating": rating } },
                                         function(err, result) {
+            console.log(result)
             console.log("updating rating in review")
             if (err) {
               callback(err, null);
             } else {
-              User.updateRating(userId, review._id, function (err, result) {
+              User.updateRating(revieweeId, review[0], function (err, result) {
                 console.log("updating rating in user")
                 if (err) {
                   callback(err, null);
                 } else {
                   console.log("updating comment in review")
-                  reviewModel.findByIdAndUpdate(review._id, { $set: { "comment": comment } }, 
+                  reviewModel.findByIdAndUpdate(review[0]._id, { $set: { "comment": comment } }, 
                                                 function(err) {
                     if (err) {
                       callback(err, null);
@@ -80,6 +82,7 @@ var Review = (function Review() {
             }
           });
         } else {
+          console.log("new review")
           reviewModel.create({
             "ride": rideId,
             "reviewer": reviewerId,
@@ -88,6 +91,7 @@ var Review = (function Review() {
             "comment": comment
           }, function(err, review) {
             User.addReview(revieweeId, review, function(err, result) {
+              console.log("new review added to user")
               if (err) {
                 callback(err, null);
               } else {

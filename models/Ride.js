@@ -3,8 +3,6 @@ var schemas = require('./schemas');
 var userModel = schemas.userModel;
 var rideModel = schemas.rideModel;
 var reviewModel = schemas.reviewModel;
-var User = require('./User');
-
 var ObjectId = mongoose.Types.ObjectId;
 
 // update current ride methods to include both capacities and transport means
@@ -164,7 +162,7 @@ var Ride = (function Ride() {
             return callback(err);
           } else {
             if (review.length > 0) {
-              other_riders_reviews.push(review);
+              other_riders_reviews.push(review[0]);
             } else {
               other_riders_reviews.push(null);
             }

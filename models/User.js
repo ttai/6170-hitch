@@ -3,8 +3,6 @@ var mongoose = require("mongoose");
 var schemas = require("./schemas");
 var userModel = schemas.userModel;
 var rideModel = schemas.rideModel;
-var Review = require('./Review');
-var Ride = require('./Ride');
 
 var User = (function User() {
 
@@ -130,7 +128,7 @@ var User = (function User() {
     });
   };
 
-  that.updateRating = function (userId, reviewId, callback) {
+  that.updateRating = function (userId, review, callback) {
     userModel.findById(userId, function (err, user) {
       if (err) {
         callback(err);
@@ -144,7 +142,9 @@ var User = (function User() {
           callback( { msg: 'Invalid review'} );
         } else {
           var new_rating =
-              (user.rating * num_reviews + review.rating - reviews[index]) /
+              // (user.rating * num_reviews + review.rating - reviews[index]) /
+              // (num_reviews);
+              (user.rating * (num_reviews - 1) + review.rating) /
               (num_reviews);
           userModel.findByIdAndUpdate(userId, 
                                       { $set: {rating: new_rating} },
@@ -162,13 +162,16 @@ var User = (function User() {
 
   // do add review!
   that.addReview = function (userId, review, callback) {
+
     userModel.findByIdAndUpdate(userId,
                                 { $addToSet: {reviews: review._id } },
                                 function (err, result) {
+      console.log("userModel find by Id and update")
       if (err) {
         callback(err);
       } else {
-        that.updateRating(userId, review._id, function (err, result) {
+        that.updateRating(userId, review, function (err, result) {
+          console.log("userModel update rating")
           if (err) {
             callback(err);
           } else {
