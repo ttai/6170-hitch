@@ -13,7 +13,10 @@
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.js"></script>
     <script> 
       $(document).ready( function () {
-          $('#my_rides').DataTable();
+          $('#my_upcoming_rides').DataTable();
+      } );
+      $(document).ready( function () {
+          $('#my_past_rides').DataTable();
       } );
       $(document).ready(function($) {
           $(".clickable-row").click(function() {
@@ -32,8 +35,8 @@
     <% } %>
 
     <div class="container">
-      <h1>My rides</h1>
-      <table class="table" id = "my_rides">
+      <h1>My upcoming rides</h1>
+      <table class="table" id = "my_upcoming_rides">
         <thead>
           <tr>
             <th>Departure time</th>
@@ -42,25 +45,53 @@
             <th>Seats open</th>
             <th>Transport</th>
             <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (var i = 0; i < rides.length; ++i) { %>
+            <%if (rides[i].departure_time > currentTime){%>
+              <tr class="clickable-row" data-href="/rides/<%= rides[i]._id %>" style="cursor: pointer;">
+                <td><%= rides[i].departure_time.toLocaleString() %></td>
+                <td><%= rides[i].origin %></td>
+                <td><%= rides[i].destination %></td>
+                <td><%= rides[i].remaining_capacity %></td>
+                <td><%= rides[i].transport %></td>
+                <form method="post" action="/rides/participate">
+                  <input type="hidden" name="ride_id" value=<%= rides[i]._id %>></input>
+                  <td><button type="submit" class="btn btn-default">Leave ride</button></td>
+                </form>
+              </tr>
+            <% } %>  
+          <% } %>
+        </tbody>
+      </table>
+
+      <h1>My past rides</h1>
+      <table class="table" id = "my_past_rides">
+        <thead>
+          <tr>
+            <th>Departure time</th>
+            <th>Start Location</th>
+            <th>Destination</th>
+            <th>Seats Taken</th>
+            <th>Transport</th>
             <th>Review</th>
           </tr>
         </thead>
         <tbody>
           <% for (var i = 0; i < rides.length; ++i) { %>
-            <tr class="clickable-row" data-href="/rides/<%= rides[i]._id %>" style="cursor: pointer;">
-              <td><%= rides[i].departure_time.toLocaleString() %></td>
-              <td><%= rides[i].origin %></td>
-              <td><%= rides[i].destination %></td>
-              <td><%= rides[i].remaining_capacity %></td>
-              <td><%= rides[i].transport %></td>
-              <form method="post" action="/rides/participate">
-                <input type="hidden" name="ride_id" value=<%= rides[i]._id %>></input>
-                <td><button type="submit" class="btn btn-default">Leave ride</button></td>
-              </form>
-              <form method="get" action="/reviews/<%= rides[i]._id %>">
-                <td><button type="submit" class="btn btn-default">Review</button></td>
-              </form>
-            </tr>
+            <%if (rides[i].departure_time <= currentTime){%>
+              <tr class="clickable-row" data-href="/rides/<%= rides[i]._id %>" style="cursor: pointer;">
+                <td><%= rides[i].departure_time.toLocaleString() %></td>
+                <td><%= rides[i].origin %></td>
+                <td><%= rides[i].destination %></td>
+                <td><%= rides[i].total_capacity- rides[i].remaining_capacity %></td>
+                <td><%= rides[i].transport %></td>
+                <form method="get" action="/reviews/<%= rides[i]._id %>">
+                  <td><button type="submit" class="btn btn-default">Review</button></td>
+                </form>
+              </tr>
+            <% } %>
           <% } %>
         </tbody>
       </table>

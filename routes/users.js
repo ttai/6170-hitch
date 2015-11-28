@@ -115,9 +115,11 @@ router.get('/logout', function(req, res) {
 
 // Get the rides of the current logged in user
 router.get('/my_rides', function(req, res) {
+  var currentTime = new Date();
   User.getRides(req.session.currentUser._id, function(err, rides) {
     res.render('my_rides', { 'user' : req.session.currentUser,
-                             'rides' : rides });
+                             'rides' : rides ,
+                             'currentTime' : currentTime});
   });
 });
 
