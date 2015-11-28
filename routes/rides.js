@@ -28,16 +28,16 @@ var requireAuthentication = function(req, res, next) {
   and rides that exist but don't belong to the client. This way a malicious client
   that is brute-forcing urls should not gain any information.
 */
-/*var requireParticipation = function(req, res, next) {
-  console.log('requireing participation', req);
-	Ride.inRide(req.session.currentUser._id, req.body.ride_id, function (err, result) {
+var requireParticipation = function(req, res, next) {
+	Ride.inRide(req.session.currentUser._id, req.params.ride, function (err, result) {
 		if (err || result < 0) {
+      console.log('error:', err)
       res.render('error', {'message': 'Resource not found.', 'error.status': 404});
 		} else {
 			next();
 		}
 	});
-};*/
+};
 
 /*
   Go to new ride page
@@ -52,7 +52,7 @@ router.get('/new_ride', function(req, res) {
 
 // Register the middleware handlers above.
 router.all('*', requireAuthentication);
-// router.all('/:ride', requireParticipation);
+router.get('/:ride', requireParticipation);
 
 /*
   At this point, all requests are authenticated and checked:
@@ -60,7 +60,6 @@ router.all('*', requireAuthentication);
   2. If accessing or modifying a specific resource, the client must be a participant in that ride
   3. Requests are well-formed
 */
-
 /*
   GET /rides
   No request parameters
@@ -89,7 +88,19 @@ router.get('/', function(req, res) {
     - err: on failure, an error message
 */
 router.get('/:ride', function(req, res) {
-  res.render('ride', { 'user': req.session.currentUser, rides: req.ride });
+  Ride.getRide(req.params.ride, function (err, ride) {
+    if (err) {
+        res.render('error', {'message': 'Resource not found.', 'error.status': 404});
+      } else {
+        Ride.getRiders(req.params.ride, function (err, riders) {
+          if (err) {
+            res.render('error', {'message': 'Resource not found.', 'error.status': 404});
+          } else {
+            res.render('ride', { 'user': req.session.currentUser, ride: ride, riders: riders});
+          }
+        });
+      }
+    });
 });
 
 /*
