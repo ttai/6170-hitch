@@ -131,6 +131,24 @@ router.post('/', function(req, res) {
   });
 });
 
+router.post('/remove', function(req, res){
+  var rideId = req.body.ride_id;
+  var userId = req.body.user_id;
+  Ride.getRide(rideId, function(err, ride) {
+    if ((err || !ride) || (ride.creator !==req.session.currentUser._id)) {
+      res.render('error', {'message': 'Resource not found.', 'error.status': 404});
+    } else {
+      Ride.removeRider(rideId, userId, function(err, result) {
+        if (err) {
+          res.render('error',{'message': 'Resource not found.', 'error.status': 404});
+        } else {
+          res.redirect('/rides/' + rideId);
+        }
+      })
+    }
+  })
+});
+
 router.post('/participate', function(req, res) {
   var rideId = req.body.ride_id;
   Ride.inRide(req.session.currentUser._id, rideId, function (err, result) {

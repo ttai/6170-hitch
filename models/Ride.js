@@ -245,6 +245,8 @@ var Ride = (function Ride() {
                                                     }
 
                       });
+                    } else {
+                      callback(null,null);
                     }
                   }
                 });
