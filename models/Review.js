@@ -34,23 +34,67 @@ var Review = (function Review() {
     });
   };
 
+  that.existsReview = function(rideId, reviewerId, revieweeId, callback) {
+    reviewModel.find({ride: rideId, reviewer: reviewerId, reviewee: revieweeId}, function(err, review) {
+      if (err) {
+        callback(err, null);
+      } else {
+        if (review) {
+          callback(null, true);
+        } else {
+          callback(null, false);
+        }
+      }
+    })
+  }
+
   that.addReview = function(rideId, reviewerId, revieweeId, 
                             rating, comment, callback) {
-    reviewModel.create({
-      "ride": rideId,
-      "reviewer": reviewerId,
-      "reviewee": revieweeId,
-      "rating": rating,
-      "comment": comment
-    }, {}, function(err, review) {
-      userModel.addReview(revieweeId, review, function(err, result) {
-        if (err) {
-          callback(err, null);
+    reviewModel.find({ride: rideId, reviewer: reviewerId, reviewee: revieweeId}, function(err, review) {
+      if (err) {
+        callback(err, null);
+      } else {
+        if (review) {
+          reviewModel.findbyIdAndUpdate(reviewId, { $set: { "rating": rating } },
+                                        function(err, result) {
+            if (err) {
+              callback(err, null);
+            } else {
+              User.updateRating(userId, reviewId, function (err, result) {
+                if (err) {
+                  callback(err, null);
+                } else {
+                  reviewModel.findbyIdAndUpdate(reviewId, { $set: { "comment": comment } }, 
+                                                function(err) {
+                    if (err) {
+                      callback(err, null);
+                    } else {
+                      callback(null, null);
+                    }
+                  });
+                }
+              });
+            }
+          });
         } else {
-          callback(null,null);
+          reviewModel.create({
+            "ride": rideId,
+            "reviewer": reviewerId,
+            "reviewee": revieweeId,
+            "rating": rating,
+            "comment": comment
+          }, {}, function(err, review) {
+            userModel.addReview(revieweeId, review, function(err, result) {
+              if (err) {
+                callback(err, null);
+              } else {
+                callback(null,null);
+              }
+            });
+          });
         }
-      });
-    });
+      }
+    })
   };
 
   that.setReviewRating = function(reviewerId, revieweeId, reviewId, rating, callback) {
