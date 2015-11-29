@@ -89,17 +89,20 @@ router.get('/', function(req, res) {
 router.get('/:ride', function(req, res) {
   Ride.getRide(req.params.ride, function (err, ride) {
     if (err) {
-        res.render('error', {'message': 'Resource not found.', 'error.status': 404});
-      } else {
-        Ride.getRiders(req.params.ride, function (err, riders) {
-          if (err) {
-            res.redirect('/');
-          } else {
-            res.render('ride', { 'user': req.session.currentUser, ride: ride, riders: riders});
-          }
-        });
-      }
-    });
+        res.render('error', { 'message': 'Resource not found.',
+                              'error.status': 404 });
+    } else {
+      Ride.getRiders(req.params.ride, function (err, riders) {
+        if (err) {
+          res.redirect('/');
+        } else {
+          res.render('ride', { 'user': req.session.currentUser,
+                               'ride': ride,
+                               'riders': riders });
+        }
+      });
+    }
+  });
 });
 
 /*
