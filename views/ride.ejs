@@ -43,7 +43,7 @@
           <tr>
             <th>Rider</th>
             <th>Rating</th>
-            <% if (String(user._id) === String(ride.creator) ) { %>
+            <% if (String(user._id) === String(ride.creator) && riders.length > 1) { %>
               <th>Remove Rider</th>
             <% } %>
           </tr>
@@ -54,15 +54,13 @@
               <td><a href='/users/<%= riders[i]._id %>'><b><%= riders[i].kerberos %></b></a></td>
               <td><%= riders[i].rating %> stars</td>
               <% if (String(user._id) === String(ride.creator) && String(user._id) !== String(riders[i]._id)) { %>
-              <td>
                 <form method="post" action="/rides/remove">
                   <input type="hidden" name="ride_id" value=<%= ride._id %>></input>
                   <input type="hidden" name="user_id" value=<%= riders[i]._id %>></input>
                   <td><button type="submit" class="btn btn-danger">Remove</button></td>
                 </form>
-              </td>
+              <% } %>
             </tr>
-            <% } %>
           <% } %>
         </tbody>
       </table>
