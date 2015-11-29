@@ -21,24 +21,27 @@
     <% if (typeof(e) !== 'undefined') { %>
       <div id='error'> <%= e %> </div>
     <% } %>
-    <h1>Rides</h1>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Rating</th>
-          <th>Reviewer</th>
-          <th>Comment</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for (var i = 0; i < reviews.length; ++i) { %>
+
+    <div class="container">
+      <h1>Rides</h1>
+      <table class="table">
+        <thead>
           <tr>
-            <td><%= reviews[i].rating %></td>
-            <td><%= reviews[i].kerberos %></td>
-            <td><%= reviews[i].comment %></td>
+            <th>Rating</th>
+            <th>Reviewer</th>
+            <th>Comment</th>
           </tr>
-        <% } %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% for (var i = 0; i < reviews.length; ++i) { %>
+            <tr>
+              <td><%= reviews[i].rating %></td>
+              <td><%= reviews[i].kerberos %></td>
+              <td><%= reviews[i].comment %></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
   </body>
 </html>
