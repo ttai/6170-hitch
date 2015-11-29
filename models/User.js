@@ -70,11 +70,22 @@ var User = (function User() {
       } else if (!user) {
         callback({ msg: 'Invalid user' });
       } else {
-        if (user.password !== candidatepw) {
+        user.comparePassword(candidatepw, function (err, isMatch) {
+          if (err) {
+            callback(err);
+          } else {
+            if (isMatch) {
+              callback(null, user);
+            } else{
+              callback(null, false);
+            }
+          }
+        })
+        /*if (user.password !== candidatepw) {
             callback(null, false);
         } else {
           callback(null, user); 
-        }
+        }*/
       }
     });
   };
