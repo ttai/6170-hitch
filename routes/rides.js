@@ -23,26 +23,6 @@ var requireAuthentication = function(req, res, next) {
 };
 
 /*
-  Require participation whenever accessing a particular ride
-  This means that the client accessing the resource must be logged in
-  as the user that originally created the ride. Clients who are not owners 
-  of this particular resource will receive a 404.
-
-  Why 404? We don't want to distinguish between rides that don't exist at all
-  and rides that exist but don't belong to the client. This way a malicious client
-  that is brute-forcing urls should not gain any information.
-*/
-var requireParticipation = function(req, res, next) {
-	Ride.inRide(req.session.currentUser._id, req.params.ride, function (err, result) {
-		if (err || result < 0) {
-      res.redirect('/');
-		} else {
-			next();
-		}
-	});
-};
-
-/*
   Go to new ride page
 */
 router.get('/new_ride', function(req, res) {
@@ -55,7 +35,6 @@ router.get('/new_ride', function(req, res) {
 
 // Register the middleware handlers above.
 router.all('*', requireAuthentication);
-router.get('/:ride', requireParticipation);
 
 /*
   At this point, all requests are authenticated and checked:
@@ -182,7 +161,6 @@ router.post('/remove', function(req, res){
     } else {
       Ride.removeRider(rideId, userId, function(err, result) {
         if (err) {
-          console.log(err);
           res.render('error',{'message': 'Resource not found.', 'error.status': 404});
         } else {
           res.redirect('/rides/' + rideId);
