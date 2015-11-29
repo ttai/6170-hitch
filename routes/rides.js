@@ -151,12 +151,12 @@ router.get('/:ride', function(req, res) {
     - err: on error, an error message
 */
 router.post('/', function(req, res) {
+  var time = req.body.date.concat(" ".concat(req.body.time))
+  var departure_time = moment(time)
   if (!req.body.origin || !req.body.destination || !departure_time || !req.body.capacity || req.body.capacity < 1 || !req.body.transport){
     res.render('error', {'message': 'Invalid inputs.',
                          'error.status': 500});
   } else {
-    var time = req.body.date.concat(" ".concat(req.body.time))
-    var departure_time = moment(time)
     Ride.addRide(req.session.currentUser._id, req.body.origin, req.body.destination,
                  departure_time.toDate(), req.body.capacity, req.body.transport,
                  function(err, result) {
