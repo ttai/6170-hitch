@@ -10,15 +10,6 @@ a {
   color: #00B7FF;
 }
 
-.jumbotron{
-    border-radius:25px;
-    opacity: .95;
-}
-
-.jumbo-container {
-    padding-left: 10%;
-}
-
 .container {
     background-color:white;
     opacity: .95;
@@ -29,6 +20,20 @@ a {
     border-radius: 10px;
     margin-top: 15px;
 }
+
+.jumbotron{
+    border-radius:25px;
+    opacity: .95;
+}
+
+.jumbo-container {
+    padding-left: 10%;
+}
+
+.map-container {
+    background-color:#04242f;
+}
+
 .rating {
     overflow: hidden;
     display: inline-block;
