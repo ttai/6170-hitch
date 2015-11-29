@@ -80,12 +80,7 @@ var User = (function User() {
               callback(null, false);
             }
           }
-        })
-        /*if (user.password !== candidatepw) {
-            callback(null, false);
-        } else {
-          callback(null, user); 
-        }*/
+        });
       }
     });
   };
