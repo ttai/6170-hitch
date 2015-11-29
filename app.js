@@ -5,6 +5,12 @@ var logger = require('morgan');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var passport = require('passport');
+
+/*var routes = require('./routes/index');
+var users = require('./routes/users');
+var reviews = require('./routes/reviews');
+var rides = require('./routes/rides');*/
 
 var app = express();
 
@@ -16,12 +22,6 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function (callback) {
   console.log("database connected");
 });
-
-// Import route handlers
-var index = require('./routes/index');
-var users = require('./routes/users');
-var reviews = require('./routes/reviews');
-var rides = require('./routes/rides');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,7 +39,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 // required for passport
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
-app.use(flash()); // use connect-flash for flash messages stored in session
+// app.use(flash()); // use connect-flash for flash messages stored in session
+
+// Import route handlers
+var index = require('./routes/index');
+var users = require('./routes/users');
+var reviews = require('./routes/reviews');
+var rides = require('./routes/rides');
 
 // Authentication middleware. This function
 // is called on _every_ request and populates
