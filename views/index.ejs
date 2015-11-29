@@ -16,12 +16,12 @@
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.css">
   </head>
 
-  <body> 
+  <body class="index"> 
   	<% if (typeof(e) !== 'undefined') { %>
       <div id='error'> <%= e %> </div>
     <% } else if (loggedIn === false) { %>
       <div class="jumbotron">
-        <div class="container">
+        <div class="jumbo-container">
           <h1>Hitch</h1>
           <p>Welcome to the world's best way to hitch a ride! Let us do the work for you ^-^</p>
           <p><a class="btn btn-primary btn-lg" href="/users/login" role="button">Log in</a> <a class="btn btn-primary btn-lg" href="/users/register" role="button">Register</a></p>
