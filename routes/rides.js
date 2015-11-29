@@ -158,7 +158,6 @@ router.post('/remove', function(req, res){
     } else {
       Ride.removeRider(rideId, userId, function(err, result) {
         if (err) {
-          console.log(err);
           res.render('error',{'message': 'Resource not found.', 'error.status': 404});
         } else {
           res.redirect('/rides/' + rideId);
