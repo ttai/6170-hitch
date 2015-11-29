@@ -108,10 +108,14 @@ router.get('/:ride', function(req, res) {
             if (result) {
               var start_loc = result.routes[0].legs[0].start_location;
               var end_loc = result.routes[0].legs[0].end_location;
+              var duration = result.routes[0].legs[0].duration.text;
+              var distance = result.routes[0].legs[0].distance.text;
               res.render('ride', { 'user': req.session.currentUser,
                                    'ride': ride,
                                    'riders': riders,
                                    'map': true,
+                                   'distance': distance,
+                                   'duration': duration,
                                    'coordA': start_loc,
                                    'coordB': end_loc });
             } else {
@@ -119,6 +123,8 @@ router.get('/:ride', function(req, res) {
                                    'ride': ride,
                                    'riders': riders,
                                    'map': false,
+                                   'distance': '',
+                                   'duration': '',
                                    'coordA': { lat: 42, lng: -71 },
                                    'coordB': { lat: 42, lng: -71 } });
 
