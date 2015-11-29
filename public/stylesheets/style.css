@@ -21,6 +21,19 @@ a {
     margin-top: 15px;
 }
 
+.login-container {
+    background-color:white;
+    opacity: .95;
+    width:400px;
+    padding-left: 20px;
+    padding-right:20px;
+    padding-top: 1px;
+    padding-bottom: 25px;
+    margin:auto;
+    border-radius: 10px;
+    margin-top: 15px;
+}
+
 .jumbotron{
     border-radius:25px;
     opacity: .95;
