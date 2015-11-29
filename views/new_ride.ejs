@@ -9,7 +9,8 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.9.0/validator.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
     <script> </script>
   </head>
   <body>
@@ -22,29 +23,29 @@
     <% } %>
     <div class="container">
       <h1>Create a new ride</h1>
-      <form method="post" action="/rides/">
+      <form data-toggle="validator" role="form" method="post" action="/rides/">
         <div class="form-group">
           <label for="date">Departure Date:</label>
-          <input type="date" class="form-control" name="date">
+          <input type="date" class="form-control" name="date" required>
         </div>
         <div class="form-group">
           <label for="time">Departure Time:</label>
-          <input type="time" class="form-control" name="time">
+          <input type="time" class="form-control" name="time" required>
         </div>
         <div class="form-group">
           <label for="origin">Start Location:</label>
-          <input type="text" class="form-control" name="origin" placeholder="Enter start location">
+          <input type="text" class="form-control" name="origin" placeholder="Enter start location" required>
         </div>
         <div class="form-group">
           <label for="destination">Destination:</label>
-          <input type="text" class="form-control" name="destination" placeholder="Enter destination">
+          <input type="text" class="form-control" name="destination" placeholder="Enter destination" required>
         </div>
         <div class="form-group">
           <label for="capacity">Capacity:</label>
-          <input type="number" class="form-control" name="capacity" placeholder="Enter capacity">
+          <input type="number" class="form-control" name="capacity" placeholder="Enter capacity" required>
         </div>
         <div class="form-group">
-          <select class="form-control" name="transport" id="transport">
+          <select class="form-control" name="transport" id="transport" required>
             <option value="Taxi">Taxi</option>
             <option value="Uber">Uber</option>
             <option value="Lyft">Lyft</option>
