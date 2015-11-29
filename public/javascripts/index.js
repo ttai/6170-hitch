@@ -2,6 +2,12 @@ $(document).ready(function() {
   $('#open_rides').DataTable();
 });
 
+$(document).ready(function($) {
+  $(".clickable-row").click(function() {
+    window.document.location = $(this).data("href");
+  });
+});
+
 function initMap() {
   var pointA = new google.maps.LatLng(51.7519, -1.2578);
   var pointB = new google.maps.LatLng(50.8429, -0.1313);

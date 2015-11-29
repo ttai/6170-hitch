@@ -32,10 +32,6 @@
       <header>
         <% include header %>
       </header>
-      <div class="container map-container">
-        <div id="map-canvas" style="width:100%;height:300px;margin-left:auto;margin-right:auto" class="container">
-        </div>
-      </div>
 
       <div class="container">
         <h1>Open rides</h1>
@@ -53,14 +49,13 @@
           </thead>
           <tbody>
             <% for (var i = 0; i < rides.length; i ++) {%>
-              <tr class="clickable-row" data-href="" style="cursor: pointer;">
+              <tr class="clickable-row" data-href="/rides/<%= rides[i]._id %>" style="cursor: pointer;">
                 <td><%= rides[i].departure_time.toLocaleString() %></td>
                 <td><%= rides[i].origin %></td>
                 <td><%= rides[i].destination %></td>
                 <td><%= rides[i].total_capacity - rides[i].remaining_capacity %></td>
                 <td><%= rides[i].remaining_capacity %></td>
                 <td><%= rides[i].transport %></td>
-                </td>
                 <form method="post" action="/rides/participate">
                   <input type="hidden" name = "ride_id" value=<%= rides[i]._id %>></input>
                   <% if (rides[i].riders.indexOf(user._id) < 0) {%>
