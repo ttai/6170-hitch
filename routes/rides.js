@@ -151,7 +151,7 @@ router.get('/:ride', function(req, res) {
     - err: on error, an error message
 */
 router.post('/', function(req, res) {
-  if (!req.body.origin || !req.body.destination || !departure_time || !req.body.capacity || req.body.capacity < 0 || !req.body.transport){
+  if (!req.body.origin || !req.body.destination || !departure_time || !req.body.capacity || req.body.capacity < 1 || !req.body.transport){
     res.render('error', {'message': 'Invalid inputs.',
                          'error.status': 500});
   } else {
