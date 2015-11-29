@@ -7,11 +7,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 
-/*var routes = require('./routes/index');
-var users = require('./routes/users');
-var reviews = require('./routes/reviews');
-var rides = require('./routes/rides');*/
-
 var app = express();
 
 // Database setup
