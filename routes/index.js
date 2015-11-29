@@ -36,7 +36,6 @@ router.get('/', function(req, res, next) {
       };
 
       gmAPI.directions(params, function(err, result) {
-        console.log(result);
         res.render('index', { 'user' : currentUser,
                               'rides' : rides,
                               'loggedIn' : logged_in });

@@ -2,9 +2,9 @@ $(document).ready(function() {
   $('#remove-rider').click(function() {});
 });
 
-function initMap() {
-  var pointA = new google.maps.LatLng(51.7519, -1.2578);
-  var pointB = new google.maps.LatLng(50.8429, -0.1313);
+function initMap(coordA, coordB) {
+  var pointA = new google.maps.LatLng(coordA.lat, coordA.lng);
+  var pointB = new google.maps.LatLng(coordB.lat, coordB.lng);
   var myOptions = { 
     zoom: 7,
     center: pointA,
@@ -48,5 +48,3 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, 
     }   
   });     
 }
-
-window.onload = initMap;

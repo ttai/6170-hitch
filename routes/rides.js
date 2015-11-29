@@ -6,6 +6,10 @@ var Ride = require('../models/Ride');
 var moment = require('moment');
 moment().format();
 
+var GoogleMapsAPI = require('googlemaps');
+var config = require('../googleConfig');
+var gmAPI = new GoogleMapsAPI(config);
+
 /*
   Require authentication on ALL access to /rides/*
   Clients which are not logged in will receive a 403 error code.
@@ -96,9 +100,30 @@ router.get('/:ride', function(req, res) {
         if (err) {
           res.redirect('/');
         } else {
-          res.render('ride', { 'user': req.session.currentUser,
-                               'ride': ride,
-                               'riders': riders });
+          var params = {
+            origin: ride.origin,
+            destination: ride.destination
+          };
+          gmAPI.directions(params, function(err, result) {
+            if (result) {
+              var start_loc = result.routes[0].legs[0].start_location;
+              var end_loc = result.routes[0].legs[0].end_location;
+              res.render('ride', { 'user': req.session.currentUser,
+                                   'ride': ride,
+                                   'riders': riders,
+                                   'map': true,
+                                   'coordA': start_loc,
+                                   'coordB': end_loc });
+            } else {
+              res.render('ride', { 'user': req.session.currentUser,
+                                   'ride': ride,
+                                   'riders': riders,
+                                   'map': false,
+                                   'coordA': { lat: 42, lng: -71 },
+                                   'coordB': { lat: 42, lng: -71 } });
+
+            }
+          });
         }
       });
     }
