@@ -152,7 +152,7 @@ router.get('/:ride', function(req, res) {
 */
 router.post('/', function(req, res) {
   if (!req.body.origin || !req.body.destination || !departure_time || !req.body.capacity !! req.body.capacity < 0 || !req.body.transport){
-    res.render('error', {'message': 'An unknown error occurred.',
+    res.render('error', {'message': 'Invalid inputs.',
                          'error.status': 500});
   } else {
     var time = req.body.date.concat(" ".concat(req.body.time))
