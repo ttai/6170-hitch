@@ -41,6 +41,11 @@ app.use(cookieParser());
 app.use(session({ secret : '6170', resave : true, saveUninitialized: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// required for passport
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash()); // use connect-flash for flash messages stored in session
+
 // Authentication middleware. This function
 // is called on _every_ request and populates
 // the req.currentUser field with the logged-in
