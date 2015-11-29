@@ -5,11 +5,8 @@ var Ride = require('../models/Ride');
 var Review = require('../models/Review');
 var utils = require('../utils/utils');
 var GoogleMapsAPI = require('googlemaps');
+var config = require('../googleConfig');
 
-var config = {
-  key: 'AIzaSyCefWb-vXOlxrWNEm_M20_eT4BTNYxNfYc',
-  secure: true,
-};
 var gmAPI = new GoogleMapsAPI(config);
 
 /* GET home page. */
@@ -27,7 +24,8 @@ router.get('/', function(req, res, next) {
 
   Ride.getAllOpenRides(function(err, rides) {
     if (err) {
-      res.render('error', {'message': 'An unknown error occured', 'error.status': 500})
+      res.render('error', { 'message': 'An unknown error occured',
+                            'error.status': 500 });
     } else {
       rides.sort(sortByDate);
       var logged_in = (currentUser) ? true : false;
@@ -38,6 +36,7 @@ router.get('/', function(req, res, next) {
       };
 
       gmAPI.directions(params, function(err, result) {
+        console.log(result);
         res.render('index', { 'user' : currentUser,
                               'rides' : rides,
                               'loggedIn' : logged_in });
