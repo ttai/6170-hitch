@@ -138,12 +138,12 @@ router.post('/', function(req, res) {
   } else {
     Ride.addRide(req.session.currentUser._id, req.body.origin, req.body.destination,
                  departure_time.toDate(), req.body.capacity, req.body.transport,
-                 function(err, result) {
+                 function(err, ride) {
      if (err) {
        res.render('error', {'message': 'An unknown error occurred.',
                             'error.status': 500});
      } else {
-       res.redirect('/');
+       res.redirect('/rides/' + ride._id);
      }
     });
   }

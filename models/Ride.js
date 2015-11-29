@@ -123,7 +123,7 @@ var Ride = (function Ride() {
           if (err) {
             callback(err);
           } else {
-            callback(null);
+            callback(null,ride);
           };
         });
       }       
