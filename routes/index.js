@@ -4,7 +4,13 @@ var User = require('../models/User');
 var Ride = require('../models/Ride');
 var Review = require('../models/Review');
 var utils = require('../utils/utils');
-var geohash = require('geohash').GeoHash;
+var GoogleMapsAPI = require('googlemaps');
+
+var config = {
+  key: 'AIzaSyCefWb-vXOlxrWNEm_M20_eT4BTNYxNfYc',
+  secure: true,
+};
+var gmAPI = new GoogleMapsAPI(config);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -26,20 +32,16 @@ router.get('/', function(req, res, next) {
       rides.sort(sortByDate);
       var logged_in = (currentUser) ? true : false;
 
-      var hash = 'gcpvj0fb970t1';
-      var latlon = geohash.decodeGeoHash(hash);
-      var lat = latlon.latitude[2];
-      var lon = latlon.longitude[2];
-      var zoom = hash.length + 2;
+      var params = {
+        origin: 'New York, NY, US',
+        destination: 'Los Angeles, CA, US'
+      };
 
-      res.render('index', { 'user' : currentUser,
-                            'rides' : rides,
-                            'loggedIn' : logged_in,
-                            'layout' : false,
-                            'lat' : lat,
-                            'lon' : lon,
-                            'zoom' : zoom,
-                            'geohash' : hash });
+      gmAPI.directions(params, function(err, result) {
+        res.render('index', { 'user' : currentUser,
+                              'rides' : rides,
+                              'loggedIn' : logged_in });
+      });
     }
   });
 });
