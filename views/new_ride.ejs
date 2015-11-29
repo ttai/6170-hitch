@@ -11,8 +11,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.9.0/validator.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-    
-    <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCefWb-vXOlxrWNEm_M20_eT4BTNYxNfYc&signed_in=true&libraries=places&callback=initAutocomplete" async defer></script>
+    <script src="/javascripts/new_ride.js"></script>
   </head>
   <body>
     <header>
@@ -35,11 +35,11 @@
         </div>
         <div class="form-group">
           <label for="origin">Start Location:</label>
-          <input type="text" class="form-control" name="origin" placeholder="Enter start location" required>
+          <input id="autocomplete_orig" class="form-control" name="origin" placeholder="Enter address" onFocus="geolocate()" type="text"></input>
         </div>
         <div class="form-group">
           <label for="destination">Destination:</label>
-          <input type="text" class="form-control" name="destination" placeholder="Enter destination" required>
+          <input id="autocomplete_dest" class="form-control" name="destination" placeholder="Enter address" onFocus="geolocate()" type="text"></input>
         </div>
         <div class="form-group">
           <label for="capacity">Capacity:</label>

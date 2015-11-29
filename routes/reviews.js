@@ -21,8 +21,6 @@ router.get('/:ride', function(req, res) {
   var user = req.session.currentUser;
   var ride_id = req.params.ride;
   Ride.getOtherRiders(ride_id, user._id, function(err, other_riders, other_riders_reviews) {
-    console.log('other_riders', other_riders)
-    console.log('other_riders_reviews', other_riders_reviews)
     res.render('reviews', { 'user' : req.session.currentUser,
                             'ride_id' : ride_id,
                             'other_riders' : other_riders,
@@ -32,7 +30,6 @@ router.get('/:ride', function(req, res) {
 
 // Add or update review
 router.post('/:review', function(req, res) {
-  console.log('rating', parseInt(req.body.rating))
   Review.addReview(req.body.ride_id, req.body.reviewer_id, req.body.reviewee_id,
                      parseInt(req.body.rating), req.body.comment, function(err) { 
       if (err) {
