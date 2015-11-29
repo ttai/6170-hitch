@@ -49,7 +49,7 @@
         <tbody>
           <% for (var i = 0; i < riders.length; ++i) { %>
             <tr>
-              <td><a href='/users/<%= riders[i]._id %>'><b><%= riders[i].kerberos %></b></a></td>
+              <td><a href='/users/user/<%= riders[i]._id %>'><b><%= riders[i].kerberos %></b></a></td>
               <td><%= riders[i].rating %> stars</td>
               <% if (String(user._id) === String(riders[i]._id)) { %>
                 <form method="post" action="/rides/participate">
