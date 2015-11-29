@@ -20,10 +20,15 @@
   	<% if (typeof(e) !== 'undefined') { %>
       <div id='error'> <%= e %> </div>
     <% } else if (loggedIn === false) { %>
-      <h2>Hitch</h2>
-      <a href='/users/login'>Log in</a> | <a href='/users/register'>Register</a>
+      <div class="jumbotron">
+        <div class="container">
+          <h1>Hitch</h1>
+          <p>Welcome to the world's best way to hitch a ride! Let us do the work for you ^-^</p>
+          <p><a class="btn btn-primary btn-lg" href="/users/login" role="button">Log in</a> <a class="btn btn-primary btn-lg" href="/users/register" role="button">Register</a></p>
+        </div>
+      </div>
     <% } else { %> 
-
+      
       <header>
         <% include header %>
       </header>
