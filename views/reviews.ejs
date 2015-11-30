@@ -44,6 +44,8 @@
                   <% if (other_riders_reviews[i] && other_riders_reviews[i].rating == 5) { %>
                     <input type="radio" class="rating-input" id="rating-input-1-5" name="rating" value="5" checked="checked" 
                     disabled required/>
+                  <% } else if (other_riders_reviews[i]) { %>
+                    <input type="radio" class="rating-input" id="rating-input-1-5" name="rating" value="5" disabled required/>
                   <% } else { %>
                     <input type="radio" class="rating-input" id="rating-input-1-5" name="rating" value="5" required/>
                   <% } %>
@@ -52,6 +54,8 @@
                   <% if (other_riders_reviews[i] && other_riders_reviews[i].rating == 4) { %>
                     <input type="radio" class="rating-input" id="rating-input-1-4" name="rating" value="4" checked="checked"
                     disabled />
+                  <% } else if (other_riders_reviews[i]) { %>
+                    <input type="radio" class="rating-input" id="rating-input-1-4" name="rating" value="4" disabled required/>
                   <% } else { %>
                     <input type="radio" class="rating-input" id="rating-input-1-4" name="rating" value="4"/>
                   <% } %>
@@ -60,6 +64,8 @@
                   <% if (other_riders_reviews[i] && other_riders_reviews[i].rating == 3) { %>
                     <input type="radio" class="rating-input" id="rating-input-1-3" name="rating" value="3" checked="checked"
                     disabled />
+                  <% } else if (other_riders_reviews[i]) { %>
+                    <input type="radio" class="rating-input" id="rating-input-1-3" name="rating" value="3" disabled required/>
                   <% } else { %>
                     <input type="radio" class="rating-input" id="rating-input-1-3" name="rating" value="3"/>
                   <% } %>
@@ -68,6 +74,8 @@
                   <% if (other_riders_reviews[i] && other_riders_reviews[i].rating == 2) { %>
                     <input type="radio" class="rating-input" id="rating-input-1-2" name="rating" value="2" checked="checked"
                     disabled />
+                  <% } else if (other_riders_reviews[i]) { %>
+                    <input type="radio" class="rating-input" id="rating-input-1-2" name="rating" value="2" disabled required/>
                   <% } else { %>
                     <input type="radio" class="rating-input" id="rating-input-1-2" name="rating" value="2"/>
                   <% } %>
@@ -76,6 +84,8 @@
                   <% if (other_riders_reviews[i] && other_riders_reviews[i].rating == 1) { %>
                     <input type="radio" class="rating-input" id="rating-input-1-1" name="rating" value="1" checked="checked"
                     disabled />
+                  <% } else if (other_riders_reviews[i]) { %>
+                    <input type="radio" class="rating-input" id="rating-input-1-1" name="rating" value="1" disabled required/>
                   <% } else { %>
                     <input type="radio" class="rating-input" id="rating-input-1-1" name="rating" value="1"/>
                   <% } %>
