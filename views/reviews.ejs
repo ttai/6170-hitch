@@ -9,6 +9,23 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script>
+      $(function() {
+          $('#submit').on('click', function() {
+              $(this).hide();
+              $('#txtBox').hide();
+              $('#txtBoxValue').text($('#txtBox').val()).show();
+              $('#edit').show();
+          });
+
+          $('#edit').on('click', function() {
+              $(this).hide();
+              $('#txtBoxValue').hide();
+              $('#txtBox').show();
+              $('#submit').show();
+          });
+      });
+    </script>
   </head>
   <body>
     <header>
@@ -62,15 +79,21 @@
                 </span>
                 <p>Comment:</p>
                 <% if (other_riders_reviews[i]) { %>
-                  <p><textarea name="comment" cols="50" rows="4"><%= other_riders_reviews[i].comment%></textarea></p>
+                  <p><textarea iid="txtBox" name="comment" cols="50" rows="4" style="display:none;" 
+                        value=<%= other_riders_reviews[i].comment%>></textarea></p> 
+                  <p><span id="txtBoxValue"><%= other_riders_reviews[i].comment%></span></p>
                 <% } else { %>
-                  <p><textarea name="comment" cols="50" rows="4"></textarea></p>
+                  <p><textarea id="txtBox" name="comment" cols="50" rows="4"></textarea></p>  
+                  <p><span id="txtBoxValue" style="display:none;"></span></p>
                 <% } %>
+                
+                <p><input id = "submit" type="submit" name="Submit" value="Submit"></p>
+                <p><input id = "edit" name="Edit" value="Edit" style="display:none;"></p>
 
-                <input type="hidden" name = "ride_id" value=<%= ride_id %>></input>
-                <input type="hidden" name = "reviewer_id" value=<%= user._id %>></input>
-                <input type="hidden" name = "reviewee_id" value=<%= other_riders[i]._id %>></input>           
-                <p><input type="submit" value="Submit"></p>
+                <input type="hidden" name="ride_id" value=<%= ride_id %>></input>
+                <input type="hidden" name="reviewer_id" value=<%= user._id %>></input>
+                <input type="hidden" name="reviewee_id" value=<%= other_riders[i]._id %>></input>           
+                
               </form>
             </li>
           <% } %>
