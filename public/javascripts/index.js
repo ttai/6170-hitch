@@ -2,11 +2,11 @@ $(document).ready(function() {
   $('#open_rides').DataTable();
 });
 
-$(document).ready(function($) {
-  $(".clickable-row").click(function() {
+$(document).ready(function($){
+  $("#open_rides").on("click", ".clickable-row", function(){
     window.document.location = $(this).data("href");
   });
-});
+})
 
 function initMap() {
   var pointA = new google.maps.LatLng(51.7519, -1.2578);
