@@ -135,11 +135,7 @@ router.get('/:ride', function(req, res) {
 router.post('/', function(req, res) {
   var time = req.body.date.concat(" ".concat(req.body.time))
   var departure_time = moment(time);
-  var now = new Date();
-  console.log(now);
-  if (departure_time < now) {
-    res.render('new_ride', {'e':'Ride must be in the future', user: req.session.currentUser});
-  } else if (!req.body.origin || !req.body.destination || !departure_time || !req.body.capacity || req.body.capacity < 1 || !req.body.transport){
+  if (!req.body.origin || !req.body.destination || !departure_time || !req.body.capacity || req.body.capacity < 1 || !req.body.transport){
     res.render('error', {'message': 'Invalid inputs.',
                          'error.status': 500});
   } else {
