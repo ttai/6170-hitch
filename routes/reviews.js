@@ -25,7 +25,7 @@ router.post('/:review', function(req, res) {
       if (err) {
         res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500});
       } else {
-        // res.redirect(req.get('referer'));
+        res.redirect(req.get('referer'));
       }
     });
 });
