@@ -51,19 +51,25 @@
             <tr>
               <td><a href='/users/user/<%= riders[i]._id %>'><b><%= riders[i].kerberos %></b></a></td>
               <td><%= riders[i].rating %> stars</td>
-              <% if (String(user._id) === String(riders[i]._id)) { %>
-                <form method="post" action="/rides/participate">
-                  <input type="hidden" name="ride_id" value=<%= ride._id %> ></input>
-                  <td><button type="submit" class="btn btn-default">Leave ride</button></td>
-                </form>
-              <% } else { %>
-                <% if (String(user._id) === String(ride.creator)) { %>
-                  <form method="post" action="/rides/remove">
-                    <input type="hidden" name="ride_id" value=<%= ride._id %>></input>
-                    <input type="hidden" name="user_id" value=<%= riders[i]._id %>></input>
-                    <td><button type="submit" class="btn btn-danger">Remove</button></td>
+              <%if (ride.departure_time > currentTime){%>
+                <% if (String(user._id) === String(riders[i]._id)) { %>
+                  <form method="post" action="/rides/participate">
+                    <input type="hidden" name="ride_id" value=<%= ride._id %> ></input>
+                    <td><button type="submit" class="btn btn-default">Leave ride</button></td>
                   </form>
+                <% } else { %>
+                  <% if (String(user._id) === String(ride.creator)) { %>
+                    <form method="post" action="/rides/remove">
+                      <input type="hidden" name="ride_id" value=<%= ride._id %>></input>
+                      <input type="hidden" name="user_id" value=<%= riders[i]._id %>></input>
+                      <td><button type="submit" class="btn btn-danger">Remove</button></td>
+                    </form>
+                  <% } %>
                 <% } %>
+              <% } else{%>
+                <form method="get" action="/reviews/<%= ride._id %>">
+                  <td><button type="submit" class="btn btn-default">Review</button></td>
+                </form>
               <% } %>
             </tr>
           <% } %>

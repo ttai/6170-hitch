@@ -23,26 +23,6 @@ var requireAuthentication = function(req, res, next) {
 };
 
 /*
-  Require participation whenever accessing a particular ride
-  This means that the client accessing the resource must be logged in
-  as the user that originally created the ride. Clients who are not owners 
-  of this particular resource will receive a 404.
-
-  Why 404? We don't want to distinguish between rides that don't exist at all
-  and rides that exist but don't belong to the client. This way a malicious client
-  that is brute-forcing urls should not gain any information.
-*/
-var requireParticipation = function(req, res, next) {
-	Ride.inRide(req.session.currentUser._id, req.params.ride, function (err, result) {
-		if (err || result < 0) {
-      res.redirect('/');
-		} else {
-			next();
-		}
-	});
-};
-
-/*
   Go to new ride page
 */
 router.get('/new_ride', function(req, res) {
@@ -55,7 +35,6 @@ router.get('/new_ride', function(req, res) {
 
 // Register the middleware handlers above.
 router.all('*', requireAuthentication);
-router.get('/:ride', requireParticipation);
 
 /*
   At this point, all requests are authenticated and checked:
@@ -110,6 +89,7 @@ router.get('/:ride', function(req, res) {
               var end_loc = result.routes[0].legs[0].end_location;
               var duration = result.routes[0].legs[0].duration.text;
               var distance = result.routes[0].legs[0].distance.text;
+              var currentTime = new Date();
               res.render('ride', { 'user': req.session.currentUser,
                                    'ride': ride,
                                    'riders': riders,
@@ -117,7 +97,8 @@ router.get('/:ride', function(req, res) {
                                    'distance': distance,
                                    'duration': duration,
                                    'coordA': start_loc,
-                                   'coordB': end_loc });
+                                   'coordB': end_loc,
+                                   'currentTime': currentTime });
             } else {
               res.render('ride', { 'user': req.session.currentUser,
                                    'ride': ride,
@@ -126,7 +107,8 @@ router.get('/:ride', function(req, res) {
                                    'distance': '',
                                    'duration': '',
                                    'coordA': { lat: 42, lng: -71 },
-                                   'coordB': { lat: 42, lng: -71 } });
+                                   'coordB': { lat: 42, lng: -71 },
+                                   'currentTime': currentTime });
 
             }
           });
@@ -152,8 +134,12 @@ router.get('/:ride', function(req, res) {
 */
 router.post('/', function(req, res) {
   var time = req.body.date.concat(" ".concat(req.body.time))
-  var departure_time = moment(time)
-  if (!req.body.origin || !req.body.destination || !departure_time || !req.body.capacity || req.body.capacity < 1 || !req.body.transport){
+  var departure_time = moment(time);
+  var now = new Date();
+  console.log(now);
+  if (departure_time < now) {
+    res.render('new_ride', {'e':'Ride must be in the future', user: req.session.currentUser});
+  } else if (!req.body.origin || !req.body.destination || !departure_time || !req.body.capacity || req.body.capacity < 1 || !req.body.transport){
     res.render('error', {'message': 'Invalid inputs.',
                          'error.status': 500});
   } else {
@@ -179,7 +165,6 @@ router.post('/remove', function(req, res){
     } else {
       Ride.removeRider(rideId, userId, function(err, result) {
         if (err) {
-          console.log(err);
           res.render('error',{'message': 'Resource not found.', 'error.status': 404});
         } else {
           res.redirect('/rides/' + rideId);
