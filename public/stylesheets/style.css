@@ -21,6 +21,11 @@ a {
     margin-top: 15px;
 }
 
+#error {
+    padding-top: 20px;
+    color: red;
+}
+
 .login-container {
     background-color:white;
     opacity: .95;
