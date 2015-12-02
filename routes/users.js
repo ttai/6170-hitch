@@ -13,11 +13,11 @@ var User = require('../models/User');
 var isLoggedInOrInvalidBody = function(req, res) {
   if (req.currentUser) {
     res.render('error', { 'message' : 'There is already a user logged in.',
-                          'error.status' : 403 });
+                          'status' : 403 });
     return true;
   } else if (!(req.body.kerberos && req.body.password)) {
     res.render('error', { 'message' : 'kerberos or password not provided.',
-                          'error.status' : 400 });
+                          'status' : 400 });
     return true;
   }
   return false;
@@ -30,13 +30,17 @@ router.get('/user/:user', function(req, res) {
   // User.getUser(req.body.userID, function(err, user) {
   User.getUser(req.params.user, function(err, user) {
     if (err) {
-      res.render('error', { 'message' : 'Resource not found.', 'error.status': 404});
+      res.render('error', { 'message' : 'Resource not found.', 'status': 404});
     } else {
       User.getReviews(user._id, function(err, reviews) {
         if (err) {
-          res.render('error', { 'message' : 'Resource not found.', 'error.status': 404});
+          res.render('error', { 'message' : 'Resource not found.', 'status': 404});
         } else {
-          res.render('user', { 'currentUser' : req.session.currentUser, 'user' : user, 'reviews' : reviews});
+          if (req.session.currentUser) {
+            res.render('user', { 'currentUser' : req.session.currentUser, 'user' : user, 'reviews' : reviews});
+          } else {
+            res.render('error', { 'message' : 'Resource not found.', 'status': 404}); 
+          }
         } 
       })
     }

@@ -16,7 +16,7 @@ var gmAPI = new GoogleMapsAPI(config);
 */
 var requireAuthentication = function(req, res, next) {
   if (!req.session.currentUser) {
-    res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500});
+    res.render('error', {'message': 'Must be logged in to use this feature.', 'status': 500});
   } else {
     next();
   }
@@ -53,7 +53,7 @@ router.all('*', requireAuthentication);
 router.get('/', function(req, res) {
   Ride.getAllRides(function(err, rides) {
     if (err) {
-      res.render('error', {'message': 'An unknown error occurred.', 'error.status': 500});
+      res.render('error', {'message': 'An unknown error occurred.', 'status': 500});
     } else {
       res.render('rides', { 'user': req.session.currentUser, rides: rides });
     }
@@ -73,7 +73,7 @@ router.get('/:ride', function(req, res) {
   Ride.getRide(req.params.ride, function (err, ride) {
     if (err) {
         res.render('error', { 'message': 'Resource not found.',
-                              'error.status': 404 });
+                              'status': 404 });
     } else {
       Ride.getRiders(req.params.ride, function (err, riders) {
         if (err) {
@@ -137,14 +137,14 @@ router.post('/', function(req, res) {
   var departure_time = moment(time);
   if (!req.body.origin || !req.body.destination || !departure_time || !req.body.capacity || req.body.capacity < 1 || !req.body.transport){
     res.render('error', {'message': 'Invalid inputs.',
-                         'error.status': 500});
+                         'status': 500});
   } else {
     Ride.addRide(req.session.currentUser._id, req.body.origin, req.body.destination,
                  departure_time.toDate(), req.body.capacity, req.body.transport,
                  function(err, ride) {
      if (err) {
        res.render('error', {'message': 'An unknown error occurred.',
-                            'error.status': 500});
+                            'status': 500});
      } else {
        res.redirect('/rides/' + ride._id);
      }
@@ -157,11 +157,11 @@ router.post('/remove', function(req, res){
   var userId = req.body.user_id;
   Ride.getRide(rideId, function(err, ride) {
     if ((err || !ride) || (String(ride.creator) !== String(req.session.currentUser._id))) {
-      res.render('error', {'message': 'Resource not found.', 'error.status': 404});
+      res.render('error', {'message': 'Resource not found.', 'status': 404});
     } else {
       Ride.removeRider(rideId, userId, function(err, result) {
         if (err) {
-          res.render('error',{'message': 'Resource not found.', 'error.status': 404});
+          res.render('error',{'message': 'Resource not found.', 'status': 404});
         } else {
           res.redirect('/rides/' + rideId);
         }
@@ -174,11 +174,11 @@ router.post('/participate', function(req, res) {
   var rideId = req.body.ride_id;
   Ride.inRide(req.session.currentUser._id, rideId, function (err, result) {
     if (err) {
-      res.render('error', {'message': 'Resource not found.', 'error.status': 404});
+      res.render('error', {'message': 'Resource not found.', 'status': 404});
     } else if (result < 0) {
       Ride.addRider(rideId, req.session.currentUser._id, function(err, result) {
         if (err) {
-          res.render('error', {'message': 'Resource not found.', 'error.status': 404});
+          res.render('error', {'message': 'Resource not found.', 'status': 404});
         } else {
           res.redirect('/rides/' + rideId);
         }
@@ -186,7 +186,7 @@ router.post('/participate', function(req, res) {
     } else {
       Ride.removeRider(rideId, req.session.currentUser._id, function(err, result) {
         if (err) {
-          res.render('error', {'message': 'Resource not found.', 'error.status': 404});
+          res.render('error', {'message': 'Resource not found.', 'status': 404});
         } else {
           res.redirect(req.get('referer'));
         }

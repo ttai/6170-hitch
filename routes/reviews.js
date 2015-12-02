@@ -21,7 +21,7 @@ router.post('/:review', function(req, res) {
   Review.addReview(req.body.ride_id, req.body.reviewer_id, req.body.reviewee_id,
                      parseInt(req.body.rating), req.body.comment, function(err) { 
       if (err) {
-        res.render('error', {'message': 'Must be logged in to use this feature.', 'error.status': 500});
+        res.render('error', {'message': 'Must be logged in to use this feature.', 'status': 500});
       } else {
         res.redirect(req.get('referer'));
       }

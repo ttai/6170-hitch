@@ -25,7 +25,7 @@ router.get('/', function(req, res, next) {
   Ride.getAllOpenRides(function(err, rides) {
     if (err) {
       res.render('error', { 'message': 'An unknown error occured',
-                            'error.status': 500 });
+                            'status': 500 });
     } else {
       rides.sort(sortByDate);
       var logged_in = (currentUser) ? true : false;
