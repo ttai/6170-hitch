@@ -5,10 +5,6 @@ var rideModel = schemas.rideModel;
 var reviewModel = schemas.reviewModel;
 var ObjectId = mongoose.Types.ObjectId;
 
-// update current ride methods to include both capacities and transport means
-// doesn't include error handling
-// all the get ride methods (except getRide) finds rides that have not yet closed (whose departure times are still in the future)
-
 var Ride = (function Ride() {
 
   var that = Object.create(Ride.prototype);
