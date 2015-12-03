@@ -153,6 +153,7 @@ router.post('/', function(req, res) {
   }
 });
 
+
 router.post('/remove', function(req, res){
   var rideId = req.body.ride_id;
   var userId = req.body.user_id;
@@ -170,6 +171,7 @@ router.post('/remove', function(req, res){
     }
   })
 });
+
 
 router.post('/participate', function(req, res) {
   var rideId = req.body.ride_id;

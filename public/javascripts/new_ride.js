@@ -33,3 +33,21 @@ function geolocate() {
   }
 }
 // [END region_geolocation]
+
+$(document).ready(function() {
+  var form = $('form');
+  form.submit(function(evt) {
+    var time = new Date($('#date').val().concat(" ".concat($('#time').val())));
+    var now = new Date();
+    var two_weeks = new Date();
+    two_weeks = two_weeks.setDate(two_weeks.getDate() + 14);
+    if (time <= now) {
+      $('h1').before("<div id='error'> Ride must be in the future. </div>");
+      evt.preventDefault();
+    }
+    if (time > two_weeks) {
+      $('h1').before("<div id='error'> Ride must be within the next 2 weeks. </div>");
+      evt.preventDefault();
+    }
+  });
+});
