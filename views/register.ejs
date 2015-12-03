@@ -19,8 +19,8 @@
       <p> Have an account? <a href='/users/login'>Log In</a> <p>
       <form data-toggle="validator" role="form" method="post" action="/users">
         <div class="form-group">
-          <label for="kerberos">Kerberos:</label>
-          <input type="text" class="form-control" name="kerberos" placeholder="Enter kerberos" required>
+          <label for="kerberos">MIT email:</label>
+          <input type="text" class="form-control" pattern="^[a-zA-Z0-9._%+-]+@mit\.edu$" data-maxlength="16" name="kerberos" placeholder="kerberos@mit.edu" required>
         </div>
         <div class="form-group">
           <label for="password">Password:</label>
