@@ -11,8 +11,10 @@ $(document).ready(function($){
 })
 
 $(document).ready(function() {
-  $('#my_upcoming_rides').DataTable();
+  $('#my_upcoming_rides').DataTable( {
+  });
 });
 $(document).ready(function() {
-  $('#my_past_rides').DataTable();
+  $('#my_past_rides').DataTable( {
+  });
 });

@@ -78,7 +78,6 @@ router.post('/', function(req, res) {
   var kerberos = req.body.kerberos.toLowerCase();
   var password = req.body.password;
   if (!kerberos || kerberos.length < 8 || !(kerberos.slice(-8) === '@mit.edu')) {
-
     res.render('register', {'e': 'Username must be a valid @mit.edu email.'});
   } else if (!password || password.length < 8) {
     res.render('register', {'e': 'Password must be at least 8 characters long.'});
