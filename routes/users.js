@@ -1,16 +1,7 @@
 var express = require('express');
 var router = express.Router();
+
 var User = require('../models/User');
-var Ride = require('../models/Ride');
-
-var schemas = require('../models/schemas');
-var rideModel = schemas.rideModel;
-var userModel = schemas.userModel;
-
-/* GET users listing. */
-// router.get('/', function(req, res, next) {
-//   res.send('respond with a resource');
-// });
 
 /*
   For both login and create user, we want to send an error code if the user
@@ -22,11 +13,11 @@ var userModel = schemas.userModel;
 var isLoggedInOrInvalidBody = function(req, res) {
   if (req.currentUser) {
     res.render('error', { 'message' : 'There is already a user logged in.',
-                          'error.status' : 403 });
+                          'status' : 403 });
     return true;
-  } else if (!(req.body.username && req.body.password)) {
-    res.render('error', { 'message' : 'Username or password not provided.',
-                          'error.status' : 400 });
+  } else if (!(req.body.kerberos && req.body.password)) {
+    res.render('error', { 'message' : 'kerberos or password not provided.',
+                          'status' : 400 });
     return true;
   }
   return false;
@@ -36,12 +27,22 @@ var isLoggedInOrInvalidBody = function(req, res) {
   View the reviews of a particular user.
 */
 router.get('/user/:user', function(req, res) {
-  User.getUser(req.body.userID, function(err, user) {
+  // User.getUser(req.body.userID, function(err, user) {
+  User.getUser(req.params.user, function(err, user) {
     if (err) {
-      res.render('error', { 'message' : 'Resource not found.', 'error.status': 404});
-    } else{
-    res.render('user', { 'currentUser' : req.session.currentUser,
-                         'user' : user });
+      res.render('error', { 'message' : 'Resource not found.', 'status': 404});
+    } else {
+      User.getReviews(user._id, function(err, reviews) {
+        if (err) {
+          res.render('error', { 'message' : 'Resource not found.', 'status': 404});
+        } else {
+          if (req.session.currentUser) {
+            res.render('user', { 'currentUser' : req.session.currentUser, 'user' : user, 'reviews' : reviews});
+          } else {
+            res.render('error', { 'message' : 'Resource not found.', 'status': 404}); 
+          }
+        } 
+      })
     }
   });
 });
@@ -49,7 +50,6 @@ router.get('/user/:user', function(req, res) {
 /*
   Go to register page
 */
-
 router.get('/register', function(req, res) {
   if (req.session.currentUser) {
     res.redirect('/');
@@ -75,22 +75,28 @@ router.post('/', function(req, res) {
   if (isLoggedInOrInvalidBody(req, res)) {
     return;
   }
-  var username = req.body.username;
+  var kerberos = req.body.kerberos.toLowerCase();
   var password = req.body.password;
+  if (!kerberos || kerberos.substring(-8) !== '@mit.edu') {
+    res.render('register', {'e': 'Username must be a valid @mit.edu email.'})
+  } else if (!password || password.length < 8) {
+    res.render('register', {'e': 'Password must be at least 8 characters long.'})
+  } else {
 
-  User.createUser(username, password, 
-                  function(err,user) {
-    if (err) {
-      if (err.taken) {
-        res.render('register', {'e' : "Kerberos already exists"});
+    User.createUser(kerberos, password, 
+                    function(err,user) {
+      if (err) {
+        if (err.taken) {
+          res.render('register', {'e' : "Kerberos already exists"});
+        } else {
+          res.send("error");
+        }
       } else {
-        res.send("error");
+        req.session.currentUser = user;
+        res.redirect('/');
       }
-    } else {
-      req.session.currentUser = user;
-      res.redirect('/');
-    }
-  });
+    });
+  }
 });
 
 // Login page
@@ -105,8 +111,8 @@ router.get('/login', function(req, res) {
 // Allows a user to sign in
 router.post('/login', function(req, res) {
   var password = req.body.password;
-  var username = req.body.username;
-  User.verifyPassword(username, password, function(err, user) {
+  var kerberos = req.body.kerberos;
+  User.verifyPassword(kerberos, password, function(err, user) {
     if (user) {
       req.session.currentUser = user;
       res.redirect('/')
@@ -124,14 +130,12 @@ router.get('/logout', function(req, res) {
 
 // Get the rides of the current logged in user
 router.get('/my_rides', function(req, res) {
+  var currentTime = new Date();
   User.getRides(req.session.currentUser._id, function(err, rides) {
     res.render('my_rides', { 'user' : req.session.currentUser,
-                             'rides' : rides });
+                             'rides' : rides ,
+                             'currentTime' : currentTime});
   });
-//   rideModel.find({ '_id' : req.session.currentUser.rides }, function(err, rides) {
-//     res.render('my_rides', { 'currentUser' : req.session.currentUser,
-//                              'rides' : rides });
-//   });
 });
 
 module.exports = router;

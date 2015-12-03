@@ -9,53 +9,128 @@ var Review = (function Review() {
 
   var that = Object.create(Review.prototype);
 
-  that.getReview = function(reviewID, callback){
-    reviewModel.findOne({ "_id": reviewID }, function(err, review) {
+  that.reviewOwnership = function (currentUserId, reviewId, callback) {
+    reviewModel.findById(reviewId, function(err, review) {
       if (err) {
         callback(err);
+      } else if (!review) {
+        callback({ msg: 'Invalid review' });
+      } else {
+        var reviewerId = review.reviewer;
+        callback(null, reviewerId === currentUserId);
+      }
+    });
+  }
+
+  that.getReview = function(reviewId, callback){
+    reviewModel.findById(reviewId, function(err, review) {
+      if (err) {
+        callback(err);
+      } else if (!review) {
+        callback({ msg: 'Invalid review' });
       } else {
         callback(null, review);
       }
     });
   };
 
-  that.addReview = function(rideID, reviewerID, revieweeID, 
+  that.existsReview = function(rideId, reviewerId, revieweeId, callback) {
+    reviewModel.find({ride: rideId, reviewer: reviewerId, reviewee: revieweeId}, function(err, review) {
+      if (err) {
+        callback(err, null);
+      } else {
+        if (review) {
+          callback(null, review);
+        } else {
+          callback(null, null);
+        }
+      }
+    })
+  }
+
+  that.addReview = function(rideId, reviewerId, revieweeId, 
                             rating, comment, callback) {
-    reviewModel.create({
-      "ride": rideID,
-      "reviewer": reviewerID,
-      "reviewee": revieweeID,
-      "rating": rating,
-      "comment": comment
-    }, {}, function(err, review) {
-      userModel.addReview(revieweeId, review, function(err) {
+    reviewModel.find({ride: rideId, reviewer: reviewerId, reviewee: revieweeId}, function(err, review) {
+      if (err) {
+        callback(err, null);
+      } else {
+        if (review.length > 0) {
+          reviewModel.findByIdAndUpdate(review[0]._id, { $set: { "rating": rating } },
+                                        function(err, result) {
+            if (err) {
+              callback(err, null);
+            } else {
+              User.updateRating(revieweeId, review[0], function (err, result) {
+                if (err) {
+                  callback(err, null);
+                } else {
+                  reviewModel.findByIdAndUpdate(review[0]._id, { $set: { "comment": comment } }, 
+                                                function(err) {
+                    if (err) {
+                      callback(err, null);
+                    } else {
+                      callback(null, null);
+                    }
+                  });
+                }
+              });
+            }
+          });
+        } else {
+          reviewModel.create({
+            "ride": rideId,
+            "reviewer": reviewerId,
+            "reviewee": revieweeId,
+            "rating": rating,
+            "comment": comment
+          }, function(err, review) {
+            User.addReview(revieweeId, review, function(err, result) {
+              if (err) {
+                callback(err, null);
+              } else {
+                callback(null,null);
+              }
+            });
+          });
+        }
+      }
+    })
+  };
+
+  that.setReviewRating = function(reviewerId, revieweeId, reviewId, rating, callback) {
+    reviewModel.findbyIdAndUpdate(reviewId, { $set: { "rating": rating } },
+                                  function(err, result) {
+      if (err) {
         callback(err);
-      });
+      } else {
+        User.updateRating(userId, reviewId, function (err, result) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(null, null);
+          }
+        });
+      }
     });
   };
 
-  that.setReviewRating = function(reviewID, rating, callback) {
-    reviewModel.update({ "_id": reviewID }, { $set: { "rating": rating } },
-                        function(err) {
-      callback(err);
-    });
-  };
-
-  that.setReviewComment = function(reviewID, comment, callback) {
-    reviewModel.update({ "_id": reviewID }, { $set: { "comment": comment } }, 
-                        function(err) {
-      callback(err);
+  that.setReviewComment = function(reviewId, comment, callback) {
+    reviewModel.findbyIdAndUpdate(reviewId, { $set: { "comment": comment } }, 
+                                  function(err) {
+      if (err) {
+        callback(err);
+      }
     });
   };
   
-  that.deleteReview = function(reviewID, callback) {
-    reviewModel.find({ "_id": reviewID }, function(err, review) {
-      userModel.find({ "_id": review.revieweeID }, function(err, user) {
-        var index = user.reviews.indexOf(reviewID);
+  that.deleteReview = function(reviewId, callback) {
+    reviewModel.findById(reviewId, function(err, review) {
+      userModel.findById(review.revieweeId, function(err, user) {
+        var index = user.reviews.indexOf(reviewId);
         user.reviews.splice(index, 1);
-        userModel.update({ "_id": user._id },
-                          { $set: { "reviews": user.reviews } },
-                          function(err) {
+        userModel.findByIdAndUpdate(user._id,
+                                    { $set: { "reviews": user.reviews } },
+                                    function(err) {
           callback(err);
         });
       });

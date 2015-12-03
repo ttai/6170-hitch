@@ -11,21 +11,23 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   </head>
   <body>
-    <% if (typeof(e) !== 'undefined') { %>
-      <div id='error'> <%= e %> </div>
-    <% } %>
-    <h2> Log in </h2> 
-    <p> Don't have an account? <a href='/users/register'>Register</a> <p>
-    <form method="post" action="/users/login">
-      <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" class="form-control" name="username" placeholder="Enter username">
-      </div>
-      <div class="form-group">
-        <label for="pwd">Password:</label>
-        <input type="password" class="form-control" name="password" placeholder="Enter password">
-      </div>
-      <button type="submit" class="btn btn-default">Log in</button>
-    </form>
+    <div class="login-container">
+      <% if (typeof(e) !== 'undefined') { %>
+        <div id='error'> <%= e %> </div>
+      <% } %>
+      <h2> Log in </h2> 
+      <p> Don't have an account? <a href='/users/register'>Register</a> <p>
+      <form method="post" action="/users/login">
+        <div class="form-group">
+          <label for="kerberos">Kerberos:</label>
+          <input type="text" class="form-control" name="kerberos" placeholder="Enter kerberos">
+        </div>
+        <div class="form-group">
+          <label for="pwd">Password:</label>
+          <input type="password" class="form-control" name="password" placeholder="Enter password">
+        </div>
+        <button type="submit" class="btn btn-default">Log in</button>
+      </form>
+    </div>
   </body>
 </html>

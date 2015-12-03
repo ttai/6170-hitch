@@ -4,6 +4,17 @@ var User = require('../models/User');
 var Ride = require('../models/Ride');
 var Review = require('../models/Review');
 var utils = require('../utils/utils');
+var GoogleMapsAPI = require('googlemaps');
+var config = require('../googleConfig');
+
+var gmAPI = new GoogleMapsAPI(config);
+
+/*
+  At this point, all requests are authenticated and checked:
+  1. Clients must be logged into some account
+  2. If accessing or modifying a specific resource, the client must be a participant in that ride
+  3. Requests are well-formed
+*/
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -17,16 +28,25 @@ router.get('/', function(req, res, next) {
       return 0;
     }
   }
+
   Ride.getAllOpenRides(function(err, rides) {
     if (err) {
-      res.render('error', {'message': 'An unknown error occured', 'error.status': 500})
+      res.render('error', { 'message': 'An unknown error occured',
+                            'status': 500 });
     } else {
       rides.sort(sortByDate);
-      if (currentUser) {
-        res.render('index', {'user': currentUser, 'rides': rides, 'loggedIn': true})
-      } else {
-        res.render('index', {'user': currentUser, 'rides': rides, 'loggedIn': false})
-      }
+      var logged_in = (currentUser) ? true : false;
+
+      var params = {
+        origin: 'New York, NY, US',
+        destination: 'Los Angeles, CA, US'
+      };
+
+      gmAPI.directions(params, function(err, result) {
+        res.render('index', { 'user' : currentUser,
+                              'rides' : rides,
+                              'loggedIn' : logged_in });
+      });
     }
   });
 });
