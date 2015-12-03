@@ -77,15 +77,15 @@ router.post('/', function(req, res) {
   }
   var kerberos = req.body.kerberos.toLowerCase();
   var password = req.body.password;
-  if (!kerberos || kerberos.splice(-8) !== '@mit.edu') {
-    res.render('register', {'e': 'Username must be a valid @mit.edu email.'})
+  if (!kerberos || kerberos.length < 8 || !(kerberos.slice(-8) === '@mit.edu')) {
+    res.render('register', {'e': 'Username must be a valid @mit.edu email.'});
   } else if (!password || password.length < 8) {
-    res.render('register', {'e': 'Password must be at least 8 characters long.'})
+    res.render('register', {'e': 'Password must be at least 8 characters long.'});
   } else {
-
     User.createUser(kerberos, password, 
                     function(err,user) {
       if (err) {
+        console.log("error!!");
         if (err.taken) {
           res.render('register', {'e' : "Kerberos already exists"});
         } else {
