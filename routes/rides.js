@@ -189,7 +189,7 @@ router.post('/participate', function(req, res) {
         if (err) {
           res.render('error', {'message': 'Resource not found.', 'status': 404});
         } else {
-          res.redirect(req.get('referer'));
+          res.redirect('/');
         }
       });
     }
