@@ -20,7 +20,6 @@ var Ride = (function Ride() {
   };
 
   that.inRide = function(userId, rideId, callback) {
-    // console.log("id",rideId);
     rideModel.findById(rideId, function (err, ride) {
       if (err) {
         callback(err, null);
@@ -133,7 +132,6 @@ var Ride = (function Ride() {
       } else {
         var riderIds = ride.riders;
         userModel.find({ '_id' : { $in : riderIds } }, function(err, riders) {
-          // console.log("riders",riders);
           callback(err, riders);
         });
       }

@@ -122,17 +122,14 @@ var User = (function User() {
           var index = 0;
           (function next() {
             if (!reviews.length) {
-              console.log('userReviews', userReviews);
               return callback(null, userReviews);
             }
             var review = reviews.shift();
             userModel.findById(review.reviewer, function(err, user) {
-              console.log('user.kerberos', user.kerberos)
               if (err) {
                 return callback(err);
               } else {
                 userReviews[index].kerberos = user.kerberos;
-                console.log('index kerberos', userReviews[index].kerberos)
                 index += 1;
                 next();
               }

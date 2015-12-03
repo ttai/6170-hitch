@@ -9,7 +9,7 @@ var Review = (function Review() {
 
   var that = Object.create(Review.prototype);
 
-  that.reviewOwnership = function (currentUserId, reviewId) {
+  that.reviewOwnership = function (currentUserId, reviewId, callback) {
     reviewModel.findById(reviewId, function(err, review) {
       if (err) {
         callback(err);
