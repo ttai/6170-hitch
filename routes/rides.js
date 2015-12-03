@@ -136,7 +136,7 @@ router.post('/', function(req, res) {
   var time = req.body.date.concat(" ".concat(req.body.time))
   var departure_time = moment(time);
   var now = new Date();
-  if (!req.body.origin || !req.body.destination || !departure_time || departure_time < now || !req.body.capacity || req.body.capacity < 1 || !req.body.transport){
+  if (!req.body.origin || !req.body.destination || !departure_time || departure_time < now || !req.body.capacity || req.body.capacity < 1 || req.body.capacity >6 || !req.body.transport){
     res.render('error', {'message': 'Invalid inputs.',
                          'status': 500});
   } else {
