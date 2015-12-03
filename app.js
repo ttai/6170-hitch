@@ -8,30 +8,6 @@ var bodyParser = require('body-parser');
 
 var app = express();
 
-// email verification
-// var nev = require('email-verification')(mongoose);
-// var userModel = require('./models/User');
-// nev.configure({
-//     verificationURL: 'http://myawesomewebsite.com/email-verification/${URL}',
-//     persistentUserModel: userModel,
-//     tempUserCollection: 'myawesomewebsite_tempusers',
-
-//     transportOptions: {
-//         service: 'Gmail',
-//         auth: {
-//             user: 'hitch6170@gmail.com',
-//             pass: 'getaride'
-//         }
-//     },
-//     verifyMailOptions: {
-//         from: 'Do Not Reply <hitch6170@gmail.com>',
-//         subject: 'Please confirm account',
-//         html: 'Click the following link to confirm your account:</p><p>${URL}</p>',
-//         text: 'Please confirm your account by clicking the following link: ${URL}'
-//     }
-// });
-// nev.generateTempUserModel(userModel)
-
 // Database setup
 var mongoose = require('mongoose');
 mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/test');

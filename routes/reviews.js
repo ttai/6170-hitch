@@ -4,6 +4,28 @@ var Review = require('../models/Review');
 var Ride = require('../models/Ride');
 var utils = require('../utils/utils');
 
+/*
+  Require authentication on ALL access to /rides/*
+  Clients which are not logged in will receive a 403 error code.
+*/
+var requireAuthentication = function(req, res, next) {
+  if (!req.session.currentUser) {
+    res.render('error', {'message': 'Must be logged in to use this feature.', 'status': 500});
+  } else {
+    next();
+  }
+};
+
+// Register the middleware handlers above.
+router.all('*', requireAuthentication);
+
+/*
+  At this point, all requests are authenticated and checked:
+  1. Clients must be logged into some account
+  2. If accessing or modifying a specific resource, the client must be a participant in that ride
+  3. Requests are well-formed
+*/
+
 // Get review page for a particular ride
 router.get('/:ride', function(req, res) {
   var user = req.session.currentUser;
