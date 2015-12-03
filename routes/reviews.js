@@ -40,6 +40,9 @@ router.get('/:ride', function(req, res) {
 
 // Add or update review
 router.post('/:review', function(req, res) {
+  if (!req.body.rating || req.body.rating < 1 || req.body.rating > 5) {
+    res.render('error', {'message': 'Must submit rating between 1 and 5.', 'status' : 500});
+  }
   Review.addReview(req.body.ride_id, req.body.reviewer_id, req.body.reviewee_id,
                      parseInt(req.body.rating), req.body.comment, function(err) { 
       if (err) {

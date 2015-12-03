@@ -75,22 +75,28 @@ router.post('/', function(req, res) {
   if (isLoggedInOrInvalidBody(req, res)) {
     return;
   }
-  var kerberos = req.body.kerberos;
+  var kerberos = req.body.kerberos.toLowerCase();
   var password = req.body.password;
+  if (!kerberos || kerberos.slice(-8) !== '@mit.edu') {
+    res.render('register', {'e': 'Username must be a valid @mit.edu email.'})
+  } else if (!password || password.length < 8) {
+    res.render('register', {'e': 'Password must be at least 8 characters long.'})
+  } else {
 
-  User.createUser(kerberos, password, 
-                  function(err,user) {
-    if (err) {
-      if (err.taken) {
-        res.render('register', {'e' : "Kerberos already exists"});
+    User.createUser(kerberos, password, 
+                    function(err,user) {
+      if (err) {
+        if (err.taken) {
+          res.render('register', {'e' : "Kerberos already exists"});
+        } else {
+          res.send("error");
+        }
       } else {
-        res.send("error");
+        req.session.currentUser = user;
+        res.redirect('/');
       }
-    } else {
-      req.session.currentUser = user;
-      res.redirect('/');
-    }
-  });
+    });
+  }
 });
 
 // Login page
