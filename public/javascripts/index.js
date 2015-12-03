@@ -1,5 +1,6 @@
 $(document).ready(function() {
-  $('#open_rides').DataTable();
+  $('#open_rides').DataTable( {
+  });
 });
 
 $(document).ready(function($){

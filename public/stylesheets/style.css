@@ -80,3 +80,5 @@ a {
     height: 16px;
     background: url('http://kubyshkin.ru/samples/star-rating/star.png') 0 -16px;
 }
+
+.dataTables_filter, .dataTables_info { display: none; }
