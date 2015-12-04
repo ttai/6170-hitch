@@ -6,6 +6,8 @@ var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var csrf = require('csurf');
+var validator = require('validator');
+var helmet = require('helmet')
 
 var app = express();
 
@@ -32,6 +34,8 @@ app.use(cookieParser());
 app.use(session({ secret : '6170', resave : true, saveUninitialized: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(csrf());
+app.use(helmet());
+app.use(helmet.xssFilter());
 
 // Import route handlers
 var index = require('./routes/index');
