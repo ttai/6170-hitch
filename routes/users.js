@@ -54,7 +54,7 @@ router.get('/register', function(req, res) {
   if (req.session.currentUser) {
     res.redirect('/');
   } else {
-    res.render('register');
+    res.render('register', {'csrf': req.csrfToken()});
   }
 });
 
@@ -104,7 +104,7 @@ router.get('/login', function(req, res) {
   if (req.session.currentUser) {
     res.redirect('/');
   } else {
-    res.render('login');
+    res.render('login', {'csrf': req.csrfToken()});
   }
 });
 

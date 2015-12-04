@@ -83,6 +83,7 @@
                  <p><input id = "submit" type="submit" name="Submit" value="Submit"></p>
                 <% } %>
                 
+                <input type="hidden" name="_csrf" value=<%= csrf %>></input>
                 <input type="hidden" name="ride_id" value=<%= ride_id %>></input>
                 <input type="hidden" name="reviewer_id" value=<%= user._id %>></input>
                 <input type="hidden" name="reviewee_id" value=<%= other_riders[i]._id %>></input>           

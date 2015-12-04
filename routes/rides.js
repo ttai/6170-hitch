@@ -27,7 +27,7 @@ var requireAuthentication = function(req, res, next) {
 */
 router.get('/new_ride', function(req, res) {
   if (req.session.currentUser) {
-    res.render('new_ride', {user: req.session.currentUser});
+    res.render('new_ride', {'csrf': req.csrfToken(), 'user': req.session.currentUser});
   } else {
     res.redirect('/');
   }

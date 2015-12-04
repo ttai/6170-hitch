@@ -31,7 +31,8 @@ router.get('/:ride', function(req, res) {
   var user = req.session.currentUser;
   var ride_id = req.params.ride;
   Ride.getOtherRiders(ride_id, user._id, function(err, other_riders, other_riders_reviews) {
-    res.render('reviews', { 'user' : req.session.currentUser,
+    res.render('reviews', { 'csrf': req.csrfToken(),
+                            'user' : req.session.currentUser,
                             'ride_id' : ride_id,
                             'other_riders' : other_riders,
                             'other_riders_reviews' : other_riders_reviews});

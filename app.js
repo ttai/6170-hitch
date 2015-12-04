@@ -5,6 +5,7 @@ var logger = require('morgan');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var csrf = require('csurf');
 
 var app = express();
 
@@ -30,6 +31,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(session({ secret : '6170', resave : true, saveUninitialized: true}));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(csrf());
 
 // Import route handlers
 var index = require('./routes/index');
