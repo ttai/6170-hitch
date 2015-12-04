@@ -16,8 +16,29 @@ var requireAuthentication = function(req, res, next) {
   }
 };
 
+/*
+  Require participation whenever accessing a particular ride
+  This means that the client accessing the resource must be logged in
+  as the user that originally created the ride. Clients who are not owners 
+  of this particular resource will receive a 404.
+  Why 404? We don't want to distinguish between rides that don't exist at all
+  and rides that exist but don't belong to the client. This way a malicious client
+  that is brute-forcing urls should not gain any information.
+*/
+var requireParticipation = function(req, res, next) {
+  var ride_id = (req.body.ride_id || req.params.ride);
+  Ride.inRide(req.session.currentUser._id, ride_id, function (err, result) {
+    if (err || result < 0) {
+      res.render('error', {'message': 'Resource not found.', 'status': 404});
+    } else {
+      next();
+    }
+  });
+};
 // Register the middleware handlers above.
 router.all('*', requireAuthentication);
+router.get('/:ride', requireParticipation);
+router.post('/:review', requireParticipation);
 
 /*
   At this point, all requests are authenticated and checked:
@@ -26,7 +47,7 @@ router.all('*', requireAuthentication);
   3. Requests are well-formed
 */
 
-// Get review page for a particular ride
+// Get review page for a particular ride. Requires participation.
 router.get('/:ride', function(req, res) {
   var user = req.session.currentUser;
   var ride_id = req.params.ride;
@@ -39,19 +60,22 @@ router.get('/:ride', function(req, res) {
   });
 });
 
-// Add or update review
+// Add or update review. Requires participation and ownership.
 router.post('/:review', function(req, res) {
-  if (!req.body.rating || req.body.rating < 1 || req.body.rating > 5) {
+  if (req.session.currentUser._id === req.body.reviewee_id) {
+    res.render('error', {'message': 'An unknown error occurred.', 'status': 500});
+  } else if (!req.body.rating || req.body.rating < 1 || req.body.rating > 5) {
     res.render('error', {'message': 'Must submit rating between 1 and 5.', 'status' : 500});
-  }
-  Review.addReview(req.body.ride_id, req.body.reviewer_id, req.body.reviewee_id,
-                     parseInt(req.body.rating), req.body.comment, function(err) { 
+  } else {
+    Review.addReview(req.body.ride_id, req.session.currentUser._id, req.body.reviewee_id,
+                       parseInt(req.body.rating), req.body.comment, function(err) { 
       if (err) {
-        res.render('error', {'message': 'Must be logged in to use this feature.', 'status': 500});
+        res.render('error', {'message': 'An unknown error occurred.', 'status': 500});
       } else {
         res.redirect(req.get('referer'));
       }
     });
+  }
 });
 
 module.exports = router;
