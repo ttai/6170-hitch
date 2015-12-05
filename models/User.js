@@ -154,7 +154,6 @@ var User = (function User() {
   };
 
   that.addReview = function (userId, review, callback) {
-
     userModel.findByIdAndUpdate(userId,
                                 { $addToSet: {reviews: review._id } },
                                 function (err, result) {
