@@ -17,7 +17,7 @@ var Review = (function Review() {
         callback({ msg: 'Invalid review' });
       } else {
         var reviewerId = review.reviewer;
-        callback(null, reviewerId === currentUserId);
+        callback(null, reviewerId.equals(currentUserId));
       }
     });
   }
