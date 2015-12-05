@@ -122,8 +122,75 @@ describe('User', function() {
                    function(err, ride) {
         User.getRides(user1._id, function(err, rides) {
           assert.equal(rides.length, 1);
-          // TODO: figure out _id comparison
+          assert.deepEqual(rides[0]._id, ride._id);
           done();
+        });
+      });
+    });
+  });
+
+  describe('getReviews', function() {
+    it('should get 0 reviews', function(done) {
+      User.getReviews(user1._id, function(err, reviews) {
+        assert.equal(reviews.length, 0);
+        done();
+      });
+    });
+    it('should get a review', function(done) {
+      var comment = 'Great rider!';
+      var rating = 5;
+      Ride.addRide(user1._id, 'orig', 'dest', Date.now(), 4, 'Uber',
+                   function(err, ride) {
+        Review.addReview(ride._id, user1._id, user2._id, rating, comment,
+                         function(err) {
+          User.getReviews(user2._id, function(err, reviews) {
+            assert.equal(reviews.length, 1);
+            assert.equal(reviews[0].rating, rating);
+            assert.equal(reviews[0].comment, comment);
+            done();
+          });
+        });
+      });
+    });
+  });
+
+  describe('getUserRating', function() {
+    it('should default to 5', function(done) {
+      User.getUserRating(user1._id, function(err, rating) {
+        assert.equal(rating, 5);
+        done();
+      });
+    });
+    it('should be 4', function(done) {
+      var comment = 'Decent rider.';
+      var rating = 4;
+      Ride.addRide(user1._id, 'orig', 'dest', Date.now(), 4, 'Uber',
+                   function(err, ride) {
+        Review.addReview(ride._id, user1._id, user2._id, rating, comment,
+                         function(err) {
+          User.getUserRating(user2._id, function(err, rating) {
+            assert.equal(rating, 4);
+            done();
+          });
+        });
+      });
+    });
+    it('should be average of two reviews', function(done) {
+      Ride.addRide(user1._id, 'orig', 'dest', Date.now(), 4, 'Uber',
+                   function(err, ride) {
+        Ride.addRider(ride._id, user2._id, function(err) {
+          Ride.addRider(ride._id, user3._id, function(err) {
+            Review.addReview(ride._id, user2._id, user1._id, 4, 'good',
+                             function(err) {
+              Review.addReview(ride._id, user3._id, user1._id, 1, 'sucks',
+                               function(err) {
+                User.getUserRating(user1._id, function(err, rating) {
+                  assert.equal(rating, 2.5);
+                  done();
+                });
+              });
+            });
+          });
         });
       });
     });
