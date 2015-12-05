@@ -185,26 +185,6 @@ var User = (function User() {
     });
   };
 
-  // do add review!
-  that.addReview = function (userId, review, callback) {
-
-    userModel.findByIdAndUpdate(userId,
-                                { $addToSet: {reviews: review._id } },
-                                function (err, result) {
-      if (err) {
-        callback(err);
-      } else {
-        that.updateRating(userId, review, function (err, result) {
-          if (err) {
-            callback(err);
-          } else {
-            callback(null, null);
-          }
-        });
-      }
-    });
-  };
-
   Object.freeze(that);
   return that;
 })();
