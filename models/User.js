@@ -153,6 +153,25 @@ var User = (function User() {
     });
   };
 
+  that.addReview = function (userId, review, callback) {
+
+    userModel.findByIdAndUpdate(userId,
+                                { $addToSet: {reviews: review._id } },
+                                function (err, result) {
+      if (err) {
+        callback(err);
+      } else {
+        that.updateRating(userId, review, function (err, result) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(null, null);
+          }
+        });
+      }
+    });
+  }; 
+
   that.updateRating = function (userId, review, callback) {
     userModel.findById(userId, function (err, user) {
       if (err) {
