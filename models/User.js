@@ -166,11 +166,8 @@ var User = (function User() {
         if (index < 0) {
           callback( { msg: 'Invalid review'} );
         } else {
-          var new_rating =
-              // (user.rating * num_reviews + review.rating - reviews[index]) /
-              // (num_reviews);
-              (user.rating * (num_reviews - 1) + review.rating) /
-              (num_reviews);
+          var new_rating = (user.rating * (num_reviews - 1) + review.rating) /
+                           num_reviews;
           userModel.findByIdAndUpdate(userId, 
                                       { $set: {rating: new_rating} },
                                       function (err, result) {
