@@ -195,4 +195,60 @@ describe('User', function() {
       });
     });
   });
+
+  describe('addReview', function() {
+    it('should add review', function(done) {
+      Ride.addRide(user1._id, 'orig', 'dest', Date.now(), 4, 'Uber',
+                   function(err, ride) {
+        reviewModel.create({
+          'ride': ride._id,
+          'reviewer': user1._id,
+          'reviewee': user2._id,
+          'rating': 2,
+          'comment': 'disappointing rider'
+        }, function(err, review) {
+          User.addReview(review.reviewee, review, function(err) {
+            User.getReviews(user2._id, function(err, reviews) {
+              assert.equal(reviews.length, 1);
+              assert.deepEqual(reviews[0]._id, review._id);
+              assert.equal(reviews[0].rating, review.rating);
+              assert.equal(reviews[0].comment, review.comment);
+              done();
+            });
+          });
+        });
+      });
+    });
+  });
+
+  describe('updateRating', function() {
+    it('should change rating', function(done) {
+      var comment = 'Decent rider.';
+      var rating = 4;
+      Ride.addRide(user1._id, 'orig', 'dest', Date.now(), 4, 'Uber',
+                   function(err, ride) {
+        Review.addReview(ride._id, user1._id, user2._id, rating, comment,
+                         function(err) {
+          User.getReviews(user2._id, function(err, reviews) {
+            assert.equal(reviews.length, 1);
+            var review = reviews[0];
+            assert.equal(review.rating, rating);
+
+            var new_rating = 3;
+            reviewModel.findByIdAndUpdate(review._id,
+                                          { $set: { 'rating': new_rating } },
+                                          function(err, review) {
+              User.updateRating(user2._id, review, function(err) {
+                User.getReviews(user2._id, function(err, reviews) {
+                  assert.equal(reviews.length, 1);
+                  assert.equal(reviews[0].rating, new_rating);
+                  done();
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+  });
 });
