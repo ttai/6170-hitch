@@ -6,8 +6,7 @@ var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var csrf = require('csurf');
-var validator = require('validator');
-var helmet = require('helmet')
+var helmet = require('helmet');
 
 var app = express();
 

@@ -3,6 +3,7 @@ var router = express.Router();
 var Review = require('../models/Review');
 var Ride = require('../models/Ride');
 var utils = require('../utils/utils');
+var validator = require('validator');
 
 /*
   Require authentication on ALL access to /rides/*
@@ -64,11 +65,11 @@ router.get('/:ride', function(req, res) {
 router.post('/:review', function(req, res) {
   if (req.session.currentUser._id === req.body.reviewee_id) {
     res.render('error', {'message': 'An unknown error occurred.', 'status': 500});
-  } else if (!req.body.rating || req.body.rating < 1 || req.body.rating > 5) {
+  } else if (!validator.toInt(req.body.rating) || validator.toInt(req.body.rating) < 1 || validator.toInt(req.body.rating) > 5) {
     res.render('error', {'message': 'Must submit rating between 1 and 5.', 'status' : 500});
   } else {
     Review.addReview(req.body.ride_id, req.session.currentUser._id, req.body.reviewee_id,
-                       parseInt(req.body.rating), req.body.comment, function(err) { 
+                       parseInt(req.body.rating), validator.escape(validator.toString(req.body.comment)), function(err) { 
       if (err) {
         res.render('error', {'message': 'An unknown error occurred.', 'status': 500});
       } else {

@@ -9,6 +9,7 @@ moment().format();
 var GoogleMapsAPI = require('googlemaps');
 var config = require('../googleConfig');
 var gmAPI = new GoogleMapsAPI(config);
+var validator = require('validator');
 
 /*
   Require authentication on ALL access to /rides/*
@@ -142,8 +143,8 @@ router.post('/', function(req, res) {
     res.render('error', {'message': 'Invalid inputs.',
                          'status': 500});
   } else {
-    Ride.addRide(req.session.currentUser._id, req.body.origin, req.body.destination,
-                 departure_time.toDate(), req.body.capacity, req.body.transport,
+    Ride.addRide(req.session.currentUser._id, validator.escape(validator.toString(req.body.origin)), validator.escape(validator.toString(req.body.destination)),
+                 validator.toDate(departure_time.toDate()), validator.toInt(req.body.capacity), validator.escape(validator.toString(req.body.transport)),
                  function(err, ride) {
      if (err) {
        res.render('error', {'message': 'An unknown error occurred.',
