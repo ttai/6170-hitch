@@ -47,7 +47,7 @@ var Ride = (function Ride() {
   };
 
   // TODO: Use Google Maps API to find rides by location
-  that.findRidesByPickup = function(location, callback) {
+  that.findRidesByOrigin = function(location, callback) {
     var now = new Date();
     rideModel.find({ origin: location }).where('departure_time').gte(now).exec(function(err, rides) {
       if (err) {
