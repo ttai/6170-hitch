@@ -48,8 +48,3 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, 
     }   
   });     
 }
-
-window.onload = function() {
-  initMap({ lat : <%= coordA.lat %>, lng: <%= coordA.lng %> },
-          { lat : <%= coordB.lat %>, lng: <%= coordB.lng %> });
-};

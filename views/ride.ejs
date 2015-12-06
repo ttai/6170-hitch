@@ -11,6 +11,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>
     <script src="/javascripts/ride.js"></script>
+    <script>
+      window.onload = function() {
+        initMap({ lat : <%= coordA.lat %>, lng: <%= coordA.lng %> },
+                { lat : <%= coordB.lat %>, lng: <%= coordB.lng %> });
+      };
+    </script>
   </head>
   <body>
     <header>
