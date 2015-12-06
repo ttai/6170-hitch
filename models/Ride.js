@@ -46,10 +46,13 @@ var Ride = (function Ride() {
       });
   };
 
-  // TODO: Use Google Maps API to find rides by location
-  that.findRidesByOrigin = function(location, callback) {
+  // TODO: find rides by location. This is not used anywhere.
+  that.findRidesByOrigin = function(latitude, longitude, maxDistance, callback) {
     var now = new Date();
-    rideModel.find({ origin: location }).where('departure_time').gte(now).exec(function(err, rides) {
+    var coords = [];
+    coords[0] = longitude;
+    coords[1] = latitude;
+    rideModel.find({ origin: {$near: coords, $maxDistance: maxDistance} }).where('departure_time').gte(now).exec(function(err, rides) {
       if (err) {
         callback(err);
       } else {
@@ -58,10 +61,13 @@ var Ride = (function Ride() {
     });
   };
 
-  // TODO: Use Google Maps API to find rides by location
-  that.findRidesByDestination = function(location, callback) {
+  // TODO: find rides by location. This is not used anywhere.
+  that.findRidesByDestination = function(latitude, longitude, maxDistance, callback) {
     var now = new Date();
-    rideModel.find({ destination: location }).where('departure_time').gte(now).exec(function(err, rides) {
+    var coords = [];
+    coords[0] = longitude;
+    coords[1] = latitude;
+    rideModel.find({ destination: {$near: coords, $maxDistance: maxDistance} }).where('departure_time').gte(now).exec(function(err, rides) {
       if (err) {
         callback(err);
       } else {
@@ -98,12 +104,17 @@ var Ride = (function Ride() {
   };
 
   that.addRide = function(userId, origin, destination, departure_time,
+                          origin_coord, dest_coord, distance, duration,
                           total_capacity, transport,
                           callback) {
     rideModel.create({
       'origin': origin,
       'destination': destination,
       'departure_time': departure_time,
+      'origin_coord': origin_coord,
+      'dest_coord': dest_coord,
+      'distance': distance,
+      'duration': duration,
       'total_capacity': total_capacity,
       'remaining_capacity': total_capacity - 1,
       'riders': [userId],
