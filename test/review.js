@@ -110,4 +110,39 @@ describe('Review', function() {
       });
     });
   });
+
+  describe('addReview', function() {
+    it('should return new review', function(done) {
+      Review.addReview(the_ride._id, user2._id, user3._id, 2, 'bad',
+                       function(err) {
+        Review.existsReview(the_ride._id, user2._id, user3._id,
+                            function(err, review) {
+          assert.deepEqual(review.ride, the_ride._id);
+          assert.deepEqual(review.reviewer, user2._id);
+          assert.deepEqual(review.reviewee, user3._id);
+          assert.equal(review.rating, 2);
+          assert.equal(review.comment, 'bad');
+          done();
+        });
+      });
+    });
+    it('should update average rating', function(done) {
+      Review.addReview(the_ride._id, user2._id, user3._id, 2, 'bad',
+                       function(err) {
+        User.getUserRating(user3._id, function(err, rating) {
+          assert.equal(rating, 3.5);
+          done();
+        });
+      });
+    });
+    it('should set new average rating', function(done) {
+      Review.addReview(the_ride._id, user2._id, user1._id, 2, 'bad',
+                       function(err) {
+        User.getUserRating(user1._id, function(err, rating) {
+          assert.equal(rating, 2);
+          done();
+        });
+      });
+    });
+  });
 });
