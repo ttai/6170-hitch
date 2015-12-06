@@ -97,48 +97,6 @@ var Review = (function Review() {
     });
   };
 
-  that.setReviewRating = function(reviewerId, revieweeId, reviewId, rating, callback) {
-    reviewModel.findByIdAndUpdate(reviewId, { $set: { "rating": rating } },
-                                  function(err, result) {
-      if (err) {
-        callback(err);
-      } else {
-        User.updateRating(revieweeId, reviewId, function (err, result) {
-          if (err) {
-            callback(err);
-          } else {
-            callback(null, null);
-          }
-        });
-      }
-    });
-  };
-
-  that.setReviewComment = function(reviewId, comment, callback) {
-    reviewModel.findbyIdAndUpdate(reviewId, { $set: { "comment": comment } }, 
-                                  function(err) {
-      if (err) {
-        callback(err);
-      }
-    });
-  };
-  
-  that.deleteReview = function(reviewId, callback) {
-    reviewModel.findById(reviewId, function(err, review) {
-      userModel.findById(review.revieweeId, function(err, user) {
-        var index = user.reviews.indexOf(reviewId);
-        user.reviews.splice(index, 1);
-        userModel.findByIdAndUpdate(user._id,
-                                    { $set: { "reviews": user.reviews } },
-                                    function(err) {
-          callback(err);
-        });
-      });
-    }).remove(function(err) {
-      callback(err);
-    });
-  };
-
   Object.freeze(that);
   return that;
 })();
