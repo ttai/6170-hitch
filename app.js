@@ -36,6 +36,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(csrf());
 app.use(helmet());
 app.use(helmet.xssFilter());
+app.use(helmet.frameguard('sameorigin'));
+app.use(helmet.frameguard('deny'));
 
 // Import route handlers
 var index = require('./routes/index');
