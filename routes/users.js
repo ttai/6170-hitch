@@ -62,7 +62,7 @@ router.get('/register', function(req, res) {
 router.get('/', function(req, res, next) {
   var currentUser = req.session.currentUser;
   if (currentUser) {
-    res.render('index', {"user": currentUser});
+    res.render('index', {'csrf': req.csrfToken(), 'user': currentUser});
   } else {
     res.redirect('/');
   }
@@ -132,7 +132,8 @@ router.get('/logout', function(req, res) {
 router.get('/my_rides', function(req, res) {
   var currentTime = new Date();
   User.getRides(req.session.currentUser._id, function(err, rides) {
-    res.render('my_rides', { 'user' : req.session.currentUser,
+    res.render('my_rides', { 'csrf': req.csrfToken(),
+                             'user' : req.session.currentUser,
                              'rides' : rides ,
                              'currentTime' : currentTime});
   });

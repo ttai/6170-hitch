@@ -46,6 +46,7 @@
                 <td><%= rides[i].transport %></td>
                 <form method="post" action="/rides/participate">
                   <input type="hidden" name="ride_id" value=<%= rides[i]._id %>></input>
+                  <input type="hidden" name="_csrf" value=<%= csrf %>></input>
                   <td><button type="submit" class="btn btn-default">Leave ride</button></td>
                 </form>
               </tr>

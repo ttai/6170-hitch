@@ -55,7 +55,7 @@ router.get('/', function(req, res) {
     if (err) {
       res.render('error', {'message': 'An unknown error occurred.', 'status': 500});
     } else {
-      res.render('rides', { 'user': req.session.currentUser, rides: rides });
+      res.render('rides', { 'csrf': req.csrfToken(), 'user': req.session.currentUser, rides: rides });
     }
   });
 });
@@ -90,7 +90,8 @@ router.get('/:ride', function(req, res) {
               var duration = result.routes[0].legs[0].duration.text;
               var distance = result.routes[0].legs[0].distance.text;
               var currentTime = new Date();
-              res.render('ride', { 'user': req.session.currentUser,
+              res.render('ride', { 'csrf': req.csrfToken(),
+                                   'user': req.session.currentUser,
                                    'ride': ride,
                                    'riders': riders,
                                    'map': true,
@@ -100,7 +101,8 @@ router.get('/:ride', function(req, res) {
                                    'coordB': end_loc,
                                    'currentTime': currentTime });
             } else {
-              res.render('ride', { 'user': req.session.currentUser,
+              res.render('ride', { 'csrf': req.csrfToken(),
+                                   'user': req.session.currentUser,
                                    'ride': ride,
                                    'riders': riders,
                                    'map': false,

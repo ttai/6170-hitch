@@ -43,7 +43,8 @@ router.get('/', function(req, res, next) {
       };
 
       gmAPI.directions(params, function(err, result) {
-        res.render('index', { 'user' : currentUser,
+        res.render('index', { 'csrf': req.csrfToken(),
+                              'user' : currentUser,
                               'rides' : rides,
                               'loggedIn' : logged_in });
       });
