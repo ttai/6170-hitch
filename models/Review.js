@@ -35,7 +35,7 @@ var Review = (function Review() {
   };
 
   that.existsReview = function(rideId, reviewerId, revieweeId, callback) {
-    reviewModel.find({ride: rideId, reviewer: reviewerId, reviewee: revieweeId}, function(err, review) {
+    reviewModel.findOne({ride: rideId, reviewer: reviewerId, reviewee: revieweeId}, function(err, review) {
       if (err) {
         callback(err, null);
       } else {
