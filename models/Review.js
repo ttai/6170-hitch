@@ -20,7 +20,7 @@ var Review = (function Review() {
         callback(null, reviewerId.equals(currentUserId));
       }
     });
-  }
+  };
 
   that.getReview = function(reviewId, callback){
     reviewModel.findById(reviewId, function(err, review) {
@@ -45,8 +45,8 @@ var Review = (function Review() {
           callback(null, null);
         }
       }
-    })
-  }
+    });
+  };
 
   that.addReview = function(rideId, reviewerId, revieweeId, 
                             rating, comment, callback) {
@@ -94,7 +94,7 @@ var Review = (function Review() {
           });
         }
       }
-    })
+    });
   };
 
   that.setReviewRating = function(reviewerId, revieweeId, reviewId, rating, callback) {
