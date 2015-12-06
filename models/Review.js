@@ -9,19 +9,6 @@ var Review = (function Review() {
 
   var that = Object.create(Review.prototype);
 
-  that.reviewOwnership = function (currentUserId, reviewId, callback) {
-    reviewModel.findById(reviewId, function(err, review) {
-      if (err) {
-        callback(err);
-      } else if (!review) {
-        callback({ msg: 'Invalid review' });
-      } else {
-        var reviewerId = review.reviewer;
-        callback(null, reviewerId.equals(currentUserId));
-      }
-    });
-  };
-
   that.getReview = function(reviewId, callback){
     reviewModel.findById(reviewId, function(err, review) {
       if (err) {
@@ -30,20 +17,6 @@ var Review = (function Review() {
         callback({ msg: 'Invalid review' });
       } else {
         callback(null, review);
-      }
-    });
-  };
-
-  that.existsReview = function(rideId, reviewerId, revieweeId, callback) {
-    reviewModel.findOne({ride: rideId, reviewer: reviewerId, reviewee: revieweeId}, function(err, review) {
-      if (err) {
-        callback(err, null);
-      } else {
-        if (review) {
-          callback(null, review);
-        } else {
-          callback(null, null);
-        }
       }
     });
   };

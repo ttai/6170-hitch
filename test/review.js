@@ -67,45 +67,10 @@ describe('Review', function() {
     });
   });
 
-  describe('#reviewOwnership', function() {
-    it('should return true', function(done) {
-      Review.reviewOwnership(user1._id, the_review._id, function(err, owner) {
-        assert.equal(owner, true);
-        done();
-      });
-    });
-    it('should return false', function(done) {
-      Review.reviewOwnership(user2._id, the_review._id, function(err, owner) {
-        assert.equal(owner, false);
-        Review.reviewOwnership(user3._id, the_review._id, function(err, owner) {
-          assert.equal(owner, false);
-          done();
-        });
-      });
-    });
-  });
-
   describe('getReview', function() {
     it('should return review', function(done) {
       Review.getReview(the_review._id, function(err, review) {
         assert.deepEqual(the_review._id, review._id);
-        done();
-      });
-    });
-  });
-
-  describe('existsReview', function() {
-    it('should return review', function(done) {
-      Review.existsReview(the_ride._id, user1._id, user3._id,
-                          function(err, review) {
-        assert.deepEqual(the_review._id, review._id);
-        done();
-      });
-    });
-    it('should return null', function(done) {
-      Review.existsReview(the_ride._id, user1._id, user2._id,
-                          function(err, review) {
-        assert.equal(review, null);
         done();
       });
     });
