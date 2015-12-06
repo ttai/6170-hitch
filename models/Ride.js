@@ -70,6 +70,7 @@ var Ride = (function Ride() {
     });
   };
 
+  // TODO: this is not used anywhere
   // assumption: date passed in are at 00:00 time.
   that.findRidesByDate = function(date, callback) {
     var end = new Date(date.getTime() + (24 * 60 * 60 * 1000));
@@ -230,15 +231,14 @@ var Ride = (function Ride() {
                     if (ride.creator === riderId) {
                       rideModel.findByIdAndUpdate(rideId, { $set: {creator: undefined } },
                                                   function (err, result) {
-                                                    if (err) {
-                                                      callback(err,null);
-                                                    } else {
-                                                      callback(null,null);
-                                                    }
-
+                        if (err) {
+                          callback(err, null);
+                        } else {
+                          callback(null, null);
+                        }
                       });
                     } else {
-                      callback(null,null);
+                      callback(null, null);
                     }
                   }
                 });
