@@ -98,12 +98,12 @@ var Review = (function Review() {
   };
 
   that.setReviewRating = function(reviewerId, revieweeId, reviewId, rating, callback) {
-    reviewModel.findbyIdAndUpdate(reviewId, { $set: { "rating": rating } },
+    reviewModel.findByIdAndUpdate(reviewId, { $set: { "rating": rating } },
                                   function(err, result) {
       if (err) {
         callback(err);
       } else {
-        User.updateRating(userId, reviewId, function (err, result) {
+        User.updateRating(revieweeId, reviewId, function (err, result) {
           if (err) {
             callback(err);
           } else {
