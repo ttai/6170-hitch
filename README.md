@@ -1,5 +1,4 @@
 # Hitch #
-===
 Deployed to https://hitch-6170.herokuapp.com/  
 
 ## Overview ##
