@@ -26,16 +26,16 @@
       <h1>Find a ride</h1>
       <form data-toggle="validator" role="form" method="post" action="/rides/search" name="form">
         <div class="form-group">
-          <label for="origin">Start Location:</label>
-          <input id="autocomplete_orig" class="form-control" name="origin" placeholder="Enter address" onFocus="geolocate()" type="text"></input>
+          <label for="origin">Start Location *</label>
+          <input id="autocomplete_orig" class="form-control" name="origin" placeholder="Enter address" onFocus="geolocate()" type="text" required></input>
         </div>
         <div class="form-group">
-          <label for="destination">Destination:</label>
-          <input id="autocomplete_dest" class="form-control" name="destination" placeholder="Enter address" onFocus="geolocate()" type="text"></input>
+          <label for="destination">Destination *</label>
+          <input id="autocomplete_dest" class="form-control" name="destination" placeholder="Enter address" onFocus="geolocate()" type="text" required></input>
         </div>
         <div class="form-group">
-          <label for="date">Departure Date:</label>
-          <input type="date" class="form-control" name="date" id="date" required>
+          <label for="date">Departure Date</label>
+          <input type="date" class="form-control" name="date" id="date">
         </div>
         <button type="submit" class="btn btn-default">Submit</button>
         <input type="hidden" name="_csrf" value=<%= csrf %>></input>
