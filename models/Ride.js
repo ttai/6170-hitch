@@ -49,10 +49,12 @@ var Ride = (function Ride() {
   // TODO: find rides by location. This is not used anywhere.
   that.findRidesByOrigin = function(latitude, longitude, maxDistance, callback) {
     var now = new Date();
+    var div_by = (3959 * Math.PI)/180;
     var coords = [];
     coords[0] = longitude;
     coords[1] = latitude;
-    rideModel.find({ origin: {$near: coords, $maxDistance: maxDistance} }).where('departure_time').gte(now).exec(function(err, rides) {
+    maxDist /= div_by;
+    rideModel.find({ origin_coord: {$near: coords, $maxDistance: maxDistance} }).where('departure_time').gte(now).exec(function(err, rides) {
       if (err) {
         callback(err);
       } else {
@@ -64,10 +66,12 @@ var Ride = (function Ride() {
   // TODO: find rides by location. This is not used anywhere.
   that.findRidesByDestination = function(latitude, longitude, maxDistance, callback) {
     var now = new Date();
+    var div_by = (3959 * Math.PI)/180;
     var coords = [];
     coords[0] = longitude;
     coords[1] = latitude;
-    rideModel.find({ destination: {$near: coords, $maxDistance: maxDistance} }).where('departure_time').gte(now).exec(function(err, rides) {
+    maxDist /= div_by;
+    rideModel.find({ dest_coord: {$near: coords, $maxDistance: maxDistance} }).where('departure_time').gte(now).exec(function(err, rides) {
       if (err) {
         callback(err);
       } else {
