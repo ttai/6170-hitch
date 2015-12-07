@@ -1,8 +1,6 @@
 # Hitch #
 ==================================
-Deployed to
-https://hitch-6170.herokuapp.com/
-==================================
+Deployed to https://hitch-6170.herokuapp.com/  
 
 ## Overview ##
 Hitch is an app that allows users to find other people who are looking to share rides to and from the same locations up to 2 weeks in the future.  
