@@ -251,4 +251,18 @@ describe('User', function() {
       });
     });
   });
+  describe('comparePassword', function() {
+    it('should return true', function(done) {
+      user1.comparePassword('password1', function(err, match) {
+        assert.equal(match, true);
+        done();
+      });
+    });
+    it('should return false', function(done) {
+      user1.comparePassword('password2', function(err, match) {
+        assert.equal(match, false);
+        done();
+      });
+    });
+  });
 });
