@@ -89,10 +89,6 @@ var Ride = (function Ride() {
     });
   };
 
-
-    
-
-
   // TODO: this is not used anywhere
   // assumption: date passed in are at 00:00 time.
   that.findRidesByDate = function(date, callback) {

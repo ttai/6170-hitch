@@ -38,7 +38,8 @@ router.get('/user/:user', function(req, res) {
           res.render('error', { 'message' : 'Resource not found.', 'status': 404});
         } else {
           if (req.session.currentUser) {
-            res.render('user', { 'currentUser' : req.session.currentUser, 'user' : user, 'reviews' : reviews});
+            res.render('user', { 'currentUser' : req.session.currentUser, 'user' : req.session.currentUser, 
+                      'reviewee' : user, 'reviews' : reviews});
           } else {
             res.render('error', { 'message' : 'Resource not found.', 'status': 404}); 
           }
