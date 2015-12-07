@@ -81,4 +81,30 @@ a {
     background: url('http://kubyshkin.ru/samples/star-rating/star.png') 0 -16px;
 }
 
+.rating2 {
+    overflow: hidden;
+    display: inline-block;
+    font-size: 0;
+    position: relative;
+}
+.rating-input2 {
+    float: right;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    margin: 0 0 0 -16px;
+    opacity: 0;
+}
+.rating-input2:checked ~ .rating-star2 {
+    background-position: 0 0;
+}
+.rating-star2 {
+    position: relative;
+    float: right;
+    display: block;
+    width: 16px;
+    height: 16px;
+    background: url('http://kubyshkin.ru/samples/star-rating/star.png') 0 -16px;
+}
+
 .dataTables_filter, .dataTables_info { display: none; }

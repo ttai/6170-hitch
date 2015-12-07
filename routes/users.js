@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var User = require('../models/User');
+var validator = require('validator');
 
 /*
   For both login and create user, we want to send an error code if the user
@@ -75,8 +76,8 @@ router.post('/', function(req, res) {
   if (isLoggedInOrInvalidBody(req, res)) {
     return;
   }
-  var kerberos = req.body.kerberos.toLowerCase();
-  var password = req.body.password;
+  var kerberos = validator.escape(validator.toString(req.body.kerberos.toLowerCase()));
+  var password = validator.escape(validator.toString(req.body.password));
   if (!kerberos || kerberos.length < 8 || !(kerberos.slice(-8) === '@mit.edu')) {
     res.render('register', {'csrf': req.csrfToken(), 'e': 'Username must be a valid @mit.edu email.'});
   } else if (!password || password.length < 8) {
@@ -110,8 +111,8 @@ router.get('/login', function(req, res) {
 
 // Allows a user to sign in
 router.post('/login', function(req, res) {
-  var password = req.body.password;
-  var kerberos = req.body.kerberos;
+  var password = validator.escape(validator.toString(req.body.password));
+  var kerberos = validator.escape(validator.toString(req.body.kerberos));
   User.verifyPassword(kerberos, password, function(err, user) {
     if (user) {
       req.session.currentUser = user;
