@@ -16,7 +16,7 @@ Each user has a “My Rides” page on which they are able to view and manage ri
 ## Accountability through Reviews ##
 After a ride has been completed, each user has the option to review each of the other passengers in that shared ride. A review consists of a rating from one star to five stars as well as an optional comment. This helps ensures that future rides are shared between reliable riders. Users can click on a username in a ride to view the reviews that the other user has received in the past.  
 
-## DesignDecisions and Constraints ##
+## Design Decisions and Constraints ##
 There are certain design and constraint decisions we made:  
 * Users
  * A user has a star rating between 1 and 5, which is an average of all the ratings in the reviews they have received from past rides.
