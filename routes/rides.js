@@ -218,7 +218,7 @@ router.post('/participate', function(req, res) {
 });
 
 // go to the search page
-router.get('/search', function(req,res) {
+router.get('/search', function(req, res) {
   if (req.session.currentUser) {
     res.render('search', {'csrf': req.csrfToken(), 'user': req.session.currentUser});
   } else {
