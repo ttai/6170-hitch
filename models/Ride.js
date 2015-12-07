@@ -46,10 +46,10 @@ var Ride = (function Ride() {
       });
   };
 
-  // TODO: find rides by location. This is not used anywhere.
+  // finds rides within a given radius of origin
   that.findRidesByOrigin = function(latitude, longitude, maxDistance, callback) {
     var now = new Date();
-    var div_by = (3959 * Math.PI)/180;
+    var div_by = (3959 * Math.PI)/(180 * 2.5);
     var coords = [];
     coords[0] = longitude;
     coords[1] = latitude;
@@ -63,10 +63,10 @@ var Ride = (function Ride() {
     });
   };
 
-  // TODO: find rides by location. This is not used anywhere.
+  // finds rides within a given radius of destination
   that.findRidesByDestination = function(latitude, longitude, maxDistance, callback) {
     var now = new Date();
-    var div_by = (3959 * Math.PI)/180;
+    var div_by = (3959 * Math.PI)/(180 * 2.5);
     var coords = [];
     coords[0] = longitude;
     coords[1] = latitude;
@@ -75,6 +75,29 @@ var Ride = (function Ride() {
       if (err) {
         callback(err);
       } else {
+        callback(null, rides);
+      }
+    });
+  };
+
+  // finds rides within a given radius of both origin and destination
+  that.findRidesbyLocation = function(origin_lat, origin_lng, origin_max, dest_lat, dest_lng, dest_max) {
+    var div_by = (3959 * Math.PI)/(180 * 2.5);
+    var origin = [];
+    var dest = [];
+    origin[0] = origin_lng;
+    origin[1] = origin_lat;
+    dest[0] = dest_lng;
+    dest[1] = dest_lat;
+    origin_max /= div_by;
+    dest_max /= div_by;
+    rideModel.find({ origin_coord: {$near: origin, $maxDistance: origin_max} },
+    { dest_coord: { $near: dest, $maxDistance: dest_max }})
+    .where('departure_time').gte(now).exec(function(err, rides) {
+      if (err) {
+        callback(err);
+      } else {
+          
         callback(null, rides);
       }
     });
