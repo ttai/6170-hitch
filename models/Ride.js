@@ -46,49 +46,27 @@ var Ride = (function Ride() {
       });
   };
 
-  // finds open rides within a given radius of both origin and destination
-  that.findRidesbyLocation = function(origin_lng, origin_lat, origin_max, dest_lng, dest_lat, dest_max) {
-    var div_by = (3959 * Math.PI)/(180 * 2.5);
-    var origin = [];
-    var dest = [];
-    origin[0] = origin_lng;
-    origin[1] = origin_lat;
-    dest[0] = dest_lng;
-    dest[1] = dest_lat;
-    origin_max = 1;
-    dest_max = 1;
-    origin_max /= div_by;
-    dest_max /= div_by;
+  // TODO: Use Google Maps API to find rides by location
+  that.findRidesByOrigin = function(location, callback) {
     var now = new Date();
-    rideModel.find({ remaining_capacity: {$gte: 1} },
-    { departure_time: {$gte: now} },
-    { origin_coord: {$near: origin, $maxDistance: origin_max} },
-    { dest_coord: { $near: dest, $maxDistance: dest_max }})
-    .where('departure_time').gte(now).exec(function(err, rides) {
+    rideModel.find({ origin: location }).where('departure_time').gte(now).exec(function(err, rides) {
       if (err) {
         callback(err);
       } else {
-        var getDistance = function(ride_origin, ride_dest) {
-          ride_origin_lng = ride_origin[0];
-          ride_origin_lat = ride_origin[1];
-          ride_dest_lng = ride_dest[0];
-          ride_dest_lat = ride_dest[1];
-          origin_dist = Math.pow((ride_origin_lng - origin[0]), 2) + Math.pow((ride_origin_lat - origin[1]), 2);
-          dest_dist = Math.pow((ride_dest_lng - dest[0]), 2) + Math.pow((ride_dest_lat - dest[1]), 2);
-          return origin_dist + dest_dist;
-        }
-        var sortByDistance = function (a, b) {
-          if (getDistance(a.origin_coord, a.dest_coord) < getDistance(b.origin_coord, b.dest_coord)) {
-            return -1;
-          } else if (getDistance(a.origin_coord, a.dest_coord) > getDistance(b.origin_coord, b.dest_coord)) {
-            return 1;
-          } else {
-            return 0;
-          }
-        }
-        rides.sort(sortByDistance);
         callback(null, rides);
-      };
+      }
+    });
+  };
+
+  // TODO: Use Google Maps API to find rides by location
+  that.findRidesByDestination = function(location, callback) {
+    var now = new Date();
+    rideModel.find({ destination: location }).where('departure_time').gte(now).exec(function(err, rides) {
+      if (err) {
+        callback(err);
+      } else {
+        callback(null, rides);
+      }
     });
   };
 
@@ -120,17 +98,12 @@ var Ride = (function Ride() {
   };
 
   that.addRide = function(userId, origin, destination, departure_time,
-                          origin_coord, dest_coord, distance, duration,
                           total_capacity, transport,
                           callback) {
     rideModel.create({
       'origin': origin,
       'destination': destination,
       'departure_time': departure_time,
-      'origin_coord': origin_coord,
-      'dest_coord': dest_coord,
-      'distance': distance,
-      'duration': duration,
       'total_capacity': total_capacity,
       'remaining_capacity': total_capacity - 1,
       'riders': [userId],

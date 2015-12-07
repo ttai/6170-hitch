@@ -25,10 +25,10 @@ userSchema.pre('save', function (next) {
   });
 });
 
-userSchema.methods.comparePassword = function(candidatePassword, callback) {
+userSchema.methods.comparePassword = function(candidatePassword, cb) {
     bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-        if (err) return callback(err);
-        callback(null, isMatch);
+        if (err) return cb(err);
+        cb(null, isMatch);
     });
 };
 
@@ -36,10 +36,6 @@ var rideSchema = new Schema({
   origin: { type: String, required: true },
   destination: { type: String, required: true },
   departure_time: { type: Date, required: true },
-  origin_coord: { type: [Number], index: '2d' },
-  dest_coord: { type: [Number], index: '2d' },
-  distance: String,
-  duration: String,
   total_capacity: { type: Number, required: true },
   remaining_capacity: { type: Number, required: true },
   creator: {type: ObjectId, ref: 'userSchema'},
