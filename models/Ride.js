@@ -46,42 +46,8 @@ var Ride = (function Ride() {
       });
   };
 
-  // finds rides within a given radius of origin
-  that.findRidesByOrigin = function(latitude, longitude, maxDistance, callback) {
-    var now = new Date();
-    var div_by = (3959 * Math.PI)/(180 * 2.5);
-    var coords = [];
-    coords[0] = longitude;
-    coords[1] = latitude;
-    maxDist /= div_by;
-    rideModel.find({ origin_coord: {$near: coords, $maxDistance: maxDistance} }).where('departure_time').gte(now).exec(function(err, rides) {
-      if (err) {
-        callback(err);
-      } else {
-        callback(null, rides);
-      }
-    });
-  };
-
-  // finds rides within a given radius of destination
-  that.findRidesByDestination = function(latitude, longitude, maxDistance, callback) {
-    var now = new Date();
-    var div_by = (3959 * Math.PI)/(180 * 2.5);
-    var coords = [];
-    coords[0] = longitude;
-    coords[1] = latitude;
-    maxDist /= div_by;
-    rideModel.find({ dest_coord: {$near: coords, $maxDistance: maxDistance} }).where('departure_time').gte(now).exec(function(err, rides) {
-      if (err) {
-        callback(err);
-      } else {
-        callback(null, rides);
-      }
-    });
-  };
-
   // finds rides within a given radius of both origin and destination
-  that.findRidesbyLocation = function(origin_lat, origin_lng, origin_max, dest_lat, dest_lng, dest_max) {
+  that.findRidesbyLocation = function(origin_lng, origin_lat, origin_max, dest_lng, dest_lat, dest_max) {
     var div_by = (3959 * Math.PI)/(180 * 2.5);
     var origin = [];
     var dest = [];
@@ -89,6 +55,8 @@ var Ride = (function Ride() {
     origin[1] = origin_lat;
     dest[0] = dest_lng;
     dest[1] = dest_lat;
+    origin_max = 1;
+    dest_max = 1;
     origin_max /= div_by;
     dest_max /= div_by;
     rideModel.find({ origin_coord: {$near: origin, $maxDistance: origin_max} },
@@ -97,11 +65,33 @@ var Ride = (function Ride() {
       if (err) {
         callback(err);
       } else {
-          
+        var getDistance = function(ride_origin, ride_dest) {
+          ride_origin_lng = ride_origin[0];
+          ride_origin_lat = ride_origin[1];
+          ride_dest_lng = ride_dest[0];
+          ride_dest_lat = ride_dest[1];
+          origin_dist = Math.pow((ride_origin_lng - origin[0]), 2) + Math.pow((ride_origin_lat - origin[1]), 2);
+          dest_dist = Math.pow((ride_dest_lng - dest[0]), 2) + Math.pow((ride_dest_lat - dest[1]), 2);
+          return origin_dist + dest_dist;
+        }
+        var sortByDistance = function (a, b) {
+          if (getDistance(a.origin_coord, a.dest_coord) < getDistance(b.origin_coord, b.dest_coord)) {
+            return -1;
+          } else if (getDistance(a.origin_coord, a.dest_coord) > getDistance(b.origin_coord, b.dest_coord)) {
+            return 1;
+          } else {
+            return 0;
+          }
+        }
+        rides.sort(sortByDistance);
         callback(null, rides);
-      }
+      };
     });
   };
+
+
+    
+
 
   // TODO: this is not used anywhere
   // assumption: date passed in are at 00:00 time.
