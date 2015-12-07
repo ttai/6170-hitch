@@ -135,8 +135,8 @@ router.post('/', function(req, res) {
                          'status': 500});
   } else {
     var params = {
-      origin: req.body.origin,
-      destination: req.body.destination
+      origin: validator.escape(validator.toString(req.body.origin)),
+      destination: validator.escape(validator.toString(req.body.destination))
     };
     gmAPI.directions(params, function(err, result) {
       if (result) {
@@ -144,7 +144,6 @@ router.post('/', function(req, res) {
         var end_loc = result.routes[0].legs[0].end_location;
         var duration = result.routes[0].legs[0].duration.text;
         var distance = result.routes[0].legs[0].distance.text;
-        var currentTime = new Date();
 
         Ride.addRide(req.session.currentUser._id, validator.escape(validator.toString(req.body.origin)), validator.escape(validator.toString(req.body.destination)),
                      validator.toDate(departure_time.toDate()), [start_loc.lng, start_loc.lat], [end_loc.lng, end_loc.lat], distance, duration,
@@ -193,7 +192,6 @@ router.post('/remove', function(req, res){
   })
 });
 
-
 router.post('/participate', function(req, res) {
   var rideId = req.body.ride_id;
   Ride.inRide(req.session.currentUser._id, rideId, function (err, result) {
@@ -217,6 +215,59 @@ router.post('/participate', function(req, res) {
       });
     }
   });
+});
+
+// go to the search page
+router.get('/search', function(req,res) {
+  if (req.session.currentUser) {
+    res.render('search', {'csrf': req.csrfToken(), 'user': req.session.currentUser});
+  } else {
+    res.redirect('/');
+  }
+});
+
+//search for a ride by origin location, destination location, and optionally date
+router.post('/search', function(req, res) {
+  var origin = validator.escape(validator.toString(req.body.origin));
+  var destination = validator.escape(validator.toString(req.body.destination));
+  var date = validator.toDate(req.body.date);
+  if (!origin || !destination ){
+    res.render('error', {'message': 'Invalid inputs.',
+                         'status': 500});
+  } else {
+    var params = {
+      origin: origin,
+      destination: destination
+    };
+    gmAPI.directions(params, function(err, result) {
+      if (result) {
+        var start_loc = result.routes[0].legs[0].start_location;
+        var end_loc = result.routes[0].legs[0].end_location;
+        var duration = result.routes[0].legs[0].duration.text;
+        var distance = result.routes[0].legs[0].distance.text;
+
+        Ride.findRidesbyLocation(start_loc.lng, start_loc.lat, function(err, rides) {
+                    if (err) {
+                       res.render('error', {'message': 'An unknown error occurred.',
+                                            'status': 500});
+                    } else {
+                      if (date) {
+                        var end = new Date(date.getTime() + (24 * 60 * 60 * 1000));
+                        rides.filter(function(ride) {
+                          return ride.departure_time >= date && ride.departure_time < end;
+                        });
+                    }
+                      res.render('index', { 'csrf': req.csrfToken(),
+                        'user' : currentUser,
+                        'rides' : rides,
+                        'loggedIn' : logged_in });
+                    }
+        });
+      } else {        
+        res.render('search', {'e': 'Invalid inputs.', 'user': req.session.currentUser, 'csrf': req.csrfToken() });
+      }
+    });
+  }
 });
 
 module.exports = router;

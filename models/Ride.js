@@ -46,7 +46,7 @@ var Ride = (function Ride() {
       });
   };
 
-  // finds rides within a given radius of both origin and destination
+  // finds open rides within a given radius of both origin and destination
   that.findRidesbyLocation = function(origin_lng, origin_lat, origin_max, dest_lng, dest_lat, dest_max) {
     var div_by = (3959 * Math.PI)/(180 * 2.5);
     var origin = [];
@@ -59,7 +59,10 @@ var Ride = (function Ride() {
     dest_max = 1;
     origin_max /= div_by;
     dest_max /= div_by;
-    rideModel.find({ origin_coord: {$near: origin, $maxDistance: origin_max} },
+    var now = new Date();
+    rideModel.find({ remaining_capacity: {$gte: 1} },
+    { departure_time: {$gte: now} },
+    { origin_coord: {$near: origin, $maxDistance: origin_max} },
     { dest_coord: { $near: dest, $maxDistance: dest_max }})
     .where('departure_time').gte(now).exec(function(err, rides) {
       if (err) {
@@ -88,10 +91,6 @@ var Ride = (function Ride() {
       };
     });
   };
-
-
-    
-
 
   // TODO: this is not used anywhere
   // assumption: date passed in are at 00:00 time.
