@@ -45,45 +45,7 @@ var Ride = (function Ride() {
         }
       });
   };
-
-  // TODO: Use Google Maps API to find rides by location
-  that.findRidesByOrigin = function(location, callback) {
-    var now = new Date();
-    rideModel.find({ origin: location }).where('departure_time').gte(now).exec(function(err, rides) {
-      if (err) {
-        callback(err);
-      } else {
-        callback(null, rides);
-      }
-    });
-  };
-
-  // TODO: Use Google Maps API to find rides by location
-  that.findRidesByDestination = function(location, callback) {
-    var now = new Date();
-    rideModel.find({ destination: location }).where('departure_time').gte(now).exec(function(err, rides) {
-      if (err) {
-        callback(err);
-      } else {
-        callback(null, rides);
-      }
-    });
-  };
-
-  // TODO: this is not used anywhere
-  // assumption: date passed in are at 00:00 time.
-  that.findRidesByDate = function(date, callback) {
-    var end = new Date(date.getTime() + (24 * 60 * 60 * 1000));
-    var now = new Date();
-    rideModel.find({}).where('departure_time').gte(now).gte(date).lte(end).exec(function(err, rides) {
-      if (err) {
-        callback(err);
-      } else {
-        callback(null, rides);
-      }
-    });
-  };
-
+  
   // does not check if ride has closed
   that.getRide = function(rideId, callback) {
     rideModel.findById(rideId, function (err, ride) {

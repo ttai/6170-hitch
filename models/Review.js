@@ -9,6 +9,17 @@ var Review = (function Review() {
 
   var that = Object.create(Review.prototype);
 
+  that.existsReview = function(rideId, reviewerId, revieweeId, callback) {
+    reviewModel.findOne({ride: rideId, reviewer: reviewerId, reviewee: revieweeId}, function(err, review) {
+      if (err) {
+      	console.log('err');
+        callback(err, null);
+      } else {
+	    callback(null, review);
+      }
+    });
+  };
+
   that.getReview = function(reviewId, callback){
     reviewModel.findById(reviewId, function(err, review) {
       if (err) {
