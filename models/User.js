@@ -9,6 +9,7 @@ var User = (function User() {
 
   var that = Object.create(User.prototype);
 
+  // Returns a user given their ID
   that.getUser = function (userId, callback) {
     userModel.findById(userId, function (err, user) {
       if (err) {
@@ -23,6 +24,7 @@ var User = (function User() {
     });
   };
 
+  // Returns a user's kerberos given his ID
   that.getKerberos = function (userId, callback) {
     userModel.findById(userId, function (err, user) {
       if (err) {
@@ -37,7 +39,7 @@ var User = (function User() {
     });
   };
 
-  // password authentication, should be turned into 
+  // Creates a new user with authentication logic
   that.createUser = function (currentKerberos, inputPass, callback){
     userModel.count( { kerberos: currentKerberos }, function (err, count) {
       if (currentKerberos === "") {
@@ -153,6 +155,7 @@ var User = (function User() {
     });
   };
 
+  // Adds a review to a user given the user ID and review
   that.addReview = function (userId, review, callback) {
     userModel.findByIdAndUpdate(userId,
                                 { $addToSet: {reviews: review._id } },
@@ -171,6 +174,7 @@ var User = (function User() {
     });
   }; 
 
+  // Updates a user's average rating given the user ID and review 
   that.updateRating = function (userId, review, callback) {
     userModel.findById(userId, function (err, user) {
       if (err) {

@@ -1,3 +1,4 @@
+// Data model which represents a review
 var mongoose = require('mongoose');
 var schemas = require('./schemas');
 var userModel = schemas.userModel;
@@ -9,6 +10,7 @@ var Review = (function Review() {
 
   var that = Object.create(Review.prototype);
 
+  // Checks if a review exists
   that.existsReview = function(rideId, reviewerId, revieweeId, callback) {
     reviewModel.findOne({ride: rideId, reviewer: reviewerId, reviewee: revieweeId}, function(err, review) {
       if (err) {
@@ -20,6 +22,7 @@ var Review = (function Review() {
     });
   };
 
+  // Returns a review given an ID
   that.getReview = function(reviewId, callback){
     reviewModel.findById(reviewId, function(err, review) {
       if (err) {
@@ -32,6 +35,7 @@ var Review = (function Review() {
     });
   };
 
+  // Adds a review to both the review schema and user schema
   that.addReview = function(rideId, reviewerId, revieweeId, 
                             rating, comment, callback) {
     reviewModel.find({ride: rideId, reviewer: reviewerId, reviewee: revieweeId}, function(err, review) {

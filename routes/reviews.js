@@ -69,7 +69,7 @@ router.post('/:review', function(req, res) {
     res.render('error', {'message': 'Must submit rating between 1 and 5.', 'status' : 500});
   } else {
     Review.addReview(req.body.ride_id, req.session.currentUser._id, req.body.reviewee_id,
-                       parseInt(req.body.rating), validator.escape(validator.toString(req.body.comment)), function(err) { 
+                       parseInt(req.body.rating), (validator.toString(req.body.comment)), function(err) { 
       if (err) {
         res.render('error', {'message': 'An unknown error occurred.', 'status': 500});
       } else {

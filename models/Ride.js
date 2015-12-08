@@ -1,3 +1,4 @@
+// Data model which represents a ride
 var mongoose = require('mongoose');
 var schemas = require('./schemas');
 var userModel = schemas.userModel;
@@ -9,6 +10,7 @@ var Ride = (function Ride() {
 
   var that = Object.create(Ride.prototype);
 
+  // Returns all rides in the ride schema
   that.getAllRides = function(callback) {
     rideModel.find({}, function(err, rides) {
       if (err) {
@@ -19,6 +21,7 @@ var Ride = (function Ride() {
     });
   };
 
+  // Checks if a user exists in a ride given IDs
   that.inRide = function(userId, rideId, callback) {
     rideModel.findById(rideId, function (err, ride) {
       if (err) {
@@ -32,6 +35,7 @@ var Ride = (function Ride() {
     });
   };
 
+  // Gets all rides with remaining capacity
   that.getAllOpenRides = function(callback) {
     var now = new Date();
     rideModel.find({})
@@ -46,7 +50,7 @@ var Ride = (function Ride() {
       });
   };
   
-  // does not check if ride has closed
+  // Returns a ride given the id
   that.getRide = function(rideId, callback) {
     rideModel.findById(rideId, function (err, ride) {
       if (err) {
@@ -59,6 +63,7 @@ var Ride = (function Ride() {
     });
   };
 
+  // Adds a ride given the user inputs
   that.addRide = function(userId, origin, destination, departure_time,
                           total_capacity, transport,
                           callback) {
@@ -88,6 +93,7 @@ var Ride = (function Ride() {
     });
   };
 
+  // Gets the riders in a ride given the ride ID
   that.getRiders = function(rideId, callback) {
     rideModel.findById(rideId, function (err, ride) {
       if (err) {
@@ -101,6 +107,7 @@ var Ride = (function Ride() {
     });
   };
 
+  // gets the other rides in a ride besides the user
   that.getOtherRiders = function(rideId, userId, callback) {
     that.getRiders(rideId, function(err, riders) {
       var user_id = ObjectId(userId);
@@ -130,6 +137,7 @@ var Ride = (function Ride() {
     });
   };
 
+  // Adds a rider to a ride given their respective IDs
   that.addRider = function(rideId, riderId, callback) {
     // checks if ride is full
     rideModel.findById(rideId, function(err, ride) {
@@ -159,6 +167,7 @@ var Ride = (function Ride() {
     });
   };
 
+  // Removes a rider from a ride given their respective IDs
   that.removeRider = function(rideId, riderId, callback) {
     var ObjectId = mongoose.Types.ObjectId;
     rideModel.findByIdAndUpdate(rideId,
@@ -212,6 +221,7 @@ var Ride = (function Ride() {
     });
   };
 
+  // Deletes a ride from the ride schema
   that.deleteRide = function(rideId, callback) {
     rideModel.findByIdAndRemove(rideId, function(err) {
       if (err) {
